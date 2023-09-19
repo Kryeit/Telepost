@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "telepost",
+  "version": "${version}",
+  "name": "Telepost",
+  "description": "",
+  "authors": [],
+  "contact": {
+    "repo": "https://github.com/MuriPlz/test"
+  },
+  "license": "All-Rights-Reserved",
+  "icon": "assets/telepost/icon.png",
+  "environment": "server",
+  "entrypoints": {
+    "client": [
+    ],
+    "main": [
+      "com.kryeit.telepost.Telepost"
+    ]
+  },
+  "mixins": [
+    "telepost.mixins.json"
+  ],
+  "depends": {
+    "fabricloader": ">=${loader_version}",
+    "fabric": "*",
+    "minecraft": "${minecraft_version}"
+  }
+}
