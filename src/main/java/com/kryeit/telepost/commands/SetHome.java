@@ -9,7 +9,9 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 import java.util.function.Supplier;
 
@@ -25,7 +27,7 @@ public class SetHome {
         Supplier<Text> message = () -> Text.literal(
                 "You've made the post at: ("
                         + post.getX() + ", "
-                        + post.getZ() + ") your home");
+                        + post.getZ() + ") your home").setStyle(Style.EMPTY.withFormatting(Formatting.GREEN));
 
         Telepost.getDB().setHome(player.getUuid(), new HomePost(player.getUuid(), post.getLocation()));
 

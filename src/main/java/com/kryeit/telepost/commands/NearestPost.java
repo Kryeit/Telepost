@@ -1,6 +1,7 @@
 package com.kryeit.telepost.commands;
 
 import com.kryeit.telepost.Telepost;
+import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.post.Post;
 import com.kryeit.telepost.storage.bytes.NamedPost;
 import com.mojang.brigadier.Command;
@@ -9,7 +10,9 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -24,22 +27,20 @@ public class NearestPost {
         Post post = new Post(player.getPos());
 
         Supplier<Text> message;
-
-        if (post.isNamed()) {
-            Optional<NamedPost> namedPost = post.getNamedPost();
-            message = () -> Text.literal(
-                    "The nearest post is at: ("
-                            + post.getX() + ", "
-                            + post.getZ() + "), it's " + namedPost.get().name());
-        } else {
-            message = () -> Text.literal(
-                    "The nearest post is at: ("
-                            + post.getX() + ", "
-                            + post.getZ() + ")");
-        }
+        Optional<NamedPost> namedPost = post.getNamedPost();
+        message = namedPost.<Supplier<Text>>map(
+                value -> () -> Text.literal(
+                "The nearest post is at: ("
+                        + post.getX() + ", "
+                        + post.getZ() + "), it's " + value.name()).setStyle(Style.EMPTY.withFormatting(Formatting.GREEN)))
+                .orElseGet(() -> () -> Text.literal(
+                "The nearest post is at: ("
+                        + post.getX() + ", "
+                        + post.getZ() + ")").setStyle(Style.EMPTY.withFormatting(Formatting.GREEN)));
 
         source.sendFeedback(message, false);
 
+        Utils.runCommand("time set day", source);
         return Command.SINGLE_SUCCESS;
     }
 

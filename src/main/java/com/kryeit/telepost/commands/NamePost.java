@@ -11,7 +11,9 @@ import com.mojang.brigadier.context.CommandContext;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -28,7 +30,7 @@ public class NamePost {
         Supplier<Text> message;
 
         if (post.isNamed()) {
-            message = () -> Text.literal("The nearest post is already named!");
+            message = () -> Text.literal("The nearest post is already named!").setStyle(Style.EMPTY.withFormatting(Formatting.RED));
             source.sendFeedback(message, false);
             return 0;
         }
@@ -38,7 +40,7 @@ public class NamePost {
         message = () -> Text.literal(
                 "The nearest post has been named " + name + " at: ("
                         + post.getX() + ", "
-                        + post.getZ() + ")");
+                        + post.getZ() + ")").setStyle(Style.EMPTY.withFormatting(Formatting.GREEN));
 
         source.sendFeedback(message, false);
 

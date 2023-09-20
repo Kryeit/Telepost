@@ -1,14 +1,22 @@
 package com.kryeit.telepost.post;
 
+import com.kryeit.telepost.MinecraftServerSupplier;
 import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.storage.bytes.HomePost;
 import com.kryeit.telepost.storage.bytes.NamedPost;
+import net.minecraft.block.Block;
+import net.minecraft.block.BlockState;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.Heightmap;
+import net.minecraft.world.World;
 
 import java.util.Optional;
 
 public class Post {
 
+    public static final World WORLD = MinecraftServerSupplier.getServer().getWorld(World.OVERWORLD);
     public static final int DISTANCE_BETWEEN_POSTS = 50;
     public static final int WIDTH = 23;
     private final int x;
@@ -60,7 +68,7 @@ public class Post {
     }
 
     public int getY() {
-        return 319;
+        return WORLD.getTopY(Heightmap.Type.MOTION_BLOCKING, x, z) + 2;
     }
 
     public int getZ() {
@@ -69,6 +77,11 @@ public class Post {
 
     public Vec3d getLocation() {
         return new Vec3d(x + 0.5, getY(), z + 0.5);
+    }
+
+    public void teleport(ServerPlayerEntity player) {
+        player.teleport(getX(), getY(), getZ());
+
     }
 
     public int[] getPostNumber() {

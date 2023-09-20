@@ -2,24 +2,20 @@ package com.kryeit.telepost.commands;
 
 import com.kryeit.telepost.MinecraftServerSupplier;
 import com.kryeit.telepost.Telepost;
-import com.kryeit.telepost.Utils;
+import com.kryeit.telepost.commands.completion.PlayerSuggestionProvider;
 import com.kryeit.telepost.post.Post;
 import com.kryeit.telepost.storage.bytes.HomePost;
-import com.kryeit.telepost.storage.bytes.NamedPost;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import com.mojang.brigadier.suggestion.SuggestionProvider;
-import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Style;
 import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -29,8 +25,6 @@ public class Invite {
         ServerPlayerEntity player = source.getPlayer();
 
         if (player == null) return 0;
-
-        Post post = new Post(player.getPos());
 
         Supplier<Text> message;
 
@@ -45,13 +39,13 @@ public class Invite {
         Optional<HomePost> home = Telepost.getDB().getHome(player.getUuid());
 
         if (home.isEmpty()) {
-            message = () -> Text.literal("You don't have a home post, use /sethome");
+            message = () -> Text.literal("You don't have a home post, use /sethome").setStyle(Style.EMPTY.withFormatting(Formatting.RED));
             source.sendFeedback(message, false);
             return 0;
         }
 
         Telepost.invites.put(invited.getUuid(), player.getUuid());
-        message = () -> Text.literal("You've invited " + name + " to your home post until the next restart");
+        message = () -> Text.literal("You've invited " + name + " to your home post until the next restart").setStyle(Style.EMPTY.withFormatting(Formatting.GREEN));
 
         source.sendFeedback(message, false);
 
@@ -59,14 +53,9 @@ public class Invite {
     }
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        List<String> suggestions = new ArrayList<>(Arrays.asList(MinecraftServerSupplier.getServer().getPlayerManager().getPlayerNames()));
-
-        SuggestionProvider<ServerCommandSource> suggestionProvider = (context, builder) ->
-                CommandSource.suggestMatching(suggestions, builder);
-
         dispatcher.register(CommandManager.literal("invite")
                 .then(CommandManager.argument("name", StringArgumentType.word())
-                        .suggests(suggestionProvider)
+                        .suggests(PlayerSuggestionProvider.suggestOnlinePlayers())
                         .executes(context -> execute(context, StringArgumentType.getString(context, "name")))
                 )
         );
