@@ -1,8 +1,10 @@
 package com.kryeit.telepost.commands;
 
+import com.kryeit.telepost.MinecraftServerSupplier;
 import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.post.Post;
+import com.kryeit.telepost.storage.bytes.HomePost;
 import com.kryeit.telepost.storage.bytes.NamedPost;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -27,19 +29,24 @@ public class Invite {
 
         Supplier<Text> message;
 
-        Optional<NamedPost> namedPost = Telepost.getDB().getNamedPost(Utils.nameToId(name));
-        if (namedPost.isEmpty()) {
-            message = () -> Text.literal("The nearest post is not named!");
+        ServerPlayerEntity invited = MinecraftServerSupplier.getServer().getPlayerManager().getPlayer(name);
+
+        if (invited == null) {
+            message = () -> Text.literal("Player not found");
             source.sendFeedback(message, false);
             return 0;
         }
 
-        Telepost.getDB().deleteNamedPost(Utils.nameToId(name));
+        Optional<HomePost> home = Telepost.getDB().getHome(player.getUuid());
 
-        message = () -> Text.literal(
-                "The nearest post has been unnamed at: ("
-                        + post.getX() + ", "
-                        + post.getZ() + ")");
+        if (home.isEmpty()) {
+            message = () -> Text.literal("You don't have a home post, use /sethome");
+            source.sendFeedback(message, false);
+            return 0;
+        }
+
+        Telepost.invites.put(player.getUuid(), invited.getUuid());
+        message = () -> Text.literal("You've invited " + name + " to your home post until the next restart");
 
         source.sendFeedback(message, false);
 
@@ -47,7 +54,7 @@ public class Invite {
     }
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        dispatcher.register(CommandManager.literal("unnamepost")
+        dispatcher.register(CommandManager.literal("invite")
                 .then(CommandManager.argument("name", StringArgumentType.word())
                         .executes(context -> execute(context, StringArgumentType.getString(context, "name")))
                 )

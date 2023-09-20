@@ -1,6 +1,6 @@
 package com.kryeit.telepost.storage;
 
-import com.kryeit.telepost.storage.bytes.Home;
+import com.kryeit.telepost.storage.bytes.HomePost;
 import com.kryeit.telepost.storage.bytes.NamedPost;
 import com.kryeit.telepost.storage.bytes.ReadableByteArray;
 import com.kryeit.telepost.storage.bytes.WritableByteArray;
@@ -49,11 +49,11 @@ public class LevelDBImpl implements IDatabase {
     }
 
     @Override
-    public Optional<Home> getHome(UUID playerID) {
+    public Optional<HomePost> getHome(UUID playerID) {
         WritableByteArray key = new WritableByteArray(16);
         key.writeUUID(playerID);
         byte[] bytes = homesDB.get(key.toByteArray());
-        return bytes == null ? Optional.empty() : Optional.of(Home.fromBytes(new ReadableByteArray(bytes)));
+        return bytes == null ? Optional.empty() : Optional.of(HomePost.fromBytes(new ReadableByteArray(bytes)));
     }
 
     @Override
@@ -76,8 +76,8 @@ public class LevelDBImpl implements IDatabase {
         builder.append("Homes:\n");
         try (DBIterator iterator = homesDB.iterator()) {
             for (iterator.seekToFirst(); iterator.hasNext(); iterator.next()) {
-                Home home = Home.fromBytes(new ReadableByteArray(iterator.peekNext().getValue()));
-                builder.append(MessageFormat.format(" -{0}: {1}\n", home.playerID(), home.location()));
+                HomePost homePost = HomePost.fromBytes(new ReadableByteArray(iterator.peekNext().getValue()));
+                builder.append(MessageFormat.format(" -{0}: {1}\n", homePost.playerID(), homePost.location()));
             }
         } catch (IOException ignored) {
         }
@@ -112,9 +112,9 @@ public class LevelDBImpl implements IDatabase {
     }
 
     @Override
-    public void setHome(UUID playerID, Home home) {
+    public void setHome(UUID playerID, HomePost homePost) {
         WritableByteArray key = new WritableByteArray(16);
         key.writeUUID(playerID);
-        homesDB.put(key.toByteArray(), home.toBytes());
+        homesDB.put(key.toByteArray(), homePost.toBytes());
     }
 }

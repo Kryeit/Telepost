@@ -4,9 +4,9 @@ import net.minecraft.util.math.Vec3d;
 
 import java.util.UUID;
 
-public record Home(UUID playerID, Vec3d location) {
-    public static Home fromBytes(ReadableByteArray data) {
-        return new Home(data.readUUID(), data.readLocation());
+public record HomePost(UUID playerID, Vec3d location) {
+    public static HomePost fromBytes(ReadableByteArray data) {
+        return new HomePost(data.readUUID(), data.readLocation());
     }
 
     public byte[] toBytes() {

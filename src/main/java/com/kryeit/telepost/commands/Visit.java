@@ -32,12 +32,16 @@ public class Visit {
             return 0;
         }
 
+        Supplier<Text> message;
+
         ServerPlayerEntity visited = MinecraftServerSupplier.getServer().getPlayerManager().getPlayer(name);
 
         if (visited != null) {
-
+            if (Telepost.invites.containsKey(visited.getUuid())) {
+                message = () -> Text.literal("Welcome to " + name + " home post");
+                
+            }
         }
-        Supplier<Text> message;
 
         Optional<NamedPost> namedPost = Telepost.getDB().getNamedPost(Utils.nameToId(name));
         if (namedPost.isEmpty()) {

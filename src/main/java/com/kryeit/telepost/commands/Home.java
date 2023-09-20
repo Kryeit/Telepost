@@ -2,6 +2,7 @@ package com.kryeit.telepost.commands;
 
 import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.post.Post;
+import com.kryeit.telepost.storage.bytes.HomePost;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
@@ -9,7 +10,6 @@ import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
-import net.minecraft.world.World;
 
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -29,7 +29,7 @@ public class Home {
             return 0;
         }
 
-        Optional<com.kryeit.telepost.storage.bytes.Home> home = Telepost.getDB().getHome(player.getUuid());
+        Optional<HomePost> home = Telepost.getDB().getHome(player.getUuid());
 
         Supplier<Text> message;
         if (home.isPresent()) {
