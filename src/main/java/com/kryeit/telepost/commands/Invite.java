@@ -10,11 +10,16 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.suggestion.SuggestionProvider;
+import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
+import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
@@ -54,8 +59,14 @@ public class Invite {
     }
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+        List<String> suggestions = new ArrayList<>(Arrays.asList(MinecraftServerSupplier.getServer().getPlayerManager().getPlayerNames()));
+
+        SuggestionProvider<ServerCommandSource> suggestionProvider = (context, builder) ->
+                CommandSource.suggestMatching(suggestions, builder);
+
         dispatcher.register(CommandManager.literal("invite")
                 .then(CommandManager.argument("name", StringArgumentType.word())
+                        .suggests(suggestionProvider)
                         .executes(context -> execute(context, StringArgumentType.getString(context, "name")))
                 )
         );
