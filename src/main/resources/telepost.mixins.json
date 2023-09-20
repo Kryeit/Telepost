@@ -4,6 +4,7 @@
   "package": "com.kryeit.telepost.mixin",
   "compatibilityLevel": "JAVA_17",
   "mixins": [
+    "MinecraftServerMixin"
   ],
   "client": [
   ],

@@ -16,7 +16,7 @@ import net.minecraft.text.Text;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public class NamePost {
+public class Invite {
     public static int execute(CommandContext<ServerCommandSource> context, String name) {
         ServerCommandSource source = context.getSource();
         ServerPlayerEntity player = source.getPlayer();
@@ -27,16 +27,17 @@ public class NamePost {
 
         Supplier<Text> message;
 
-        if (post.isNamed()) {
-            message = () -> Text.literal("The nearest post is already named!");
+        Optional<NamedPost> namedPost = Telepost.getDB().getNamedPost(Utils.nameToId(name));
+        if (namedPost.isEmpty()) {
+            message = () -> Text.literal("The nearest post is not named!");
             source.sendFeedback(message, false);
             return 0;
         }
 
-        Telepost.getDB().addNamedPost(new NamedPost(Utils.nameToId(name), name, post.getLocation()));
+        Telepost.getDB().deleteNamedPost(Utils.nameToId(name));
 
         message = () -> Text.literal(
-                "The nearest post has been named " + name + " at: ("
+                "The nearest post has been unnamed at: ("
                         + post.getX() + ", "
                         + post.getZ() + ")");
 
@@ -46,7 +47,7 @@ public class NamePost {
     }
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        dispatcher.register(CommandManager.literal("namepost")
+        dispatcher.register(CommandManager.literal("unnamepost")
                 .then(CommandManager.argument("name", StringArgumentType.word())
                         .executes(context -> execute(context, StringArgumentType.getString(context, "name")))
                 )

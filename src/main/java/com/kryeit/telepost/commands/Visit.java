@@ -1,5 +1,6 @@
 package com.kryeit.telepost.commands;
 
+import com.kryeit.telepost.MinecraftServerSupplier;
 import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.post.Post;
@@ -16,7 +17,7 @@ import net.minecraft.text.Text;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-public class NamePost {
+public class Visit {
     public static int execute(CommandContext<ServerCommandSource> context, String name) {
         ServerCommandSource source = context.getSource();
         ServerPlayerEntity player = source.getPlayer();
@@ -25,18 +26,30 @@ public class NamePost {
 
         Post post = new Post(player.getPos());
 
-        Supplier<Text> message;
-
-        if (post.isNamed()) {
-            message = () -> Text.literal("The nearest post is already named!");
+        if (!post.isInside(player.getPos())) {
+            Supplier<Text> message = () -> Text.literal("You need to be standing on a post");
             source.sendFeedback(message, false);
             return 0;
         }
 
-        Telepost.getDB().addNamedPost(new NamedPost(Utils.nameToId(name), name, post.getLocation()));
+        ServerPlayerEntity visited = MinecraftServerSupplier.getServer().getPlayerManager().getPlayer(name);
+
+        if (visited != null) {
+
+        }
+        Supplier<Text> message;
+
+        Optional<NamedPost> namedPost = Telepost.getDB().getNamedPost(Utils.nameToId(name));
+        if (namedPost.isEmpty()) {
+            message = () -> Text.literal("The nearest post is not named!");
+            source.sendFeedback(message, false);
+            return 0;
+        }
+
+        Telepost.getDB().deleteNamedPost(Utils.nameToId(name));
 
         message = () -> Text.literal(
-                "The nearest post has been named " + name + " at: ("
+                "The nearest post has been unnamed at: ("
                         + post.getX() + ", "
                         + post.getZ() + ")");
 
@@ -46,7 +59,7 @@ public class NamePost {
     }
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        dispatcher.register(CommandManager.literal("namepost")
+        dispatcher.register(CommandManager.literal("visit")
                 .then(CommandManager.argument("name", StringArgumentType.word())
                         .executes(context -> execute(context, StringArgumentType.getString(context, "name")))
                 )

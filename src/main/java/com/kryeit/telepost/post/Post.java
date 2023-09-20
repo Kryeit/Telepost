@@ -1,6 +1,10 @@
 package com.kryeit.telepost.post;
 
+import com.kryeit.telepost.Telepost;
+import com.kryeit.telepost.storage.bytes.NamedPost;
 import net.minecraft.util.math.Vec3d;
+
+import java.util.Optional;
 
 public class Post {
 
@@ -21,6 +25,23 @@ public class Post {
         boolean insideZ = pos.getZ() >= (z - halfWidth) && pos.getZ() <= (z + halfWidth);
 
         return insideX && insideZ;
+    }
+
+    public boolean isNamed() {
+        return getNamedPost().isPresent();
+    }
+
+    public Optional<NamedPost> getNamedPost() {
+        Optional<NamedPost> namedPost = Optional.empty();
+        for (NamedPost named : Telepost.getInstance().database.getNamedPosts()) {
+            int x = (int) named.location().getX();
+            int z = (int) named.location().getZ();
+
+            if (x == getX() && z == getZ()) {
+                namedPost = Optional.of(named);
+            }
+        }
+        return namedPost;
     }
 
     public int getX() {

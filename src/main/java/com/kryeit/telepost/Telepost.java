@@ -1,9 +1,6 @@
 package com.kryeit.telepost;
 
-import com.kryeit.telepost.commands.Home;
-import com.kryeit.telepost.commands.NamePost;
-import com.kryeit.telepost.commands.NearestPost;
-import com.kryeit.telepost.commands.SetHome;
+import com.kryeit.telepost.commands.*;
 import com.kryeit.telepost.storage.CommandDumpDB;
 import com.kryeit.telepost.storage.IDatabase;
 import com.kryeit.telepost.storage.LevelDBImpl;
@@ -14,6 +11,9 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.world.World;
 
 import java.io.IOException;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.UUID;
 
 
 public class Telepost implements ModInitializer {
@@ -22,6 +22,7 @@ public class Telepost implements ModInitializer {
 
     public IDatabase database;
     public PlayerNamedPosts playerNamedPosts;
+    public static Map<UUID, UUID> invites = new HashMap<>();
 
     @Override
     public void onInitialize() {
@@ -37,6 +38,7 @@ public class Telepost implements ModInitializer {
             SetHome.register(dispatcher);
             Home.register(dispatcher);
             NamePost.register(dispatcher);
+            UnnamePost.register(dispatcher);
 
             CommandDumpDB.register(dispatcher);
         });
