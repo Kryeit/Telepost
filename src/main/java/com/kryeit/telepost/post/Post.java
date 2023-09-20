@@ -1,6 +1,7 @@
 package com.kryeit.telepost.post;
 
 import com.kryeit.telepost.Telepost;
+import com.kryeit.telepost.storage.bytes.HomePost;
 import com.kryeit.telepost.storage.bytes.NamedPost;
 import net.minecraft.util.math.Vec3d;
 
@@ -16,6 +17,16 @@ public class Post {
     public Post(Vec3d pos) {
         this.x = (int) Math.round(pos.getX() / DISTANCE_BETWEEN_POSTS) * DISTANCE_BETWEEN_POSTS;
         this.z = (int) Math.round(pos.getZ() / DISTANCE_BETWEEN_POSTS) * DISTANCE_BETWEEN_POSTS;
+    }
+
+    public Post(HomePost home) {
+        this.x = (int) home.location().getX();
+        this.z = (int) home.location().getZ();
+    }
+
+    public Post(NamedPost namedPost) {
+        this.x = (int) namedPost.location().getX();
+        this.z = (int) namedPost.location().getZ();
     }
 
     public boolean isInside(Vec3d pos) {

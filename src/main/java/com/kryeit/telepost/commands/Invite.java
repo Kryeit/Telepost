@@ -45,7 +45,7 @@ public class Invite {
             return 0;
         }
 
-        Telepost.invites.put(player.getUuid(), invited.getUuid());
+        Telepost.invites.put(invited.getUuid(), player.getUuid());
         message = () -> Text.literal("You've invited " + name + " to your home post until the next restart");
 
         source.sendFeedback(message, false);

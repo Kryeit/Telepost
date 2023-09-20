@@ -40,6 +40,7 @@ public class Telepost implements ModInitializer {
             NamePost.register(dispatcher);
             UnnamePost.register(dispatcher);
             Invite.register(dispatcher);
+            Visit.register(dispatcher);
 
             CommandDumpDB.register(dispatcher);
         });
