@@ -4,10 +4,7 @@ import com.kryeit.telepost.MinecraftServerSupplier;
 import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.storage.bytes.HomePost;
 import com.kryeit.telepost.storage.bytes.NamedPost;
-import net.minecraft.block.Block;
-import net.minecraft.block.BlockState;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
@@ -17,14 +14,14 @@ import java.util.Optional;
 public class Post {
 
     public static final World WORLD = MinecraftServerSupplier.getServer().getWorld(World.OVERWORLD);
-    public static final int DISTANCE_BETWEEN_POSTS = 50;
+    public static final int GAP = 50;
     public static final int WIDTH = 23;
     private final int x;
     private final int z;
 
     public Post(Vec3d pos) {
-        this.x = (int) Math.round(pos.getX() / DISTANCE_BETWEEN_POSTS) * DISTANCE_BETWEEN_POSTS;
-        this.z = (int) Math.round(pos.getZ() / DISTANCE_BETWEEN_POSTS) * DISTANCE_BETWEEN_POSTS;
+        this.x = (int) Math.round(pos.getX() / GAP) * GAP;
+        this.z = (int) Math.round(pos.getZ() / GAP) * GAP;
     }
 
     public Post(HomePost home) {
@@ -35,6 +32,11 @@ public class Post {
     public Post(NamedPost namedPost) {
         this.x = (int) namedPost.location().getX();
         this.z = (int) namedPost.location().getZ();
+    }
+
+    public Post(int x, int z) {
+        this.x = x;
+        this.z = z;
     }
 
     public boolean isInside(Vec3d pos) {
@@ -75,7 +77,7 @@ public class Post {
         return z;
     }
 
-    public Vec3d getLocation() {
+    public Vec3d getPos() {
         return new Vec3d(x + 0.5, getY(), z + 0.5);
     }
 
@@ -85,8 +87,8 @@ public class Post {
     }
 
     public int[] getPostNumber() {
-        int postX = x / DISTANCE_BETWEEN_POSTS;
-        int postZ = z / DISTANCE_BETWEEN_POSTS;
+        int postX = x / GAP;
+        int postZ = z / GAP;
         return new int[] { postX, postZ };
     }
 }

@@ -15,7 +15,6 @@ import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import java.util.Optional;
 import java.util.function.Supplier;
 
 public class NamePost {
@@ -35,7 +34,7 @@ public class NamePost {
             return 0;
         }
 
-        Telepost.getDB().addNamedPost(new NamedPost(Utils.nameToId(name), name, post.getLocation()));
+        Telepost.getDB().addNamedPost(new NamedPost(Utils.nameToId(name), name, post.getPos()));
 
         message = () -> Text.literal(
                 "The nearest post has been named " + name + " at: ("

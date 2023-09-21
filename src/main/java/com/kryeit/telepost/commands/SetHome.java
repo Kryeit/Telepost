@@ -29,7 +29,7 @@ public class SetHome {
                         + post.getX() + ", "
                         + post.getZ() + ") your home").setStyle(Style.EMPTY.withFormatting(Formatting.GREEN));
 
-        Telepost.getDB().setHome(player.getUuid(), new HomePost(player.getUuid(), post.getLocation()));
+        Telepost.getDB().setHome(player.getUuid(), new HomePost(player.getUuid(), post.getPos()));
 
         source.sendFeedback(message, false);
 
