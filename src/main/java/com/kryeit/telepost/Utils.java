@@ -1,9 +1,7 @@
 package com.kryeit.telepost;
 
-import com.kryeit.telepost.post.Post;
 import com.kryeit.telepost.storage.bytes.NamedPost;
 import net.minecraft.server.command.ServerCommandSource;
-import net.minecraft.server.network.ServerPlayerEntity;
 
 public class Utils {
     public static String nameToId(String name) {

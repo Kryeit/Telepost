@@ -3,7 +3,6 @@ package com.kryeit.telepost.commands;
 import com.kryeit.telepost.MinecraftServerSupplier;
 import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.commands.completion.PlayerSuggestionProvider;
-import com.kryeit.telepost.post.Post;
 import com.kryeit.telepost.storage.bytes.HomePost;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;

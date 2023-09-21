@@ -1,6 +1,5 @@
 package com.kryeit.telepost.commands;
 
-import com.kryeit.telepost.MinecraftServerSupplier;
 import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.post.Post;
@@ -17,7 +16,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;

@@ -3,7 +3,6 @@ package com.kryeit.telepost.commands.completion;
 import com.kryeit.telepost.MinecraftServerSupplier;
 import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.storage.bytes.NamedPost;
-import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;

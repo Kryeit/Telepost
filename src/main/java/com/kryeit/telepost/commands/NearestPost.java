@@ -1,8 +1,7 @@
 package com.kryeit.telepost.commands;
 
-import com.kryeit.telepost.Telepost;
-import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.post.Post;
+import com.kryeit.telepost.post.TeleportedPlayer;
 import com.kryeit.telepost.storage.bytes.NamedPost;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -40,7 +39,8 @@ public class NearestPost {
 
         source.sendFeedback(message, false);
 
-        Utils.runCommand("time set day", source);
+        TeleportedPlayer test = new TeleportedPlayer(player, post);
+        test.handle();
         return Command.SINGLE_SUCCESS;
     }
 
