@@ -20,4 +20,9 @@ public class Utils {
     public static void runCommand(String command, ServerCommandSource source) {
         MinecraftServerSupplier.getServer().getCommandManager().execute(MinecraftServerSupplier.getServer().getCommandManager().getDispatcher().parse(command, source), command);
     }
+
+    
+     public static Structure loadStructure(Identifier structureId) {
+    return WORLD.getStructureManager().getStructure(structureId);
+    }
 }
