@@ -4,16 +4,19 @@ import com.kryeit.telepost.MinecraftServerSupplier;
 import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.storage.bytes.HomePost;
 import com.kryeit.telepost.storage.bytes.NamedPost;
+import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
+import net.minecraft.world.biome.Biome;
 
 import java.util.Optional;
 
 public class Post {
 
-    public static final World WORLD = MinecraftServerSupplier.getServer().getWorld(World.OVERWORLD);
+    public static final World WORLD = MinecraftServerSupplier.getServer().getOverworld();
     public static final int GAP = 50;
     public static final int WIDTH = 23;
     private final int x;
@@ -46,6 +49,10 @@ public class Post {
         boolean insideZ = pos.getZ() >= (z - halfWidth) && pos.getZ() <= (z + halfWidth);
 
         return insideX && insideZ;
+    }
+
+    public String getStringCoords() {
+        return "(" + getX() + ", " + getZ() + ")";
     }
 
     public boolean isNamed() {
@@ -81,14 +88,19 @@ public class Post {
         return new Vec3d(x + 0.5, getY(), z + 0.5);
     }
 
-    public void teleport(ServerPlayerEntity player) {
-        player.teleport(getX(), getY(), getZ());
-
+    public BlockPos getBlockPos() {
+        return new BlockPos(x, getY(), z);
     }
 
-    public int[] getPostNumber() {
-        int postX = x / GAP;
-        int postZ = z / GAP;
-        return new int[] { postX, postZ };
+    public RegistryEntry<Biome> getBiome() {
+        return WORLD.getBiome(getBlockPos());
+    }
+
+    public void build() {
+        PostBuilder.placeStructure(this);
+    }
+
+    public void teleport(ServerPlayerEntity player) {
+        player.teleport(getX() + 0.5, getY(), getZ() + 0.5);
     }
 }

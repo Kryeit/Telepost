@@ -41,9 +41,7 @@ public class UnnamePost {
         Telepost.getDB().deleteNamedPost(Utils.nameToId(name));
 
         message = () -> Text.literal(
-                "The nearest post has been unnamed at: ("
-                        + post.getX() + ", "
-                        + post.getZ() + ")");
+                "The nearest post has been unnamed at: " + post.getStringCoords());
 
         source.sendFeedback(message, false);
 

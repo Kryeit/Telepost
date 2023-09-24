@@ -25,9 +25,7 @@ public class SetHome {
         Post post = new Post(player.getPos());
 
         Supplier<Text> message = () -> Text.literal(
-                "You've made the post at: ("
-                        + post.getX() + ", "
-                        + post.getZ() + ") your home").setStyle(Style.EMPTY.withFormatting(Formatting.GREEN));
+                "You've made the post at: " + post.getStringCoords() + " your home").setStyle(Style.EMPTY.withFormatting(Formatting.GREEN));
 
         Telepost.getDB().setHome(player.getUuid(), new HomePost(player.getUuid(), post.getPos()));
 

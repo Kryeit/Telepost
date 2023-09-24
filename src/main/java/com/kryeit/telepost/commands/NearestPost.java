@@ -1,7 +1,6 @@
 package com.kryeit.telepost.commands;
 
 import com.kryeit.telepost.post.Post;
-import com.kryeit.telepost.post.TeleportedPlayer;
 import com.kryeit.telepost.storage.bytes.NamedPost;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -29,18 +28,12 @@ public class NearestPost {
         Optional<NamedPost> namedPost = post.getNamedPost();
         message = namedPost.<Supplier<Text>>map(
                 value -> () -> Text.literal(
-                "The nearest post is at: ("
-                        + post.getX() + ", "
-                        + post.getZ() + "), it's " + value.name()).setStyle(Style.EMPTY.withFormatting(Formatting.GREEN)))
+                "The nearest post is at: " + post.getStringCoords() + ", it's " + value.name()).setStyle(Style.EMPTY.withFormatting(Formatting.GREEN)))
                 .orElseGet(() -> () -> Text.literal(
-                "The nearest post is at: ("
-                        + post.getX() + ", "
-                        + post.getZ() + ")").setStyle(Style.EMPTY.withFormatting(Formatting.GREEN)));
+                "The nearest post is at: " + post.getStringCoords()).setStyle(Style.EMPTY.withFormatting(Formatting.GREEN)));
 
         source.sendFeedback(message, false);
 
-        TeleportedPlayer test = new TeleportedPlayer(player, post);
-        test.handle();
         return Command.SINGLE_SUCCESS;
     }
 

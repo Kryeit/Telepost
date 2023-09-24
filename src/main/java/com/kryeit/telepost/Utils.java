@@ -21,21 +21,4 @@ public class Utils {
         MinecraftServerSupplier.getServer().getCommandManager().execute(MinecraftServerSupplier.getServer().getCommandManager().getDispatcher().parse(command, source), command);
     }
 
-    
-     public static Structure loadStructure(Identifier structureId) {
-    return WORLD.getStructureManager().getStructure(structureId);
-    }
-
-    public static void placeStructure(Identifier structureId, BlockPos pos) {
-    Structure structure = loadStructure(structureId);
-    if (structure != null) {
-        StructurePlacementData placementData = new StructurePlacementData()
-            .setMirror(BlockMirror.NONE)
-            .setRotation(BlockRotation.NONE)
-            .setIgnoreEntities(false);
-
-        MutableIntBoundingBox boundingBox = structure.calculateBoundingBox(placementData, pos);
-        structure.place(WORLD, pos, pos, placementData, WORLD.getRandom(), boundingBox);
-        }
-    }
 }

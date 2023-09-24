@@ -37,9 +37,7 @@ public class NamePost {
         Telepost.getDB().addNamedPost(new NamedPost(Utils.nameToId(name), name, post.getPos()));
 
         message = () -> Text.literal(
-                "The nearest post has been named " + name + " at: ("
-                        + post.getX() + ", "
-                        + post.getZ() + ")").setStyle(Style.EMPTY.withFormatting(Formatting.GREEN));
+                "The nearest post has been named " + name + " at: " + post.getStringCoords()).setStyle(Style.EMPTY.withFormatting(Formatting.GREEN));
 
         source.sendFeedback(message, false);
 
