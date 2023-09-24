@@ -1,5 +1,6 @@
 package com.kryeit.telepost.commands;
 
+import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.post.Post;
 import com.kryeit.telepost.storage.bytes.NamedPost;
 import com.mojang.brigadier.Command;
@@ -20,7 +21,7 @@ public class NearestPost {
         ServerCommandSource source = context.getSource();
         ServerPlayerEntity player = source.getPlayer();
 
-        if (player == null) return 0;
+        if (player == null || !Utils.isInOverworld(player)) return 0;
 
         Post post = new Post(player.getPos());
 

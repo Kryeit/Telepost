@@ -26,7 +26,7 @@ public class Visit {
         ServerCommandSource source = context.getSource();
         ServerPlayerEntity player = source.getPlayer();
 
-        if (player == null) return 0;
+        if (player == null || !Utils.isInOverworld(player)) return 0;
 
         Post closestPost = new Post(player.getPos());
 

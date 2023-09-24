@@ -1,11 +1,19 @@
 package com.kryeit.telepost;
 
 import com.kryeit.telepost.storage.bytes.NamedPost;
+import net.minecraft.client.realms.dto.WorldDownload;
 import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
+
+import static com.kryeit.telepost.post.Post.WORLD;
 
 public class Utils {
     public static String nameToId(String name) {
         return name.replace(" ", ".").toLowerCase();
+    }
+
+    public static boolean isInOverworld(ServerPlayerEntity player) {
+        return player.getWorld().equals(WORLD);
     }
 
     public static String getNameById(String id) {
