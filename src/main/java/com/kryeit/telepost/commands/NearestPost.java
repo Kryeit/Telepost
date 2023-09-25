@@ -16,6 +16,8 @@ import net.minecraft.util.Formatting;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import static com.kryeit.telepost.post.Post.WORLD;
+
 public class NearestPost {
     public static int execute(CommandContext<ServerCommandSource> context) {
         ServerCommandSource source = context.getSource();

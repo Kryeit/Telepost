@@ -1,12 +1,14 @@
 package com.kryeit.telepost;
 
 import com.kryeit.telepost.commands.*;
+import com.kryeit.telepost.listeners.ServerTick;
 import com.kryeit.telepost.storage.CommandDumpDB;
 import com.kryeit.telepost.storage.IDatabase;
 import com.kryeit.telepost.storage.LevelDBImpl;
 import com.kryeit.telepost.storage.PlayerNamedPosts;
 import net.fabricmc.api.ModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.world.World;
 
@@ -24,12 +26,15 @@ public class Telepost implements ModInitializer {
     public PlayerNamedPosts playerNamedPosts;
     public static Map<UUID, UUID> invites = new HashMap<>();
 
+    public static boolean postBuilding = false;
+
     @Override
     public void onInitialize() {
         initializeDatabases();
         instance = this;
         registerCommands();
         registerDisableEvent();
+        registerEvents();
     }
 
     public void registerCommands() {
@@ -41,9 +46,14 @@ public class Telepost implements ModInitializer {
             UnnamePost.register(dispatcher);
             Invite.register(dispatcher);
             Visit.register(dispatcher);
+            BuildPosts.register(dispatcher);
 
             CommandDumpDB.register(dispatcher);
         });
+    }
+
+    public void registerEvents() {
+        ServerTickEvents.END_SERVER_TICK.register(new ServerTick());
     }
 
     public void initializeDatabases() {

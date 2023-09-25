@@ -16,7 +16,8 @@ import java.util.Optional;
 
 public class Post {
 
-    public static final World WORLD = MinecraftServerSupplier.getServer().getOverworld();
+    public static World WORLD = MinecraftServerSupplier.getServer().getOverworld();
+
     public static final int GAP = 50;
     public static final int WIDTH = 23;
     private final int x;
@@ -77,7 +78,7 @@ public class Post {
     }
 
     public int getY() {
-        return WORLD.getTopY(Heightmap.Type.MOTION_BLOCKING, x, z) + 2;
+        return WORLD.getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, x, z);
     }
 
     public int getZ() {
@@ -101,6 +102,6 @@ public class Post {
     }
 
     public void teleport(ServerPlayerEntity player) {
-        player.teleport(getX() + 0.5, getY(), getZ() + 0.5);
+        player.teleport(getX() + 0.5, getY() + 1, getZ() + 0.5);
     }
 }

@@ -9,15 +9,15 @@ import static com.kryeit.telepost.post.Post.GAP;
 import static com.kryeit.telepost.post.Post.WORLD;
 
 public class GridIterator implements Iterator<Vec3d> {
-    public int borderRadius = WORLD.getWorldBorder().getMaxRadius();
+    private int WORLDBORDER = (int) (WORLD.getWorldBorder().getSize()/2);
     private final int endX;
     private final int endZ;
-    private int currentX = 0;
-    private int currentZ = 0;
+    private int currentX = -(WORLDBORDER / GAP) * GAP;;
+    private int currentZ = -(WORLDBORDER / GAP) * GAP;;
 
     public GridIterator() {
-        this.endX = (borderRadius / GAP) * GAP;
-        this.endZ = (borderRadius / GAP) * GAP;
+        this.endX = (WORLDBORDER / GAP) * GAP;
+        this.endZ = (WORLDBORDER / GAP) * GAP;
     }
 
     @Override

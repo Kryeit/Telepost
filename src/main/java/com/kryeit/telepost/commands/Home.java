@@ -26,15 +26,16 @@ public class Home {
 
         Post post = new Post(player.getPos());
 
+        Supplier<Text> message;
+
         if (!post.isInside(player.getPos())) {
-            Supplier<Text> message = () -> Text.literal("You need to be standing on a post").setStyle(Style.EMPTY.withFormatting(Formatting.RED));
+            message = () -> Text.literal("You need to be standing on a post").setStyle(Style.EMPTY.withFormatting(Formatting.RED));
             source.sendFeedback(message, false);
             return 0;
         }
 
         Optional<HomePost> home = Telepost.getDB().getHome(player.getUuid());
 
-        Supplier<Text> message;
         if (home.isPresent()) {
             message = () -> Text.literal("You've been teleported to your home post").setStyle(Style.EMPTY.withFormatting(Formatting.GREEN));
             Post homePost = new Post(home.get());

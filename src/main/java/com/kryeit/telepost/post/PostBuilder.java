@@ -18,6 +18,7 @@ import java.util.Optional;
 
 import static com.kryeit.telepost.post.Post.WORLD;
 
+
 public class PostBuilder {
 
     private static final Identifier DEFAULT_STRUCTURE = new Identifier("minecraft:default");
