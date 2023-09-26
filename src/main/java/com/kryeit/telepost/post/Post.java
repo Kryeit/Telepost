@@ -1,5 +1,6 @@
 package com.kryeit.telepost.post;
 
+import com.griefdefender.api.GriefDefender;
 import com.kryeit.telepost.MinecraftServerSupplier;
 import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.storage.bytes.HomePost;
@@ -99,6 +100,7 @@ public class Post {
 
     public void build() {
         PostBuilder.placeStructure(this);
+        PostBuilder.createClaim(this);
     }
 
     public void teleport(ServerPlayerEntity player) {

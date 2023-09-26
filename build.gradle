@@ -7,6 +7,11 @@ version = project.mod_version
 group = project.maven_group
 
 repositories {
+    mavenCentral()
+    maven {
+        name = 'griefdefender'
+        url = 'https://repo.glaremasters.me/repository/bloodshot'
+    }
 }
 
 dependencies {
@@ -18,6 +23,8 @@ dependencies {
         // Fabric API. This is technically optional, but you probably want it anyway.
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     implementation "org.iq80.leveldb:leveldb:0.12"
+    compileOnly "com.griefdefender:api:2.1.0-20230926.001243-7"
+    compileOnly 'net.luckperms:api:5.4'
 }
 
 processResources {

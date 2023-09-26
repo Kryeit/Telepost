@@ -33,10 +33,9 @@ public class ServerTick implements ServerTickEvents.EndTick {
                 Vec3d loc = gridIterator.next();
 
                 Post post = new Post(loc);
-                PostBuilder.placeStructure(post);
+                post.build();
                 MinecraftServerSupplier.getServer().getPlayerManager().broadcast(Text.literal("Post " + post.getStringCoords() +
-                        " is built in biome " + PostBuilder.getBiomeName(post.getBiome().getKey()) + " Height: " + post.getY() +
-                        "And actual height: " + WORLD.getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, post.getX(), post.getZ())), true);
+                        " is built in biome " + PostBuilder.getBiomeName(post.getBiome().getKey())), true);
 
 
             } else {
