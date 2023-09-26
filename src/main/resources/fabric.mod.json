@@ -3,12 +3,12 @@
   "id": "telepost",
   "version": "${version}",
   "name": "Telepost",
-  "description": "",
-  "authors": [],
+  "description": "Posts to keep people conected!",
+  "authors": ["MuriPlz", "MrRedRhino"],
   "contact": {
-    "repo": "https://github.com/MuriPlz/test"
+    "repo": "https://github.com/Kryeit/Telepost-Refabricated"
   },
-  "license": "All-Rights-Reserved",
+  "license": "MIT",
   "icon": "assets/telepost/icon.png",
   "environment": "server",
   "entrypoints": {
