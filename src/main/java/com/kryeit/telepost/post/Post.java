@@ -3,6 +3,7 @@ package com.kryeit.telepost.post;
 import com.griefdefender.api.GriefDefender;
 import com.kryeit.telepost.MinecraftServerSupplier;
 import com.kryeit.telepost.Telepost;
+import com.kryeit.telepost.compat.CompatAddon;
 import com.kryeit.telepost.storage.bytes.HomePost;
 import com.kryeit.telepost.storage.bytes.NamedPost;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -100,7 +101,10 @@ public class Post {
 
     public void build() {
         PostBuilder.placeStructure(this);
-        PostBuilder.createClaim(this);
+
+        if (CompatAddon.GRIEF_DEFENDER.isLoaded()) {
+            PostBuilder.createClaim(this);
+        }
     }
 
     public void teleport(ServerPlayerEntity player) {
