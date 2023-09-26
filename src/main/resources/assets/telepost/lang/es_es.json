@@ -1,0 +1,18 @@
+{
+  "telepost.standing": "Tienes que estar dentro del poste",
+  "telepost.invite": "Has invitado a %s a tu casa hasta el próximo reinicio",
+  "telepost.nearest.named": "El poste más cercano está en: %s, se llama %s",
+  "telepost.nearest": "El poste más cercano está en: %s",
+  "telepost.already_named": "El poste ya tiene nombre",
+  "telepost.name.claimblocks": "Necesitas al menos %s bloques de protección para nombrar un poste",
+  "telepost.named": "El poste más cercano ha sido nombrado %s en: %s",
+  "telepost.homepost": "Has hecho el poste en %s tu casa",
+  "telepost.unknown_post": "Poste desconocido",
+  "telepost.unknown_player": "Jugador desconocido",
+  "telepost.teleport.homepost": "Has sido teletransportado a tu casa",
+  "telepost.teleport.homepost.other": "Bienvenido a la casa de %s",
+  "telepost.teleport.named_post": "Bienvenido a %s",
+  "telepost.no_homepost": "La casa no ha sido encontrada",
+  "telepost.no_invite": "No has sido invitado",
+  "telepost.no_permission": "No puedes ejecutar este comando"
+}

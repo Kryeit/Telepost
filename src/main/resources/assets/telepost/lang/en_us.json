@@ -4,7 +4,7 @@
   "telepost.nearest.named": "The nearest post is at: %s, it's %s",
   "telepost.nearest": "The nearest post is at: %s",
   "telepost.already_named": "The post is already named",
-  "telepost.name.claimblocks": "You need at least %s to name the post",
+  "telepost.name.claimblocks": "You need at least %s claim blocks to name the post",
   "telepost.named": "The nearest post has been named %s at: %s",
   "telepost.homepost": "You've made the post at: %s your home",
   "telepost.unknown_post": "Unknown post",
