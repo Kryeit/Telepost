@@ -26,18 +26,22 @@ public class Visit {
         ServerCommandSource source = context.getSource();
         ServerPlayerEntity player = source.getPlayer();
 
-        if (player == null || !Utils.isInOverworld(player)) return 0;
+        Supplier<Text> message;
 
-        Post closestPost = new Post(player.getPos());
-
-        if (!closestPost.isInside(player.getPos())) {
-            Supplier<Text> message = () -> Text.literal("You need to be standing on a post");
+        if (player == null || !Utils.isInOverworld(player))  {
+            message = () -> Text.literal("You can't execute the command");
             source.sendFeedback(message, false);
             return 0;
         }
 
-        Supplier<Text> message;
+        Post closestPost = new Post(player.getPos());
 
+        if (!closestPost.isInside(player, player.getPos())) {
+            message = () -> Text.literal("You need to be standing on a post");
+            source.sendFeedback(message, false);
+            return 0;
+        }
+        
         ServerPlayerEntity visited = MinecraftServerSupplier.getServer().getPlayerManager().getPlayer(name);
 
         // /visit Player

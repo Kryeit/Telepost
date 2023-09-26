@@ -1,6 +1,7 @@
 package com.kryeit.telepost.commands;
 
 import com.kryeit.telepost.Telepost;
+import com.kryeit.telepost.TelepostPermissions;
 import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.compat.CompatAddon;
 import com.mojang.brigadier.Command;
@@ -18,9 +19,13 @@ public class BuildPosts {
         ServerCommandSource source = context.getSource();
         ServerPlayerEntity player = source.getPlayer();
 
-        if (player == null || !Utils.isInOverworld(player)) return 0;
-
         Supplier<Text> message;
+
+        if (player == null || !Utils.isInOverworld(player) || !TelepostPermissions.isAdmin(player)) {
+            message = () -> Text.literal("You can't execute the command");
+            source.sendFeedback(message, false);
+            return 0;
+        }
 
         if (CompatAddon.GRIEF_DEFENDER.isLoaded()) {
             message = () -> Text.literal("Posts are starting to build and claim (GriefDefender is Loaded)");

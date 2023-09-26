@@ -1,5 +1,6 @@
 package com.kryeit.telepost.commands;
 
+import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.post.Post;
 import com.kryeit.telepost.storage.bytes.NamedPost;
@@ -23,11 +24,16 @@ public class NearestPost {
         ServerCommandSource source = context.getSource();
         ServerPlayerEntity player = source.getPlayer();
 
-        if (player == null || !Utils.isInOverworld(player)) return 0;
+        Supplier<Text> message;
+
+        if (player == null || !Utils.isInOverworld(player)) {
+            message = () -> Text.literal("You can't execute the command");
+            source.sendFeedback(message, false);
+            return 0;
+        }
 
         Post post = new Post(player.getPos());
 
-        Supplier<Text> message;
         Optional<NamedPost> namedPost = post.getNamedPost();
         message = namedPost.<Supplier<Text>>map(
                 value -> () -> Text.literal(

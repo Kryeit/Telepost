@@ -22,13 +22,17 @@ public class Home {
         ServerCommandSource source = context.getSource();
         ServerPlayerEntity player = source.getPlayer();
 
-        if (player == null || !Utils.isInOverworld(player)) return 0;
+        Supplier<Text> message;
+
+        if (player == null || !Utils.isInOverworld(player)) {
+            message = () -> Text.literal("You can't execute the command");
+            source.sendFeedback(message, false);
+            return 0;
+        }
 
         Post post = new Post(player.getPos());
 
-        Supplier<Text> message;
-
-        if (!post.isInside(player.getPos())) {
+        if (!post.isInside(player, player.getPos())) {
             message = () -> Text.literal("You need to be standing on a post").setStyle(Style.EMPTY.withFormatting(Formatting.RED));
             source.sendFeedback(message, false);
             return 0;

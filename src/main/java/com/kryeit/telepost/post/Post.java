@@ -3,6 +3,7 @@ package com.kryeit.telepost.post;
 import com.griefdefender.api.GriefDefender;
 import com.kryeit.telepost.MinecraftServerSupplier;
 import com.kryeit.telepost.Telepost;
+import com.kryeit.telepost.TelepostPermissions;
 import com.kryeit.telepost.compat.CompatAddon;
 import com.kryeit.telepost.storage.bytes.HomePost;
 import com.kryeit.telepost.storage.bytes.NamedPost;
@@ -13,6 +14,7 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
+import org.apache.logging.log4j.core.jmx.Server;
 
 import java.util.Optional;
 
@@ -45,7 +47,8 @@ public class Post {
         this.z = z;
     }
 
-    public boolean isInside(Vec3d pos) {
+    public boolean isInside(ServerPlayerEntity player, Vec3d pos) {
+        if (TelepostPermissions.isAdmin(player)) return true;
         int halfWidth = WIDTH / 2;
 
         boolean insideX = pos.getX() >= (x - halfWidth) && pos.getX() <= (x + halfWidth);

@@ -25,7 +25,6 @@ public class Telepost implements ModInitializer {
     public IDatabase database;
     public PlayerNamedPosts playerNamedPosts;
     public static Map<UUID, UUID> invites = new HashMap<>();
-
     public static boolean postBuilding = false;
 
     @Override

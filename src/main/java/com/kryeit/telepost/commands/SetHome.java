@@ -21,12 +21,17 @@ public class SetHome {
         ServerCommandSource source = context.getSource();
         ServerPlayerEntity player = source.getPlayer();
 
-        if (player == null || !Utils.isInOverworld(player)) return 0;
+        Supplier<Text> message;
+
+        if (player == null || !Utils.isInOverworld(player)) {
+            message = () -> Text.literal("You can't execute the command");
+            source.sendFeedback(message, false);
+            return 0;
+        }
 
         Post post = new Post(player.getPos());
 
-        Supplier<Text> message = () -> Text.literal(
-                "You've made the post at: " + post.getStringCoords() + " your home").setStyle(Style.EMPTY.withFormatting(Formatting.GREEN));
+        message = () -> Text.literal("You've made the post at: " + post.getStringCoords() + " your home").setStyle(Style.EMPTY.withFormatting(Formatting.GREEN));
 
         Telepost.getDB().setHome(player.getUuid(), new HomePost(player.getUuid(), post.getPos()));
 
