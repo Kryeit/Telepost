@@ -6,6 +6,7 @@ import com.kryeit.telepost.storage.bytes.NamedPost;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -24,7 +25,7 @@ public class NearestPost {
         Supplier<Text> message;
 
         if (player == null || !Utils.isInOverworld(player)) {
-            message = () -> Text.literal("You can't execute the command");
+            message = () -> Text.literal(I18n.translate("telepost.no_permission"));
             source.sendFeedback(message, false);
             return 0;
         }
@@ -34,9 +35,9 @@ public class NearestPost {
         Optional<NamedPost> namedPost = post.getNamedPost();
         message = namedPost.<Supplier<Text>>map(
                 value -> () -> Text.literal(
-                "The nearest post is at: " + post.getStringCoords() + ", it's " + value.name()).setStyle(Style.EMPTY.withFormatting(Formatting.GREEN)))
+                I18n.translate("telepost.nearest.named", post.getStringCoords(), value.name())).setStyle(Style.EMPTY.withFormatting(Formatting.GREEN)))
                 .orElseGet(() -> () -> Text.literal(
-                "The nearest post is at: " + post.getStringCoords()).setStyle(Style.EMPTY.withFormatting(Formatting.GREEN)));
+                I18n.translate("telepost.nearest", post.getStringCoords())).setStyle(Style.EMPTY.withFormatting(Formatting.GREEN)));
 
         source.sendFeedback(message, false);
 

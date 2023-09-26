@@ -7,6 +7,7 @@ import com.kryeit.telepost.storage.bytes.HomePost;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -25,7 +26,7 @@ public class Home {
         Supplier<Text> message;
 
         if (player == null || !Utils.isInOverworld(player)) {
-            message = () -> Text.literal("You can't execute the command");
+            message = () -> Text.literal(I18n.translate("telepost.no_permission"));
             source.sendFeedback(message, false);
             return 0;
         }
@@ -33,7 +34,7 @@ public class Home {
         Post post = new Post(player.getPos());
 
         if (!post.isInside(player, player.getPos())) {
-            message = () -> Text.literal("You need to be standing on a post").setStyle(Style.EMPTY.withFormatting(Formatting.RED));
+            message = () -> Text.literal(I18n.translate("telepost.standing")).setStyle(Style.EMPTY.withFormatting(Formatting.RED));
             source.sendFeedback(message, false);
             return 0;
         }
@@ -41,10 +42,10 @@ public class Home {
         Optional<HomePost> home = Telepost.getDB().getHome(player.getUuid());
 
         if (home.isPresent()) {
-            message = () -> Text.literal("You've been teleported to your home post").setStyle(Style.EMPTY.withFormatting(Formatting.GREEN));
+            message = () -> Text.literal(I18n.translate("telepost.teleport.homepost")).setStyle(Style.EMPTY.withFormatting(Formatting.GREEN));
             Post homePost = new Post(home.get());
             homePost.teleport(player);
-        } else message = () -> Text.literal("You don't have a home post, make one with /sethome").setStyle(Style.EMPTY.withFormatting(Formatting.RED));
+        } else message = () -> Text.literal(I18n.translate("telepost.no_homepost")).setStyle(Style.EMPTY.withFormatting(Formatting.RED));
 
         source.sendFeedback(message, false);
 

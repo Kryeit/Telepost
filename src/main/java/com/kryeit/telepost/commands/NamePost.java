@@ -11,6 +11,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -32,29 +33,31 @@ public class NamePost {
         Supplier<Text> message;
 
         if (player == null || !Utils.isInOverworld(player)) {
-            message = () -> Text.literal("You can't execute the command");
+            message = () -> Text.literal(I18n.translate("telepost.no_permission"));
             source.sendFeedback(message, false);
             return 0;
         }
 
         Post post = new Post(player.getPos());
 
+        // Check if nearest named
         if (post.isNamed()) {
-            message = () -> Text.literal("The nearest post is already named!").setStyle(Style.EMPTY.withFormatting(Formatting.RED));
+            message = () -> Text.literal(I18n.translate("telepost.already_named")).setStyle(Style.EMPTY.withFormatting(Formatting.RED));
             source.sendFeedback(message, false);
             return 0;
         }
 
+        // Check if name is in use
         Optional<NamedPost> namedPost = Telepost.getDB().getNamedPost(Utils.nameToId(name));
         if (namedPost.isPresent()) {
-            message = () -> Text.literal("The post name " + name + " is already in use").setStyle(Style.EMPTY.withFormatting(Formatting.RED));
+            message = () -> Text.literal(I18n.translate("telepost.already_named")).setStyle(Style.EMPTY.withFormatting(Formatting.RED));
             source.sendFeedback(message, false);
             return 0;
         }
 
         if (!TelepostPermissions.isAdmin(player) && CompatAddon.GRIEF_DEFENDER.isLoaded()) {
             if (GriefDefenderImpl.getClaimBlocks(player.getUuid()) < NEEDED_CLAIMBLOCKS) {
-                message = () -> Text.literal("You need at least " + NEEDED_CLAIMBLOCKS + " to name the post").setStyle(Style.EMPTY.withFormatting(Formatting.RED));
+                message = () -> Text.literal(I18n.translate("telepost.name.claimblocks", NEEDED_CLAIMBLOCKS)).setStyle(Style.EMPTY.withFormatting(Formatting.RED));
                 source.sendFeedback(message, false);
                 return 0;
             }
@@ -64,7 +67,7 @@ public class NamePost {
         Telepost.getDB().addNamedPost(new NamedPost(Utils.nameToId(name), name, post.getPos()));
 
         message = () -> Text.literal(
-                "The nearest post has been named " + name + " at: " + post.getStringCoords()).setStyle(Style.EMPTY.withFormatting(Formatting.GREEN));
+                I18n.translate("telepost.named", name, post.getStringCoords())).setStyle(Style.EMPTY.withFormatting(Formatting.GREEN));
 
         source.sendFeedback(message, false);
 

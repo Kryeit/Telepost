@@ -13,6 +13,10 @@ public class TelepostPermissions {
         return Permissions.check(player, "telepost.helper", false);
     }
 
+    public static boolean isHelperOrAdmin(ServerPlayerEntity player) {
+        return isAdmin(player) || isHelper(player);
+    }
+
     public static boolean isDefault(ServerPlayerEntity player) {
         return !isAdmin(player) && !isHelper(player);
     }

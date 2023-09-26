@@ -10,6 +10,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import net.minecraft.client.resource.language.I18n;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -29,17 +30,16 @@ public class UnnamePost {
         Supplier<Text> message;
 
         if (player == null || !Utils.isInOverworld(player) || !TelepostPermissions.isAdmin(player)) {
-            message = () -> Text.literal("You can't execute the command");
+            message = () -> Text.literal(I18n.translate("telepost.no_permission"));
             source.sendFeedback(message, false);
             return 0;
         }
 
         Post post = new Post(player.getPos());
 
-
         Optional<NamedPost> namedPost = Telepost.getDB().getNamedPost(Utils.nameToId(name));
         if (namedPost.isEmpty()) {
-            message = () -> Text.literal("The nearest post is not named!");
+            message = () -> Text.literal("The nearest post is not named");
             source.sendFeedback(message, false);
             return 0;
         }

@@ -1,3 +1,18 @@
 {
-  "telepost.standing": "You need to be standing on a post"
+  "telepost.standing": "You need to be standing on a post",
+  "telepost.invite": "You've invited %s to your home post until the next restart",
+  "telepost.nearest.named": "The nearest post is at: %s, it's %s",
+  "telepost.nearest": "The nearest post is at: %s",
+  "telepost.already_named": "The post is already named",
+  "telepost.name.claimblocks": "You need at least %s to name the post",
+  "telepost.named": "The nearest post has been named %s at: %s",
+  "telepost.homepost": "You've made the post at: %s your home",
+  "telepost.unknown_post": "Unknown post",
+  "telepost.unknown_player": "Unknown player",
+  "telepost.teleport.homepost": "You've been teleported to your home post",
+  "telepost.teleport.homepost.other": "Welcome to %s home post",
+  "telepost.teleport.named_post": "Welcome to %s",
+  "telepost.no_homepost": "The home post hasn't been found",
+  "telepost.no_invite": "You've not been invited",
+  "telepost.no_permission": "You can't execute the command"
 }
