@@ -42,12 +42,16 @@ public class Home {
         Optional<HomePost> home = Telepost.getDB().getHome(player.getUuid());
 
         if (home.isPresent()) {
-            message = () -> Text.literal(I18n.translate("telepost.teleport.homepost")).setStyle(Style.EMPTY.withFormatting(Formatting.GREEN));
+            player.sendMessage(
+                    Text.literal(I18n.translate("telepost.teleport.homepost"))
+                            .setStyle(Style.EMPTY.withFormatting(Formatting.GREEN))
+                    , true);
+
             Post homePost = new Post(home.get());
             homePost.teleport(player);
-        } else message = () -> Text.literal(I18n.translate("telepost.no_homepost")).setStyle(Style.EMPTY.withFormatting(Formatting.RED));
-
-        source.sendFeedback(message, false);
+        } else player.sendMessage(
+                Text.literal(I18n.translate("telepost.no_homepost"))
+                        .setStyle(Style.EMPTY.withFormatting(Formatting.RED)));
 
         return Command.SINGLE_SUCCESS;
     }

@@ -29,14 +29,12 @@ public class BuildPosts {
         }
 
         if (CompatAddon.GRIEF_DEFENDER.isLoaded()) {
-            message = () -> Text.literal("Posts are starting to build and claim (GriefDefender is Loaded)");
+            player.sendMessage(Text.of("Posts are starting to build and claim (GriefDefender is Loaded)"));
         } else {
-            message = () -> Text.literal("Posts are starting to build");
+            player.sendMessage(Text.of("Posts are starting to build"));
         }
 
         Telepost.postBuilding = true;
-
-        source.sendFeedback(message, false);
 
         return Command.SINGLE_SUCCESS;
     }

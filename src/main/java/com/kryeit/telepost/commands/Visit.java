@@ -56,9 +56,11 @@ public class Visit {
                     return 0;
                 }
                 Post homePost = new Post(home.get());
-                message = () -> Text.literal(I18n.translate("telepost.teleport.homepost.other", name)).setStyle(Style.EMPTY.withFormatting(Formatting.GREEN));
+                player.sendMessage(
+                        Text.literal(I18n.translate("telepost.teleport.homepost.other", name)).setStyle(Style.EMPTY.withFormatting(Formatting.GREEN)),
+                        true);
+
                 homePost.teleport(player);
-                source.sendFeedback(message, false);
                 return Command.SINGLE_SUCCESS;
             } else {
                 message = () -> Text.literal(I18n.translate("telepost.no_invite")).setStyle(Style.EMPTY.withFormatting(Formatting.RED));
@@ -73,8 +75,10 @@ public class Visit {
 
         if (namedPostOptional.isPresent()) {
             Post namedPost = new Post(namedPostOptional.get());
-            message = () -> Text.literal(I18n.translate("telepost.teleport.named_post", postName)).setStyle(Style.EMPTY.withFormatting(Formatting.GREEN));
-            source.sendFeedback(message, false);
+            player.sendMessage(
+                    Text.literal(I18n.translate("telepost.teleport.named_post", postName)).setStyle(Style.EMPTY.withFormatting(Formatting.GREEN)),
+                    true);
+
             namedPost.teleport(player);
             return Command.SINGLE_SUCCESS;
         }
