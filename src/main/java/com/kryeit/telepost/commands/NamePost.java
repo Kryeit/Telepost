@@ -3,6 +3,7 @@ package com.kryeit.telepost.commands;
 import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.TelepostPermissions;
 import com.kryeit.telepost.Utils;
+import com.kryeit.telepost.compat.CompatAddon;
 import com.kryeit.telepost.compat.GriefDefenderImpl;
 import com.kryeit.telepost.post.Post;
 import com.kryeit.telepost.storage.bytes.NamedPost;
@@ -51,7 +52,7 @@ public class NamePost {
             return 0;
         }
 
-        if (!TelepostPermissions.isAdmin(player)) {
+        if (!TelepostPermissions.isAdmin(player) && CompatAddon.GRIEF_DEFENDER.isLoaded()) {
             if (GriefDefenderImpl.getClaimBlocks(player.getUuid()) < NEEDED_CLAIMBLOCKS) {
                 message = () -> Text.literal("You need at least " + NEEDED_CLAIMBLOCKS + " to name the post").setStyle(Style.EMPTY.withFormatting(Formatting.RED));
                 source.sendFeedback(message, false);

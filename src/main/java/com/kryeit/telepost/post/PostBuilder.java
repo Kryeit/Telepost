@@ -6,7 +6,6 @@ import com.griefdefender.api.claim.ClaimGroup;
 import com.griefdefender.api.claim.ClaimResult;
 import com.griefdefender.api.claim.ClaimTypes;
 import com.griefdefender.api.data.ClaimData;
-import com.griefdefender.api.event.CreateClaimEvent;
 import com.griefdefender.lib.flowpowered.math.vector.Vector3i;
 import com.griefdefender.lib.kyori.adventure.text.Component;
 import com.kryeit.telepost.MinecraftServerSupplier;
@@ -21,12 +20,9 @@ import net.minecraft.util.BlockRotation;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
-import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 
-import java.util.List;
 import java.util.Optional;
-import java.util.UUID;
 
 import static com.kryeit.telepost.post.Post.WIDTH;
 import static com.kryeit.telepost.post.Post.WORLD;

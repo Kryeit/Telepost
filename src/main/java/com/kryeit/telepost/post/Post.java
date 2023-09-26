@@ -1,6 +1,5 @@
 package com.kryeit.telepost.post;
 
-import com.griefdefender.api.GriefDefender;
 import com.kryeit.telepost.MinecraftServerSupplier;
 import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.TelepostPermissions;
@@ -14,7 +13,6 @@ import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
-import org.apache.logging.log4j.core.jmx.Server;
 
 import java.util.Optional;
 

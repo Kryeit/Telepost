@@ -1,6 +1,5 @@
 package com.kryeit.telepost.commands;
 
-import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.post.Post;
 import com.kryeit.telepost.storage.bytes.NamedPost;
@@ -16,8 +15,6 @@ import net.minecraft.util.Formatting;
 
 import java.util.Optional;
 import java.util.function.Supplier;
-
-import static com.kryeit.telepost.post.Post.WORLD;
 
 public class NearestPost {
     public static int execute(CommandContext<ServerCommandSource> context) {

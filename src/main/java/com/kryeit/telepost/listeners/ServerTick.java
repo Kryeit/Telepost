@@ -9,9 +9,6 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.Text;
 import net.minecraft.util.math.Vec3d;
-import net.minecraft.world.Heightmap;
-
-import static com.kryeit.telepost.post.Post.WORLD;
 
 public class ServerTick implements ServerTickEvents.EndTick {
 
