@@ -1,0 +1,18 @@
+{
+  "telepost.standing": "你需要站在一个地点",
+  "telepost.invite": "你已邀请 %s 到你的家地点，直到下次重启",
+  "telepost.nearest.named": "最近的地点位于：%s，距离 %s",
+  "telepost.nearest": "最近的地点位于：%s",
+  "telepost.already_named": "该地点已经有名称",
+  "telepost.name.claimblocks": "你至少需要 %s 领地方块来命名该地点",
+  "telepost.named": "最近的地点已命名为 %s 位于：%s",
+  "telepost.homepost": "你已将地点设为家：%s",
+  "telepost.unknown_post": "未知地点",
+  "telepost.unknown_player": "未知玩家",
+  "telepost.teleport.homepost": "你已被传送到你的家地点",
+  "telepost.teleport.homepost.other": "欢迎来到 %s 的家地点",
+  "telepost.teleport.named_post": "欢迎来到 %s",
+  "telepost.no_homepost": "未找到家地点",
+  "telepost.no_invite": "你未被邀请",
+  "telepost.no_permission": "你无法执行该命令"
+}
