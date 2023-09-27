@@ -16,13 +16,14 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 public class UnnamePost {
-    public static int execute(CommandContext<ServerCommandSource> context, String name) {
+    public static int execute(CommandContext<ServerCommandSource> context, String name) throws IOException {
         ServerCommandSource source = context.getSource();
         ServerPlayerEntity player = source.getPlayer();
 
@@ -42,6 +43,8 @@ public class UnnamePost {
             source.sendFeedback(message, false);
             return 0;
         }
+
+        Telepost.getInstance().playerNamedPosts.deleteElement(name);
 
         Telepost.getDB().deleteNamedPost(Utils.nameToId(name));
 
@@ -66,7 +69,13 @@ public class UnnamePost {
         dispatcher.register(CommandManager.literal("unnamepost")
                 .then(CommandManager.argument("name", StringArgumentType.word())
                         .suggests(suggestionProvider)
-                        .executes(context -> execute(context, StringArgumentType.getString(context, "name")))
+                        .executes(context -> {
+                            try {
+                                return execute(context, StringArgumentType.getString(context, "name"));
+                            } catch (IOException e) {
+                                throw new RuntimeException(e);
+                            }
+                        })
                 )
         );
     }

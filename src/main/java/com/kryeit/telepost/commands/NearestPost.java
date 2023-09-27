@@ -21,24 +21,23 @@ public class NearestPost {
         ServerCommandSource source = context.getSource();
         ServerPlayerEntity player = source.getPlayer();
 
-        Supplier<Text> message;
-
         if (player == null || !Utils.isInOverworld(player)) {
-            message = () -> Text.translatable("telepost.no_permission");
+            Supplier<Text>  message = () -> Text.translatable("telepost.no_permission");
             source.sendFeedback(message, false);
             return 0;
         }
 
         Post post = new Post(player.getPos());
 
+        Text text;
+
         Optional<NamedPost> namedPost = post.getNamedPost();
         if (namedPost.isPresent()) {
-            message = () -> TelepostMessages.getMessage(player, "telepost.nearest.named", Formatting.WHITE, post.getStringCoords(), namedPost.get().name());
+            text = TelepostMessages.getMessage(player, "telepost.nearest.named", Formatting.WHITE, post.getStringCoords(), namedPost.get().name());
         } else {
-            message = () -> TelepostMessages.getMessage(player, "telepost.nearest.named", Formatting.WHITE, post.getStringCoords());
+            text = TelepostMessages.getMessage(player, "telepost.nearest", Formatting.WHITE, post.getStringCoords());
         }
-        source.sendFeedback(message, false);
-
+        player.sendMessage(text);
 
         return Command.SINGLE_SUCCESS;
     }

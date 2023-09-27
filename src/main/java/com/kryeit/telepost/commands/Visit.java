@@ -43,7 +43,7 @@ public class Visit {
 
         // /visit Player
         if (visited != null) {
-            if (Telepost.invites.get(player.getUuid()).equals(visited.getUuid()) || TelepostPermissions.isHelperOrAdmin(player)) {
+            if (Utils.isInvited(visited, player) || TelepostPermissions.isHelperOrAdmin(player)) {
                 Optional<HomePost> home = Telepost.getDB().getHome(visited.getUuid());
                 if (home.isEmpty()) {
                     text = TelepostMessages.getMessage(player, "telepost.no_homepost", Formatting.RED);

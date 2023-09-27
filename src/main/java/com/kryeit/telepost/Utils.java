@@ -24,6 +24,10 @@ public class Utils {
         return null;
     }
 
+    public static boolean isInvited(ServerPlayerEntity owner, ServerPlayerEntity invited) {
+        return Telepost.invites.containsKey(invited.getUuid()) && Telepost.invites.get(invited.getUuid()).equals(owner.getUuid());
+    }
+
     public static void runCommand(String command, ServerCommandSource source) {
         MinecraftServerSupplier.getServer().getCommandManager().execute(MinecraftServerSupplier.getServer().getCommandManager().getDispatcher().parse(command, source), command);
     }
