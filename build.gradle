@@ -26,7 +26,8 @@ dependencies {
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
     implementation "org.iq80.leveldb:leveldb:0.12"
     compileOnly "com.griefdefender:api:2.1.0-SNAPSHOT"
-    include(modImplementation('me.lucko:fabric-permissions-api:0.2-SNAPSHOT'))}
+    include(modImplementation('me.lucko:fabric-permissions-api:0.2-SNAPSHOT'))
+}
 
 processResources {
     inputs.property "version", project.version
