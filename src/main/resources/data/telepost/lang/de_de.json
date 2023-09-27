@@ -1,0 +1,18 @@
+{
+  "telepost.standing": "Du musst auf einem Pfosten stehen",
+  "telepost.invite": "Du hast %s zu deinem Heim-Pfosten bis zum nächsten Server Neustart eingeladen",
+  "telepost.nearest.named": "Der nächste Pfosten steht bei: %s, er heißt %s",
+  "telepost.nearest": "Der nächste Pfosten steht bei: %s",
+  "telepost.already_named": "Der Pfosten hat schon einen Namen",
+  "telepost.name.claimblocks": "Du brauchst mindestens %s Claim-Blöcke, um diesen Pfosten zu benennen",
+  "telepost.named": "Der nächste Pfosten wurde %s benannt. Er steht bei: %s",
+  "telepost.homepost": "Du hast den Pfosten bei %s zu deinem Zuhause gemacht",
+  "telepost.unknown_post": "Unbekannter Pfosten",
+  "telepost.unknown_player": "Unbekannter Spieler",
+  "telepost.teleport.homepost": "Du wurdest zu deinem Heim-Pfosten teleportiert",
+  "telepost.teleport.homepost.other": "Willkommen in %s's Heim-Pfosten",
+  "telepost.teleport.named_post": "Willkommen in %s",
+  "telepost.no_homepost": "Dieser Heim-Pfosten wurde nicht gefunden",
+  "telepost.no_invite": "Du wurdest nicht eingeladen",
+  "telepost.no_permission": "Du kannst diesen Befehl nicht ausführen"
+}
