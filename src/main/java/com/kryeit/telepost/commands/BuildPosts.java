@@ -7,7 +7,6 @@ import com.kryeit.telepost.compat.CompatAddon;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -23,7 +22,7 @@ public class BuildPosts {
         Supplier<Text> message;
 
         if (player == null || !Utils.isInOverworld(player) || !TelepostPermissions.isAdmin(player)) {
-            message = () -> Text.literal(I18n.translate("telepost.no_permission"));
+            message = () -> Text.translatable("telepost.no_permission");
             source.sendFeedback(message, false);
             return 0;
         }

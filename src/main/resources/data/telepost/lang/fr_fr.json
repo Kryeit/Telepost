@@ -1,0 +1,18 @@
+{
+  "telepost.standing": "Vous devez vous tenir sur un poste",
+  "telepost.invite": "Vous avez invité %s à votre poste maison jusqu'au prochain redémarrage",
+  "telepost.nearest.named": "Le poste le plus proche est à: %s, c'est %s",
+  "telepost.nearest": "Le poste le plus proche est à: %s",
+  "telepost.already_named": "Le poste est déjà nommé",
+  "telepost.name.claimblocks": "Vous avez besoin d'au moins %s blocs de claim pour nommer ce post",
+  "telepost.named": "Le poste le plus proche a été nommé à %s à: %s",
+  "telepost.homepost": "Vous avez fait du poste à: %s votre poste maison",
+  "telepost.unknown_post": "Poste inconnu",
+  "telepost.unknown_player": "Joueur inconnu",
+  "telepost.teleport.homepost": "Vous avez été téléporté à votre poste maison",
+  "telepost.teleport.homepost.other": "Bienvenue au post maison de %s",
+  "telepost.teleport.named_post": "Bienvenue à %s",
+  "telepost.no_homepost": "Le poste maison n'a pas pu être trouvé",
+  "telepost.no_invite": "Vous n'avez pas été invité",
+  "telepost.no_permission": "Vous ne pouvez pas éxécuter la commande"
+}

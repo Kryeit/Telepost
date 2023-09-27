@@ -69,6 +69,9 @@ public class Post {
             int x = (int) named.location().getX();
             int z = (int) named.location().getZ();
 
+            // TODO: IDK why this happens
+            if (z < 0) z -= 1;
+
             if (x == getX() && z == getZ()) {
                 namedPost = Optional.of(named);
             }

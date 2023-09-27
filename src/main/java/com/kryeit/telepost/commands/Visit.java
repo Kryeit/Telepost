@@ -1,9 +1,6 @@
 package com.kryeit.telepost.commands;
 
-import com.kryeit.telepost.MinecraftServerSupplier;
-import com.kryeit.telepost.Telepost;
-import com.kryeit.telepost.TelepostPermissions;
-import com.kryeit.telepost.Utils;
+import com.kryeit.telepost.*;
 import com.kryeit.telepost.commands.completion.PlayerSuggestionProvider;
 import com.kryeit.telepost.post.Post;
 import com.kryeit.telepost.storage.bytes.HomePost;
@@ -12,11 +9,9 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -28,19 +23,19 @@ public class Visit {
         ServerCommandSource source = context.getSource();
         ServerPlayerEntity player = source.getPlayer();
 
-        Supplier<Text> message;
-
         if (player == null || !Utils.isInOverworld(player))  {
-            message = () -> Text.literal(I18n.translate("telepost.no_permission")).setStyle(Style.EMPTY.withFormatting(Formatting.RED));;
+            Supplier<Text> message = () -> Text.translatable("telepost.no_permission");
             source.sendFeedback(message, false);
             return 0;
         }
 
         Post closestPost = new Post(player.getPos());
 
+        Text text;
+
         if (!closestPost.isInside(player, player.getPos())) {
-            message = () -> Text.literal(I18n.translate("telepost.standing")).setStyle(Style.EMPTY.withFormatting(Formatting.RED));;
-            source.sendFeedback(message, false);
+            text = TelepostMessages.getMessage("telepost.standing", Formatting.RED);
+            player.sendMessage(text, true);
             return 0;
         }
         
@@ -51,20 +46,20 @@ public class Visit {
             if (Telepost.invites.get(player.getUuid()).equals(visited.getUuid()) || TelepostPermissions.isHelperOrAdmin(player)) {
                 Optional<HomePost> home = Telepost.getDB().getHome(visited.getUuid());
                 if (home.isEmpty()) {
-                    message = () -> Text.literal(I18n.translate("telepost.no_homepost")).setStyle(Style.EMPTY.withFormatting(Formatting.RED));
-                    source.sendFeedback(message, false);
+                    text = TelepostMessages.getMessage("telepost.no_homepost", Formatting.RED);
+                    player.sendMessage(text);
                     return 0;
                 }
                 Post homePost = new Post(home.get());
-                player.sendMessage(
-                        Text.literal(I18n.translate("telepost.teleport.homepost.other", name)).setStyle(Style.EMPTY.withFormatting(Formatting.GREEN)),
-                        true);
+
+                text = TelepostMessages.getMessage("telepost.teleport.homepost.other", Formatting.GREEN, name);
+                player.sendMessage(text, true);
 
                 homePost.teleport(player);
                 return Command.SINGLE_SUCCESS;
             } else {
-                message = () -> Text.literal(I18n.translate("telepost.no_invite")).setStyle(Style.EMPTY.withFormatting(Formatting.RED));
-                source.sendFeedback(message, false);
+                text = TelepostMessages.getMessage("telepost.no_invite", Formatting.RED);
+                player.sendMessage(text, true);
                 return 0;
             }
         }
@@ -75,16 +70,16 @@ public class Visit {
 
         if (namedPostOptional.isPresent()) {
             Post namedPost = new Post(namedPostOptional.get());
-            player.sendMessage(
-                    Text.literal(I18n.translate("telepost.teleport.named_post", postName)).setStyle(Style.EMPTY.withFormatting(Formatting.GREEN)),
-                    true);
+
+            text = TelepostMessages.getMessage("telepost.teleport.named_post", Formatting.GREEN, postName);
+            player.sendMessage(text, true);
 
             namedPost.teleport(player);
             return Command.SINGLE_SUCCESS;
         }
 
-        message = () -> Text.literal(I18n.translate("telepost.unknown_post")).setStyle(Style.EMPTY.withFormatting(Formatting.RED));
-        source.sendFeedback(message, false);
+        text = TelepostMessages.getMessage("telepost.unknown_post", Formatting.RED);
+        player.sendMessage(text, true);
         return 0;
     }
 

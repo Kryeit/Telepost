@@ -16,6 +16,10 @@ repositories {
         name = 'LuckPerms'
         url = 'https://oss.sonatype.org/content/repositories/snapshots'
     }
+    maven {
+        name = 'Translations API'
+        url = 'https://maven.nucleoid.xyz'
+    }
 }
 
 dependencies {
@@ -27,6 +31,7 @@ dependencies {
     implementation "org.iq80.leveldb:leveldb:0.12"
     compileOnly "com.griefdefender:api:2.1.0-SNAPSHOT"
     include(modImplementation('me.lucko:fabric-permissions-api:0.2-SNAPSHOT'))
+    modImplementation include("xyz.nucleoid:server-translations-api:2.1.0+1.20.2-rc2")
 }
 
 processResources {

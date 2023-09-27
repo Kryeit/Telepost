@@ -2,22 +2,20 @@ package com.kryeit.telepost.commands;
 
 import com.kryeit.telepost.MinecraftServerSupplier;
 import com.kryeit.telepost.Telepost;
+import com.kryeit.telepost.TelepostMessages;
 import com.kryeit.telepost.commands.completion.PlayerSuggestionProvider;
 import com.kryeit.telepost.storage.bytes.HomePost;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
 import java.util.Optional;
-import java.util.function.Supplier;
 
 public class Invite {
     public static int execute(CommandContext<ServerCommandSource> context, String name) {
@@ -26,28 +24,28 @@ public class Invite {
 
         if (player == null) return 0;
 
-        Supplier<Text> message;
-
         ServerPlayerEntity invited = MinecraftServerSupplier.getServer().getPlayerManager().getPlayer(name);
 
+        Text text;
+
         if (invited == null) {
-            message = () -> Text.literal(I18n.translate("telepost.unknown_player")).setStyle(Style.EMPTY.withFormatting(Formatting.RED));
-            source.sendFeedback(message, false);
+            text = TelepostMessages.getMessage("telepost.unknown_player", Formatting.RED);
+            player.sendMessage(text, true);
             return 0;
         }
 
         Optional<HomePost> home = Telepost.getDB().getHome(player.getUuid());
 
         if (home.isEmpty()) {
-            message = () -> Text.literal(I18n.translate("telepost.no_homepost")).setStyle(Style.EMPTY.withFormatting(Formatting.RED));
-            source.sendFeedback(message, false);
+            text = TelepostMessages.getMessage("telepost.no_homepost", Formatting.RED);
+            player.sendMessage(text, true);
             return 0;
         }
 
         Telepost.invites.put(invited.getUuid(), player.getUuid());
-        message = () -> Text.literal(I18n.translate("telepost.invite", name)).setStyle(Style.EMPTY.withFormatting(Formatting.GREEN));
 
-        source.sendFeedback(message, false);
+        text = TelepostMessages.getMessage("telepost.invite", Formatting.GREEN, name);
+        player.sendMessage(text);
 
         return Command.SINGLE_SUCCESS;
     }

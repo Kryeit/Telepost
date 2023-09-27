@@ -1,16 +1,15 @@
 package com.kryeit.telepost.commands;
 
+import com.kryeit.telepost.TelepostMessages;
 import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.post.Post;
 import com.kryeit.telepost.storage.bytes.NamedPost;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -25,7 +24,7 @@ public class NearestPost {
         Supplier<Text> message;
 
         if (player == null || !Utils.isInOverworld(player)) {
-            message = () -> Text.literal(I18n.translate("telepost.no_permission"));
+            message = () -> Text.translatable("telepost.no_permission");
             source.sendFeedback(message, false);
             return 0;
         }
@@ -33,13 +32,11 @@ public class NearestPost {
         Post post = new Post(player.getPos());
 
         Optional<NamedPost> namedPost = post.getNamedPost();
-        message = namedPost.<Supplier<Text>>map(
-                value -> () -> Text.literal(
-                I18n.translate("telepost.nearest.named", post.getStringCoords(), value.name())).setStyle(Style.EMPTY.withFormatting(Formatting.GREEN)))
-                .orElseGet(() -> () -> Text.literal(
-                I18n.translate("telepost.nearest", post.getStringCoords())).setStyle(Style.EMPTY.withFormatting(Formatting.GREEN)));
-
-        source.sendFeedback(message, false);
+        if (namedPost.isPresent()) {
+            player.sendMessage(TelepostMessages.getMessage("telepost.nearest.named", Formatting.WHITE, post.getStringCoords(), namedPost.get().name()));
+        } else {
+            player.sendMessage(TelepostMessages.getMessage("telepost.nearest", Formatting.WHITE, post.getStringCoords()));
+        }
 
         return Command.SINGLE_SUCCESS;
     }

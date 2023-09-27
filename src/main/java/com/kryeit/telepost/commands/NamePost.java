@@ -1,6 +1,7 @@
 package com.kryeit.telepost.commands;
 
 import com.kryeit.telepost.Telepost;
+import com.kryeit.telepost.TelepostMessages;
 import com.kryeit.telepost.TelepostPermissions;
 import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.compat.CompatAddon;
@@ -11,11 +12,9 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import net.minecraft.client.resource.language.I18n;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
@@ -30,35 +29,35 @@ public class NamePost {
         ServerCommandSource source = context.getSource();
         ServerPlayerEntity player = source.getPlayer();
 
-        Supplier<Text> message;
-
         if (player == null || !Utils.isInOverworld(player)) {
-            message = () -> Text.literal(I18n.translate("telepost.no_permission"));
+            Supplier<Text> message = () -> Text.translatable("telepost.no_permission");
             source.sendFeedback(message, false);
             return 0;
         }
 
         Post post = new Post(player.getPos());
 
+        Text text;
+
         // Check if nearest named
         if (post.isNamed()) {
-            message = () -> Text.literal(I18n.translate("telepost.already_named")).setStyle(Style.EMPTY.withFormatting(Formatting.RED));
-            source.sendFeedback(message, false);
+            text = TelepostMessages.getMessage("telepost.already_named", Formatting.RED);
+            player.sendMessage(text, true);
             return 0;
         }
 
         // Check if name is in use
         Optional<NamedPost> namedPost = Telepost.getDB().getNamedPost(Utils.nameToId(name));
         if (namedPost.isPresent()) {
-            message = () -> Text.literal(I18n.translate("telepost.already_named")).setStyle(Style.EMPTY.withFormatting(Formatting.RED));
-            source.sendFeedback(message, false);
+            text = TelepostMessages.getMessage("telepost.already_named", Formatting.RED);
+            player.sendMessage(text, true);
             return 0;
         }
 
         if (!TelepostPermissions.isAdmin(player) && CompatAddon.GRIEF_DEFENDER.isLoaded()) {
             if (GriefDefenderImpl.getClaimBlocks(player.getUuid()) < NEEDED_CLAIMBLOCKS) {
-                message = () -> Text.literal(I18n.translate("telepost.name.claimblocks", NEEDED_CLAIMBLOCKS)).setStyle(Style.EMPTY.withFormatting(Formatting.RED));
-                source.sendFeedback(message, false);
+                text = TelepostMessages.getMessage("telepost.name.claimblocks", Formatting.RED, NEEDED_CLAIMBLOCKS);
+                player.sendMessage(text);
                 return 0;
             }
             Telepost.getInstance().playerNamedPosts.addElement(name, player.getUuid());
@@ -66,10 +65,8 @@ public class NamePost {
 
         Telepost.getDB().addNamedPost(new NamedPost(Utils.nameToId(name), name, post.getPos()));
 
-        message = () -> Text.literal(
-                I18n.translate("telepost.named", name, post.getStringCoords())).setStyle(Style.EMPTY.withFormatting(Formatting.GREEN));
-
-        source.sendFeedback(message, false);
+        text = TelepostMessages.getMessage("telepost.named", Formatting.GREEN, name, post.getStringCoords());
+        player.sendMessage(text);
 
         return Command.SINGLE_SUCCESS;
     }
