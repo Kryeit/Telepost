@@ -33,10 +33,12 @@ public class NearestPost {
 
         Optional<NamedPost> namedPost = post.getNamedPost();
         if (namedPost.isPresent()) {
-            player.sendMessage(TelepostMessages.getMessage("telepost.nearest.named", Formatting.WHITE, post.getStringCoords(), namedPost.get().name()));
+            message = () -> TelepostMessages.getMessage(player, "telepost.nearest.named", Formatting.WHITE, post.getStringCoords(), namedPost.get().name());
         } else {
-            player.sendMessage(TelepostMessages.getMessage("telepost.nearest", Formatting.WHITE, post.getStringCoords()));
+            message = () -> TelepostMessages.getMessage(player, "telepost.nearest.named", Formatting.WHITE, post.getStringCoords());
         }
+        source.sendFeedback(message, false);
+
 
         return Command.SINGLE_SUCCESS;
     }

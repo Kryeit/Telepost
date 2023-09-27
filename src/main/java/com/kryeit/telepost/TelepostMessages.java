@@ -1,14 +1,18 @@
 package com.kryeit.telepost;
 
+import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.MutableText;
 import net.minecraft.text.Style;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
+import xyz.nucleoid.server.translations.api.Localization;
 
 public class TelepostMessages {
 
-    public static Text getMessage(String key, Formatting color, Object... args) {
-        String[] parts = Text.translatable(key).getContent().toString().split("%s", -1);
+    public static Text getMessage(ServerPlayerEntity player, String key, Formatting color, Object... args) {
+        String translation = Localization.raw(key, player);
+        if (translation == null) return Text.of("");
+        String[] parts = translation.split("%s", -1);
 
         if (parts.length == 0) {
             return Text.translatable(key);

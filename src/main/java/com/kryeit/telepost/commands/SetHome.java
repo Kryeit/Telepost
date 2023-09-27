@@ -29,7 +29,7 @@ public class SetHome {
 
         Post post = new Post(player.getPos());
 
-        Text text = TelepostMessages.getMessage("telepost.homepost", Formatting.GREEN, post.getStringCoords());
+        Text text = TelepostMessages.getMessage(player, "telepost.homepost", Formatting.GREEN, post.getStringCoords());
 
         Telepost.getDB().setHome(player.getUuid(), new HomePost(player.getUuid(), post.getPos()));
 

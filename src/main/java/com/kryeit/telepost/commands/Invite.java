@@ -29,7 +29,7 @@ public class Invite {
         Text text;
 
         if (invited == null) {
-            text = TelepostMessages.getMessage("telepost.unknown_player", Formatting.RED);
+            text = TelepostMessages.getMessage(player, "telepost.unknown_player", Formatting.RED);
             player.sendMessage(text, true);
             return 0;
         }
@@ -37,14 +37,14 @@ public class Invite {
         Optional<HomePost> home = Telepost.getDB().getHome(player.getUuid());
 
         if (home.isEmpty()) {
-            text = TelepostMessages.getMessage("telepost.no_homepost", Formatting.RED);
+            text = TelepostMessages.getMessage(player, "telepost.no_homepost", Formatting.RED);
             player.sendMessage(text, true);
             return 0;
         }
 
         Telepost.invites.put(invited.getUuid(), player.getUuid());
 
-        text = TelepostMessages.getMessage("telepost.invite", Formatting.GREEN, name);
+        text = TelepostMessages.getMessage(player, "telepost.invite", Formatting.GREEN, name);
         player.sendMessage(text);
 
         return Command.SINGLE_SUCCESS;

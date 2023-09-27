@@ -41,7 +41,7 @@ public class NamePost {
 
         // Check if nearest named
         if (post.isNamed()) {
-            text = TelepostMessages.getMessage("telepost.already_named", Formatting.RED);
+            text = TelepostMessages.getMessage(player, "telepost.already_named", Formatting.RED);
             player.sendMessage(text, true);
             return 0;
         }
@@ -49,14 +49,14 @@ public class NamePost {
         // Check if name is in use
         Optional<NamedPost> namedPost = Telepost.getDB().getNamedPost(Utils.nameToId(name));
         if (namedPost.isPresent()) {
-            text = TelepostMessages.getMessage("telepost.already_named", Formatting.RED);
+            text = TelepostMessages.getMessage(player, "telepost.already_named", Formatting.RED);
             player.sendMessage(text, true);
             return 0;
         }
 
         if (!TelepostPermissions.isAdmin(player) && CompatAddon.GRIEF_DEFENDER.isLoaded()) {
             if (GriefDefenderImpl.getClaimBlocks(player.getUuid()) < NEEDED_CLAIMBLOCKS) {
-                text = TelepostMessages.getMessage("telepost.name.claimblocks", Formatting.RED, NEEDED_CLAIMBLOCKS);
+                text = TelepostMessages.getMessage(player, "telepost.name.claimblocks", Formatting.RED, NEEDED_CLAIMBLOCKS);
                 player.sendMessage(text);
                 return 0;
             }
@@ -65,7 +65,7 @@ public class NamePost {
 
         Telepost.getDB().addNamedPost(new NamedPost(Utils.nameToId(name), name, post.getPos()));
 
-        text = TelepostMessages.getMessage("telepost.named", Formatting.GREEN, name, post.getStringCoords());
+        text = TelepostMessages.getMessage(player, "telepost.named", Formatting.GREEN, name, post.getStringCoords());
         player.sendMessage(text);
 
         return Command.SINGLE_SUCCESS;

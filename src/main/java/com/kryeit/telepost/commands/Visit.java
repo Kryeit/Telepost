@@ -34,7 +34,7 @@ public class Visit {
         Text text;
 
         if (!closestPost.isInside(player, player.getPos())) {
-            text = TelepostMessages.getMessage("telepost.standing", Formatting.RED);
+            text = TelepostMessages.getMessage(player, "telepost.standing", Formatting.RED);
             player.sendMessage(text, true);
             return 0;
         }
@@ -46,19 +46,19 @@ public class Visit {
             if (Telepost.invites.get(player.getUuid()).equals(visited.getUuid()) || TelepostPermissions.isHelperOrAdmin(player)) {
                 Optional<HomePost> home = Telepost.getDB().getHome(visited.getUuid());
                 if (home.isEmpty()) {
-                    text = TelepostMessages.getMessage("telepost.no_homepost", Formatting.RED);
+                    text = TelepostMessages.getMessage(player, "telepost.no_homepost", Formatting.RED);
                     player.sendMessage(text);
                     return 0;
                 }
                 Post homePost = new Post(home.get());
 
-                text = TelepostMessages.getMessage("telepost.teleport.homepost.other", Formatting.GREEN, name);
+                text = TelepostMessages.getMessage(player, "telepost.teleport.homepost.other", Formatting.GREEN, name);
                 player.sendMessage(text, true);
 
                 homePost.teleport(player);
                 return Command.SINGLE_SUCCESS;
             } else {
-                text = TelepostMessages.getMessage("telepost.no_invite", Formatting.RED);
+                text = TelepostMessages.getMessage(player, "telepost.no_invite", Formatting.RED);
                 player.sendMessage(text, true);
                 return 0;
             }
@@ -71,14 +71,14 @@ public class Visit {
         if (namedPostOptional.isPresent()) {
             Post namedPost = new Post(namedPostOptional.get());
 
-            text = TelepostMessages.getMessage("telepost.teleport.named_post", Formatting.GREEN, postName);
+            text = TelepostMessages.getMessage(player, "telepost.teleport.named_post", Formatting.GREEN, postName);
             player.sendMessage(text, true);
 
             namedPost.teleport(player);
             return Command.SINGLE_SUCCESS;
         }
 
-        text = TelepostMessages.getMessage("telepost.unknown_post", Formatting.RED);
+        text = TelepostMessages.getMessage(player, "telepost.unknown_post", Formatting.RED);
         player.sendMessage(text, true);
         return 0;
     }
