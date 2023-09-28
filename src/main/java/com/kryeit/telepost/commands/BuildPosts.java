@@ -15,7 +15,6 @@ import net.minecraft.text.Text;
 import java.util.function.Supplier;
 
 import static com.kryeit.telepost.post.GridIterator.WORLDBORDER;
-import static com.kryeit.telepost.post.Post.WORLD;
 
 public class BuildPosts {
     public static int execute(CommandContext<ServerCommandSource> context) {

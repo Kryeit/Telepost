@@ -14,7 +14,6 @@ import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.random.Random;
-import net.minecraft.world.Heightmap;
 import net.minecraft.world.biome.Biome;
 
 import java.util.Optional;
@@ -59,7 +58,7 @@ public class PostBuilder {
 
             template.get().place(
                     ((ServerWorld) WORLD),
-                    pos.add(-boundingBox.getBlockCountX()/2 , 0, -boundingBox.getBlockCountZ()/2),
+                    pos.add(-boundingBox.getBlockCountX()/2, 0, -boundingBox.getBlockCountZ()/2),
                     pos.add(-boundingBox.getBlockCountX()/2, 0, -boundingBox.getBlockCountZ()/2),
                     new StructurePlacementData(),
                     Random.create(0),
