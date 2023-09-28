@@ -28,10 +28,10 @@ dependencies {
     modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
 
     modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
-    implementation "org.iq80.leveldb:leveldb:0.12"
-    compileOnly "com.griefdefender:api:2.1.0-SNAPSHOT"
-    include(modImplementation('me.lucko:fabric-permissions-api:0.2-SNAPSHOT'))
-    modImplementation include("xyz.nucleoid:server-translations-api:2.1.0+1.20.2-rc2")
+    implementation "org.iq80.leveldb:leveldb:${leveldb_version}"
+    compileOnly "com.griefdefender:api:${griefdefender_version}"
+    include(modImplementation("me.lucko:fabric-permissions-api:${luckperms_version}"))
+    modImplementation include("xyz.nucleoid:server-translations-api:${servertranslations_version}")
 }
 
 processResources {
