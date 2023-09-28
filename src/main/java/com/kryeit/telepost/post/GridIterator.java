@@ -9,7 +9,7 @@ import static com.kryeit.telepost.post.Post.GAP;
 import static com.kryeit.telepost.post.Post.WORLD;
 
 public class GridIterator implements Iterator<Vec3d> {
-    private int WORLDBORDER = (int) (WORLD.getWorldBorder().getSize()/2);
+    public static int WORLDBORDER = (int) (WORLD.getWorldBorder().getSize()/2);
     private final int endX;
     private final int endZ;
     private int currentX = -(WORLDBORDER / GAP) * GAP;;
@@ -35,7 +35,7 @@ public class GridIterator implements Iterator<Vec3d> {
         // Move to the next location in the grid.
         currentX += GAP;
         if (currentX > endX) {
-            currentX = 0;
+            currentX = -(WORLDBORDER / GAP) * GAP;
             currentZ += GAP;
         }
 

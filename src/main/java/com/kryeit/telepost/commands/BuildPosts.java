@@ -14,6 +14,9 @@ import net.minecraft.text.Text;
 
 import java.util.function.Supplier;
 
+import static com.kryeit.telepost.post.GridIterator.WORLDBORDER;
+import static com.kryeit.telepost.post.Post.WORLD;
+
 public class BuildPosts {
     public static int execute(CommandContext<ServerCommandSource> context) {
         ServerCommandSource source = context.getSource();
@@ -31,6 +34,11 @@ public class BuildPosts {
             player.sendMessage(Text.of("Posts are starting to build and claim (GriefDefender is Loaded)"));
         } else {
             player.sendMessage(Text.of("Posts are starting to build"));
+        }
+
+        if (WORLDBORDER > 1_000_000) {
+            player.sendMessage(Text.of("Your worldboder is " + WORLDBORDER + " please set your worldborder with /worldborder set <diameter>"));
+            return 0;
         }
 
         Telepost.postBuilding = true;

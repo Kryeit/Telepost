@@ -6,7 +6,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 public class TelepostPermissions {
 
     public static boolean isAdmin(ServerPlayerEntity player) {
-        return Permissions.check(player, "telepost.admin", false);
+        return Permissions.check(player, "telepost.admin", false) || player.hasPermissionLevel(2);
     }
 
     public static boolean isHelper(ServerPlayerEntity player) {

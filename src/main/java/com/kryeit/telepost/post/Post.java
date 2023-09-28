@@ -4,6 +4,7 @@ import com.kryeit.telepost.MinecraftServerSupplier;
 import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.TelepostPermissions;
 import com.kryeit.telepost.compat.CompatAddon;
+import com.kryeit.telepost.compat.GriefDefenderImpl;
 import com.kryeit.telepost.storage.bytes.HomePost;
 import com.kryeit.telepost.storage.bytes.NamedPost;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -20,8 +21,8 @@ public class Post {
 
     public static World WORLD = MinecraftServerSupplier.getServer().getOverworld();
 
-    public static final int GAP = 2000;
-    public static final int WIDTH = 24;
+    public static final int GAP = 100;
+    public static final int WIDTH = 23;
     private final int x;
     private final int z;
 
@@ -47,7 +48,7 @@ public class Post {
 
     public boolean isInside(ServerPlayerEntity player, Vec3d pos) {
         if (TelepostPermissions.isAdmin(player)) return true;
-        int halfWidth = WIDTH / 2;
+        int halfWidth = (WIDTH - 1)/ 2;
 
         boolean insideX = pos.getX() >= (x - halfWidth) && pos.getX() <= (x + halfWidth);
         boolean insideZ = pos.getZ() >= (z - halfWidth) && pos.getZ() <= (z + halfWidth);
@@ -69,9 +70,6 @@ public class Post {
             int x = (int) named.location().getX();
             int z = (int) named.location().getZ();
 
-            // TODO: IDK why this happens
-            if (z < 0) z -= 1;
-
             if (x == getX() && z == getZ()) {
                 namedPost = Optional.of(named);
             }
@@ -92,7 +90,7 @@ public class Post {
     }
 
     public Vec3d getPos() {
-        return new Vec3d(x + 0.5, getY(), z + 0.5);
+        return new Vec3d(x, getY(), z);
     }
 
     public BlockPos getBlockPos() {
@@ -107,7 +105,7 @@ public class Post {
         PostBuilder.placeStructure(this);
 
         if (CompatAddon.GRIEF_DEFENDER.isLoaded()) {
-            PostBuilder.createClaim(this);
+            GriefDefenderImpl.createClaim(this);
         }
     }
 
