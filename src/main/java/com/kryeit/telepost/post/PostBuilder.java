@@ -50,7 +50,7 @@ public class PostBuilder {
 
         if (template.isPresent()) {
             StructurePlacementData placementData = new StructurePlacementData()
-                    .setMirror(BlockMirror.NONE)
+                    .setMirror(BlockMirror.values()[new java.util.Random().nextInt(BlockMirror.values().length)])
                     .setRotation(BlockRotation.NONE)
                     .setIgnoreEntities(false);
 
@@ -60,7 +60,7 @@ public class PostBuilder {
                     ((ServerWorld) WORLD),
                     pos.add(-boundingBox.getBlockCountX()/2, 0, -boundingBox.getBlockCountZ()/2),
                     pos.add(-boundingBox.getBlockCountX()/2, 0, -boundingBox.getBlockCountZ()/2),
-                    new StructurePlacementData(),
+                    placementData,
                     Random.create(0),
                     Block.NOTIFY_ALL);
         }
