@@ -20,18 +20,23 @@ repositories {
         name = 'Translations API'
         url = 'https://maven.nucleoid.xyz'
     }
+    maven {
+        name = 'WorldEdit'
+        url = 'https://maven.enginehub.org/repo/'
+    }
 }
 
 dependencies {
-    minecraft "com.mojang:minecraft:${project.minecraft_version}"
-    mappings "net.fabricmc:yarn:${project.yarn_mappings}:v2"
-    modImplementation "net.fabricmc:fabric-loader:${project.loader_version}"
+    minecraft "com.mojang:minecraft:${minecraft_version}"
+    mappings "net.fabricmc:yarn:${yarn_mappings}:v2"
+    modImplementation "net.fabricmc:fabric-loader:${loader_version}"
 
-    modImplementation "net.fabricmc.fabric-api:fabric-api:${project.fabric_version}"
+    modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
     implementation "org.iq80.leveldb:leveldb:${leveldb_version}"
     compileOnly "com.griefdefender:api:${griefdefender_version}"
     include(modImplementation("me.lucko:fabric-permissions-api:${luckperms_version}"))
     modImplementation include("xyz.nucleoid:server-translations-api:${servertranslations_version}")
+    modImplementation "com.sk89q.worldedit:worldedit-fabric-mc${minecraft_version}:${worldedit_version}"
 }
 
 processResources {

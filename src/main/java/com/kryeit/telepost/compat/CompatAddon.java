@@ -6,7 +6,8 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 public enum CompatAddon {
-    GRIEF_DEFENDER("GriefDefender");
+    GRIEF_DEFENDER("GriefDefender"),
+    WORLD_EDIT("WorldEdit");
 
     private final String id;
 
