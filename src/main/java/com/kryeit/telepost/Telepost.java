@@ -6,7 +6,7 @@ import com.kryeit.telepost.storage.CommandDumpDB;
 import com.kryeit.telepost.storage.IDatabase;
 import com.kryeit.telepost.storage.LevelDBImpl;
 import com.kryeit.telepost.storage.PlayerNamedPosts;
-import net.fabricmc.api.ModInitializer;
+import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
@@ -18,7 +18,7 @@ import java.util.Map;
 import java.util.UUID;
 
 
-public class Telepost implements ModInitializer {
+public class Telepost implements DedicatedServerModInitializer {
 
     public static Telepost instance;
 
@@ -28,7 +28,7 @@ public class Telepost implements ModInitializer {
     public static boolean postBuilding = false;
 
     @Override
-    public void onInitialize() {
+    public void onInitializeServer() {
         initializeDatabases();
         instance = this;
         registerCommands();
