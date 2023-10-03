@@ -7,3 +7,4 @@
 - Added brazilean portuguese
 - Changed to only-server mod, clients won't be able to run it
 - Added an icon
+- The mod can now be used in 1.20, 1.20.1 and 1.20.2
