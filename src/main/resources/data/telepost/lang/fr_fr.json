@@ -9,7 +9,7 @@
   "telepost.homepost": "Vous avez fait du poste à: %s votre poste maison",
   "telepost.unknown_post": "Poste inconnu",
   "telepost.unknown_player": "Joueur inconnu",
-  "telepost.teleport.homepost": "Vous avez été téléporté à votre poste maison",
+  "telepost.teleport.homepost": "Bienvenue à votre poste maison",
   "telepost.teleport.homepost.other": "Bienvenue au post maison de %s",
   "telepost.teleport.named_post": "Bienvenue à %s",
   "telepost.no_homepost": "Le poste maison n'a pas pu être trouvé",
