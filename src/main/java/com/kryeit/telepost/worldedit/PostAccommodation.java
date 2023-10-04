@@ -6,8 +6,8 @@ import net.minecraft.server.network.ServerPlayerEntity;
 
 import static com.kryeit.telepost.post.Post.WIDTH;
 
-public class PostAccomodation {
-    public static void accomodate(Post post, ServerPlayerEntity player) {
+public class PostAccommodation {
+    public static void accommodate(Post post, ServerPlayerEntity player) {
         int halfWidth = ((WIDTH - 1) / 2) + 10;
         int x = post.getX();
         int y = post.getY();

@@ -4,7 +4,7 @@
 
 1.1.c
 - Adjusted an entry in translation
-- Now if you have WorldEdit installed, the terrain where the post is build will be somewhat accomodated for it to be placed (softdepend)
+- Now if you have WorldEdit installed, the terrain where the post is build will be somewhat accommodated for it to be placed (softdepend)
 - Fixed the mod not being able to detect GriefDefender installed
 
 1.1.b
