@@ -1,3 +1,7 @@
+1.1.d
+- Added /h alias for /home
+- Added /v alias for /visit
+
 1.1.c
 - Adjusted an entry in translation
 - Now if you have WorldEdit installed, the terrain where the post is build will be somewhat accomodated for it to be placed (softdepend)

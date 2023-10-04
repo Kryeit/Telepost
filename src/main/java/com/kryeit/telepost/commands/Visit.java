@@ -90,5 +90,12 @@ public class Visit {
                         .executes(context -> execute(context, StringArgumentType.getString(context, "name")))
                 )
         );
+
+        dispatcher.register(CommandManager.literal("v")
+                .then(CommandManager.argument("name", StringArgumentType.word())
+                        .suggests(PlayerSuggestionProvider.suggestPostNamesAndOnlinePlayers())
+                        .executes(context -> execute(context, StringArgumentType.getString(context, "name")))
+                )
+        );
     }
 }

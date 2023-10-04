@@ -58,5 +58,9 @@ public class Home {
         dispatcher.register(CommandManager.literal("home")
                 .executes(Home::execute)
         );
+
+        dispatcher.register(CommandManager.literal("h")
+                .executes(Home::execute)
+        );
     }
 }
