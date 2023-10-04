@@ -1,15 +1,18 @@
 package com.kryeit.telepost.post;
 
 import com.kryeit.telepost.MinecraftServerSupplier;
+import com.kryeit.telepost.Telepost;
+import com.kryeit.telepost.compat.CompatAddon;
+import com.kryeit.telepost.worldedit.PostAccomodation;
 import net.minecraft.block.Block;
+import net.minecraft.fluid.FluidState;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
+import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructurePlacementData;
 import net.minecraft.structure.StructureTemplate;
 import net.minecraft.structure.StructureTemplateManager;
-import net.minecraft.util.BlockMirror;
-import net.minecraft.util.BlockRotation;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockBox;
 import net.minecraft.util.math.BlockPos;
@@ -42,17 +45,20 @@ public class PostBuilder {
         }
         return template;
     }
+
     public static void placeStructure(Post post) {
+        FluidState state = WORLD.getBlockState(new BlockPos(post.getX(), post.getY() - 1, post.getZ())).getFluidState();
+        if (!state.isIn(FluidTags.WATER) && CompatAddon.WORLD_EDIT.isLoaded())
+            PostAccomodation.accomodate(post, Telepost.player);
+
         BlockPos pos = post.getBlockPos();
+
         RegistryEntry<Biome> biome = post.getBiome();
 
         Optional<StructureTemplate> template = getStructureTemplate(biome.getKey());
 
         if (template.isPresent()) {
-            StructurePlacementData placementData = new StructurePlacementData()
-                    .setMirror(BlockMirror.values()[new java.util.Random().nextInt(BlockMirror.values().length)])
-                    .setRotation(BlockRotation.NONE)
-                    .setIgnoreEntities(false);
+            StructurePlacementData placementData = new StructurePlacementData();
 
             BlockBox boundingBox = template.get().calculateBoundingBox(placementData, pos);
 

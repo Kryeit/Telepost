@@ -40,8 +40,12 @@ public class BuildPosts {
             return 0;
         }
 
-        Telepost.postBuilding = true;
+        if (CompatAddon.WORLD_EDIT.isLoaded()) {
+            player.sendMessage(Text.of("Please, do NOT log off, due to WE requiring the player to be online"));
+        }
 
+        Telepost.postBuilding = true;
+        Telepost.player = player;
         return Command.SINGLE_SUCCESS;
     }
 
