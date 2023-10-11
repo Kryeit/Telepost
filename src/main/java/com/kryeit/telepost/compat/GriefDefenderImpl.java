@@ -2,13 +2,9 @@ package com.kryeit.telepost.compat;
 
 import com.griefdefender.api.GriefDefender;
 import com.griefdefender.api.User;
-import com.griefdefender.api.claim.Claim;
-import com.griefdefender.api.claim.ClaimGroup;
-import com.griefdefender.api.claim.ClaimResult;
-import com.griefdefender.api.claim.ClaimTypes;
+import com.griefdefender.api.claim.*;
 import com.griefdefender.api.data.ClaimData;
 import com.griefdefender.lib.flowpowered.math.vector.Vector3i;
-import com.griefdefender.lib.kyori.adventure.text.Component;
 import com.kryeit.telepost.post.Post;
 
 import java.util.UUID;
@@ -26,17 +22,18 @@ public class GriefDefenderImpl {
 
     public static void createClaim(Post post) {
 
-        ClaimGroup claimGroup = ClaimGroup.builder().description(Component.text("Post claims")).name("Posts").build();
+        ClaimGroup claimGroup = GriefDefender.getCore().getAdminClaimGroupsByName().get("posts");
 
         // Calculate the corners of the claim
         Vector3i lowerCorner = new Vector3i(post.getX() - WIDTH, post.getY() - 6, post.getZ() - WIDTH);
-        Vector3i upperCorner = new Vector3i(post.getX() + WIDTH, WORLD.getHeight(), post.getZ() + WIDTH); // Set 255 as max Y value for the upper corner
+        Vector3i upperCorner = new Vector3i(post.getX() + WIDTH, WORLD.getHeight(), post.getZ() + WIDTH);
 
         // Create the claim
         ClaimResult claimResult = Claim.builder()
                 .bounds(lowerCorner, upperCorner)
                 .world(GriefDefender.getCore().getWorldUniqueId(WORLD))
                 .cuboid(true)
+                .denyMessages(true)
                 .type(ClaimTypes.ADMIN)
                 .build();
         if(claimResult.getClaim() == null) return;

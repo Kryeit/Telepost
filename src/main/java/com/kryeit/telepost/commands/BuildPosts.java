@@ -1,5 +1,10 @@
 package com.kryeit.telepost.commands;
 
+import com.griefdefender.api.GriefDefender;
+import com.griefdefender.api.claim.ClaimGroup;
+import com.griefdefender.api.claim.ClaimGroupSyncModes;
+import com.griefdefender.api.claim.ClaimGroupTypes;
+import com.griefdefender.lib.kyori.adventure.text.Component;
 import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.TelepostPermissions;
 import com.kryeit.telepost.Utils;
@@ -29,15 +34,22 @@ public class BuildPosts {
             return 0;
         }
 
-        if (CompatAddon.GRIEF_DEFENDER.isLoaded()) {
-            player.sendMessage(Text.of("Posts are starting to build and claim (GriefDefender is Loaded)"));
-        } else {
-            player.sendMessage(Text.of("Posts are starting to build"));
-        }
-
         if (WORLDBORDER > 1_000_000) {
             player.sendMessage(Text.of("Your worldboder is " + WORLDBORDER + " please set your worldborder with /worldborder set <diameter>"));
             return 0;
+        }
+
+        if (CompatAddon.GRIEF_DEFENDER.isLoaded()) {
+            player.sendMessage(Text.of("Posts are starting to build and claim (GriefDefender is Loaded)"));
+            GriefDefender.getCore().deleteAdminClaimGroup("posts");
+            ClaimGroup.builder()
+                    .description(Component.text("Post claims"))
+                    .name("posts")
+                    .type(ClaimGroupTypes.ADMIN)
+                    .syncMode(ClaimGroupSyncModes.ALL)
+                    .build();
+        } else {
+            player.sendMessage(Text.of("Posts are starting to build"));
         }
 
         if (CompatAddon.WORLD_EDIT.isLoaded()) {

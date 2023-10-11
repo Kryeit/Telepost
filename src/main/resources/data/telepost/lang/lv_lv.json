@@ -1,0 +1,18 @@
+{
+  "telepost.standing": "Jums vajag jāstāv uz platformās.",
+  "telepost.invite": "Tu esi ielūdzis %s uz savu mājas platformu līdz nākamajam restartam.",
+  "telepost.nearest.named": "Tuvākā platforma ir: %s, tā ir %s",
+  "telepost.nearest": "Tuvākā platforma ir: %s",
+  "telepost.already_named": "Platformai jau ir vārds.",
+  "telepost.name.claimblocks": "Tev vajaga vismaz %s claim bloki nosauktu platformu.",
+  "telepost.named": "Tuvākā platforma ir nosaukta %s at: %s",
+  "telepost.homepost": "Tu esi izveidojis platformu pie: %s par savu dzīvesvietu.",
+  "telepost.unknown_post": "Nezināma platforma.",
+  "telepost.unknown_player": "Nezināms spēlētājs.",
+  "telepost.teleport.homepost": "Sveicināti uz jūsu mājas platformās",
+  "telepost.teleport.homepost.other": "Sveicināti %s mājas platformās.",
+  "telepost.teleport.named_post": "Sveicināti %s",
+  "telepost.no_homepost": "Mājas platforma nav atrasts.",
+  "telepost.no_invite": "Tu nēsi ielūgts",
+  "telepost.no_permission": "Jūs nevarat izpildīt šo komandu."
+}

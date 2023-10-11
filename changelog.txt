@@ -1,6 +1,9 @@
 1.1.d
 - Added /h alias for /home
 - Added /v alias for /visit
+- Added /closestpost and /post alias for /nearestpost
+- Added latvian translation
+- Fixed GriefDefender claimgroup creation
 
 1.1.c
 - Adjusted an entry in translation

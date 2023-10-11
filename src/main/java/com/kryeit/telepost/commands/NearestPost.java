@@ -38,12 +38,19 @@ public class NearestPost {
             text = TelepostMessages.getMessage(player, "telepost.nearest", Formatting.WHITE, post.getStringCoords());
         }
         player.sendMessage(text);
-
         return Command.SINGLE_SUCCESS;
     }
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("nearestpost")
+                .executes(NearestPost::execute)
+        );
+
+        dispatcher.register(CommandManager.literal("closestpost")
+                .executes(NearestPost::execute)
+        );
+
+        dispatcher.register(CommandManager.literal("post")
                 .executes(NearestPost::execute)
         );
     }

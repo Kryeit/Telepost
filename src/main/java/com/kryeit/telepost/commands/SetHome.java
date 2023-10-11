@@ -42,5 +42,9 @@ public class SetHome {
         dispatcher.register(CommandManager.literal("sethome")
                 .executes(SetHome::execute)
         );
+
+        dispatcher.register(CommandManager.literal("setpost")
+                .executes(SetHome::execute)
+        );
     }
 }
