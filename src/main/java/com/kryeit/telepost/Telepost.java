@@ -1,11 +1,15 @@
 package com.kryeit.telepost;
 
 import com.kryeit.telepost.commands.*;
+import com.kryeit.telepost.compat.BlueMapImpl;
+import com.kryeit.telepost.compat.CompatAddon;
 import com.kryeit.telepost.listeners.ServerTick;
 import com.kryeit.telepost.storage.CommandDumpDB;
 import com.kryeit.telepost.storage.IDatabase;
 import com.kryeit.telepost.storage.LevelDBImpl;
 import com.kryeit.telepost.storage.PlayerNamedPosts;
+import de.bluecolored.bluemap.api.gson.MarkerGson;
+import de.bluecolored.bluemap.api.markers.MarkerSet;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
@@ -13,6 +17,7 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.World;
 
+import java.io.FileReader;
 import java.io.IOException;
 import java.util.HashMap;
 import java.util.Map;
@@ -36,6 +41,15 @@ public class Telepost implements DedicatedServerModInitializer {
         registerCommands();
         registerDisableEvent();
         registerEvents();
+
+        if (CompatAddon.BLUE_MAP.isLoaded()) {
+            try (FileReader reader = new FileReader("marker-file.json")) {
+                BlueMapImpl.markerSet = MarkerGson.INSTANCE.fromJson(reader, MarkerSet.class);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+            BlueMapImpl.updateMarkerSet();
+        }
     }
 
     public void registerCommands() {

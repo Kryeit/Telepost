@@ -1,3 +1,7 @@
+1.1.e
+- When a player names a post they will get manager trust in the admin claim the post is in (GriefDefender compat)
+- When anyone names a post, a bluemap poi marker will be created (BlueMap compat)
+
 1.1.d
 - Added /h alias for /home
 - Added /v alias for /visit

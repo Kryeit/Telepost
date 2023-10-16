@@ -1,9 +1,14 @@
 package com.kryeit.telepost.commands;
 
+import com.flowpowered.math.vector.Vector3d;
+import com.griefdefender.api.GriefDefender;
+import com.griefdefender.api.claim.Claim;
+import com.griefdefender.api.claim.TrustTypes;
 import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.TelepostMessages;
 import com.kryeit.telepost.TelepostPermissions;
 import com.kryeit.telepost.Utils;
+import com.kryeit.telepost.compat.BlueMapImpl;
 import com.kryeit.telepost.compat.CompatAddon;
 import com.kryeit.telepost.compat.GriefDefenderImpl;
 import com.kryeit.telepost.post.Post;
@@ -12,17 +17,23 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import de.bluecolored.bluemap.api.BlueMapAPI;
+import de.bluecolored.bluemap.api.BlueMapMap;
+import de.bluecolored.bluemap.api.gson.MarkerGson;
+import de.bluecolored.bluemap.api.markers.POIMarker;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import static com.kryeit.telepost.compat.GriefDefenderImpl.NEEDED_CLAIMBLOCKS;
+import static com.kryeit.telepost.post.Post.WORLD;
 
 public class NamePost {
     public static int execute(CommandContext<ServerCommandSource> context, String name) throws IOException {
@@ -61,8 +72,28 @@ public class NamePost {
                 return 0;
             }
             Telepost.getInstance().playerNamedPosts.addElement(name, player.getUuid());
+
+            Claim claim = GriefDefender.getCore().getClaimAt(post.getPos());
+            if (claim != null && claim.isAdminClaim()) {
+                claim.addUserTrust(player.getUuid(), TrustTypes.MANAGER);
+            }
         }
 
+        if (CompatAddon.BLUE_MAP.isLoaded()) {
+            POIMarker marker = POIMarker.builder()
+                    .label(name)
+                    .position(new Vector3d(post.getX(), post.getY(), post.getZ()))
+                    .build();
+            BlueMapImpl.markerSet.put(name, marker);
+
+            try (FileWriter writer = new FileWriter("marker-file.json")) {
+                MarkerGson.INSTANCE.toJson(BlueMapImpl.markerSet, writer);
+            } catch (IOException ex) {
+                ex.printStackTrace();
+            }
+
+            BlueMapImpl.updateMarkerSet();
+        }
         Telepost.getDB().addNamedPost(new NamedPost(Utils.nameToId(name), name, post.getPos()));
 
         text = TelepostMessages.getMessage(player, "telepost.named", Formatting.GREEN, name, post.getStringCoords());
