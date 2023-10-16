@@ -1,6 +1,9 @@
-1.1.e
+1.1.f
 - When a player names a post they will get manager trust in the admin claim the post is in (GriefDefender compat)
 - When anyone names a post, a bluemap poi marker will be created (BlueMap compat)
+
+1.1.e
+- Solved debug code in /nearestpost
 
 1.1.d
 - Added /h alias for /home
