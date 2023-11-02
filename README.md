@@ -1,3 +1,7 @@
+<p align="center">
+  <img width="200" src="https://kryeit.com/images/telepost_logo.png">
+</p>
+
 <h1 align="center">Telepost  <br>
 	<a href="https://www.curseforge.com/minecraft/mc-mods/telepost/files"><img src="https://cf.way2muchnoise.eu/versions/telepost.svg" alt="Supported Versions"></a>
 	<a href="https://github.com/Kryeit/Telepost/LICENSE"><img src="https://img.shields.io/github/license/Creators-of-Create/Create?style=flat&color=900c3f" alt="License"></a>
