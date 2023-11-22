@@ -17,8 +17,6 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import de.bluecolored.bluemap.api.BlueMapAPI;
-import de.bluecolored.bluemap.api.BlueMapMap;
 import de.bluecolored.bluemap.api.gson.MarkerGson;
 import de.bluecolored.bluemap.api.markers.POIMarker;
 import net.minecraft.server.command.CommandManager;
@@ -33,7 +31,6 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 import static com.kryeit.telepost.compat.GriefDefenderImpl.NEEDED_CLAIMBLOCKS;
-import static com.kryeit.telepost.post.Post.WORLD;
 
 public class NamePost {
     public static int execute(CommandContext<ServerCommandSource> context, String name) throws IOException {
