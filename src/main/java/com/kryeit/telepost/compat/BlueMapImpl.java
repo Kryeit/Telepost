@@ -1,8 +1,15 @@
 package com.kryeit.telepost.compat;
 
+import com.flowpowered.math.vector.Vector3d;
+import com.kryeit.telepost.post.Post;
 import de.bluecolored.bluemap.api.BlueMapAPI;
 import de.bluecolored.bluemap.api.BlueMapMap;
+import de.bluecolored.bluemap.api.gson.MarkerGson;
 import de.bluecolored.bluemap.api.markers.MarkerSet;
+import de.bluecolored.bluemap.api.markers.POIMarker;
+
+import java.io.FileWriter;
+import java.io.IOException;
 
 import static com.kryeit.telepost.post.Post.WORLD;
 
@@ -15,5 +22,21 @@ public class BlueMapImpl {
                 map.getMarkerSets().put("posts", BlueMapImpl.markerSet);
             }
         });
+    }
+
+    public static void createMarker(Post post, String name) {
+        POIMarker marker = POIMarker.builder()
+                .label(name)
+                .position(new Vector3d(post.getX(), post.getY(), post.getZ()))
+                .build();
+        BlueMapImpl.markerSet.put(name, marker);
+
+        try (FileWriter writer = new FileWriter("marker-file.json")) {
+            MarkerGson.INSTANCE.toJson(BlueMapImpl.markerSet, writer);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+        BlueMapImpl.updateMarkerSet();
     }
 }

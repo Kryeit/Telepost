@@ -1,6 +1,5 @@
 package com.kryeit.telepost.commands;
 
-import com.flowpowered.math.vector.Vector3d;
 import com.griefdefender.api.GriefDefender;
 import com.griefdefender.api.claim.Claim;
 import com.griefdefender.api.claim.TrustTypes;
@@ -17,15 +16,12 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
-import de.bluecolored.bluemap.api.gson.MarkerGson;
-import de.bluecolored.bluemap.api.markers.POIMarker;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import java.io.FileWriter;
 import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Supplier;
@@ -77,19 +73,7 @@ public class NamePost {
         }
 
         if (CompatAddon.BLUE_MAP.isLoaded()) {
-            POIMarker marker = POIMarker.builder()
-                    .label(name)
-                    .position(new Vector3d(post.getX(), post.getY(), post.getZ()))
-                    .build();
-            BlueMapImpl.markerSet.put(name, marker);
-
-            try (FileWriter writer = new FileWriter("marker-file.json")) {
-                MarkerGson.INSTANCE.toJson(BlueMapImpl.markerSet, writer);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-
-            BlueMapImpl.updateMarkerSet();
+            BlueMapImpl.createMarker(post, name);
         }
         Telepost.getDB().addNamedPost(new NamedPost(Utils.nameToId(name), name, post.getPos()));
 
