@@ -1,14 +1,10 @@
 package com.kryeit.telepost.commands;
 
-import com.griefdefender.api.GriefDefender;
-import com.griefdefender.api.claim.ClaimGroup;
-import com.griefdefender.api.claim.ClaimGroupSyncModes;
-import com.griefdefender.api.claim.ClaimGroupTypes;
-import com.griefdefender.lib.kyori.adventure.text.Component;
 import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.TelepostPermissions;
 import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.compat.CompatAddon;
+import com.kryeit.telepost.compat.GriefDefenderImpl;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
@@ -41,23 +37,12 @@ public class BuildPosts {
 
         if (CompatAddon.GRIEF_DEFENDER.isLoaded()) {
             player.sendMessage(Text.of("Posts are starting to build and claim (GriefDefender is Loaded)"));
-            GriefDefender.getCore().deleteAdminClaimGroup("posts");
-            ClaimGroup.builder()
-                    .description(Component.text("Post claims"))
-                    .name("posts")
-                    .type(ClaimGroupTypes.ADMIN)
-                    .syncMode(ClaimGroupSyncModes.ALL)
-                    .build();
+            GriefDefenderImpl.createClaimGroup();
         } else {
             player.sendMessage(Text.of("Posts are starting to build"));
         }
 
-        if (CompatAddon.WORLD_EDIT.isLoaded()) {
-            player.sendMessage(Text.of("Please, do NOT log off, due to WE requiring the player to be online"));
-        }
-
         Telepost.postBuilding = true;
-        Telepost.player = player;
         return Command.SINGLE_SUCCESS;
     }
 

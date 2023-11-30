@@ -2,12 +2,10 @@ package com.kryeit.telepost.compat;
 
 import com.griefdefender.api.GriefDefender;
 import com.griefdefender.api.User;
-import com.griefdefender.api.claim.Claim;
-import com.griefdefender.api.claim.ClaimGroup;
-import com.griefdefender.api.claim.ClaimResult;
-import com.griefdefender.api.claim.ClaimTypes;
+import com.griefdefender.api.claim.*;
 import com.griefdefender.api.data.ClaimData;
 import com.griefdefender.lib.flowpowered.math.vector.Vector3i;
+import com.griefdefender.lib.kyori.adventure.text.Component;
 import com.kryeit.telepost.post.Post;
 
 import java.util.UUID;
@@ -44,5 +42,15 @@ public class GriefDefenderImpl {
         // Set the claim group
         ClaimData claimData = claimResult.getClaim().getData();
         claimData.setClaimGroupUniqueId(claimGroup.getUniqueId());
+    }
+
+    public static void createClaimGroup() {
+        GriefDefender.getCore().deleteAdminClaimGroup("posts");
+        ClaimGroup.builder()
+                .description(Component.text("Post claims"))
+                .name("posts")
+                .type(ClaimGroupTypes.ADMIN)
+                .syncMode(ClaimGroupSyncModes.ALL)
+                .build();
     }
 }

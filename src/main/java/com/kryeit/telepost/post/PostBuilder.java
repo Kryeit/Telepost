@@ -1,7 +1,6 @@
 package com.kryeit.telepost.post;
 
 import com.kryeit.telepost.MinecraftServerSupplier;
-import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.compat.CompatAddon;
 import com.kryeit.telepost.worldedit.PostAccommodation;
 import net.minecraft.block.Block;
@@ -49,7 +48,7 @@ public class PostBuilder {
     public static void placeStructure(Post post) {
         FluidState state = WORLD.getBlockState(new BlockPos(post.getX(), post.getY() - 1, post.getZ())).getFluidState();
         if (!state.isIn(FluidTags.WATER) && CompatAddon.WORLD_EDIT.isLoaded())
-            PostAccommodation.accommodate(post, Telepost.player);
+            PostAccommodation.accommodate(post);
 
         BlockPos pos = post.getBlockPos();
 

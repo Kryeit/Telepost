@@ -14,7 +14,6 @@ import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
-import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.World;
 
 import java.io.FileReader;
@@ -32,7 +31,6 @@ public class Telepost implements DedicatedServerModInitializer {
     public PlayerNamedPosts playerNamedPosts;
     public static Map<UUID, UUID> invites = new HashMap<>();
     public static boolean postBuilding = false;
-    public static ServerPlayerEntity player = null;
 
     @Override
     public void onInitializeServer() {
