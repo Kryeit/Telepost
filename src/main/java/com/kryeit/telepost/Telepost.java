@@ -4,6 +4,7 @@ import com.kryeit.telepost.commands.*;
 import com.kryeit.telepost.compat.BlueMapImpl;
 import com.kryeit.telepost.compat.CompatAddon;
 import com.kryeit.telepost.listeners.ServerTick;
+import com.kryeit.telepost.post.StructureHandler;
 import com.kryeit.telepost.storage.CommandDumpDB;
 import com.kryeit.telepost.storage.IDatabase;
 import com.kryeit.telepost.storage.LevelDBImpl;
@@ -39,6 +40,8 @@ public class Telepost implements DedicatedServerModInitializer {
         registerCommands();
         registerDisableEvent();
         registerEvents();
+
+        StructureHandler.createStructures();
 
         if (CompatAddon.BLUE_MAP.isLoaded()) {
             try (FileReader reader = new FileReader("marker-file.json")) {
