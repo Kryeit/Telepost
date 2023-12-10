@@ -20,7 +20,7 @@
     "telepost.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=${loader_version}",
+    "fabricloader": "*",
     "fabric": "*",
     "minecraft": "1.20.1"
   }
