@@ -1,5 +1,6 @@
 plugins {
-    id 'fabric-loom' version '1.2-SNAPSHOT'
+    id 'com.github.johnrengelman.shadow' version '7.1.2'
+    id 'fabric-loom' version '1.4.+'
     id 'maven-publish'
 }
 
@@ -28,17 +29,16 @@ repositories {
         name = "BlueMap"
         url = 'https://jitpack.io'
     }
-
 }
 
 dependencies {
     minecraft "com.mojang:minecraft:${minecraft_version}"
     mappings "net.fabricmc:yarn:${yarn_mappings}:v2"
     modImplementation "net.fabricmc:fabric-loader:${loader_version}"
-
     modImplementation "net.fabricmc.fabric-api:fabric-api:${fabric_version}"
+
     implementation "org.iq80.leveldb:leveldb:${leveldb_version}"
-    compileOnly "com.griefdefender:api:${griefdefender_version}"
+    modImplementation "com.griefdefender:api:${griefdefender_version}"
     include(modImplementation("me.lucko:fabric-permissions-api:${luckperms_version}"))
     modImplementation include("xyz.nucleoid:server-translations-api:${servertranslations_version}")
     modImplementation "com.sk89q.worldedit:worldedit-fabric-mc${worldedit_version}"
@@ -55,6 +55,12 @@ processResources {
         expand "version": project.version,
                 "minecraft_version": project.minecraft_version,
                 "loader_version": project.loader_version
+    }
+}
+
+shadowJar {
+    dependencies {
+        include dependency("org.iq80.leveldb:leveldb:${leveldb_version}")
     }
 }
 
