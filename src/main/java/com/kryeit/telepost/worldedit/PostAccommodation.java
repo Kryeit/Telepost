@@ -28,8 +28,8 @@ import static com.kryeit.telepost.post.Post.WORLD;
 
 public class PostAccommodation {
     public static void accommodate(Post post) {
-        int width = ((WIDTH - 1) / 2) + 5;
-        int biggerWidth = ((WIDTH - 1) / 2) + 7;
+        int width = ((WIDTH - 1) / 2) + 7;
+        int biggerWidth = ((WIDTH - 1) / 2) + 10;
 
         int x = post.getX();
         int y = post.getY();
