@@ -63,8 +63,8 @@ public class PostBuilder {
 
             template.get().place(
                     ((ServerWorld) WORLD),
-                    pos.add(-boundingBox.getBlockCountX()/2, 0, -boundingBox.getBlockCountZ()/2),
-                    pos.add(-boundingBox.getBlockCountX()/2, 0, -boundingBox.getBlockCountZ()/2),
+                    pos.add(-boundingBox.getBlockCountX()/2, -1, -boundingBox.getBlockCountZ()/2),
+                    pos.add(-boundingBox.getBlockCountX()/2, -1, -boundingBox.getBlockCountZ()/2),
                     placementData,
                     Random.create(0),
                     Block.NOTIFY_ALL);

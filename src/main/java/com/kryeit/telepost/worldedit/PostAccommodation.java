@@ -5,6 +5,9 @@ import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.WorldEdit;
 import com.sk89q.worldedit.fabric.FabricAdapter;
+import com.sk89q.worldedit.function.mask.BlockMask;
+import com.sk89q.worldedit.function.mask.Mask;
+import com.sk89q.worldedit.function.mask.Masks;
 import com.sk89q.worldedit.math.BlockVector3;
 import com.sk89q.worldedit.math.Vector3;
 import com.sk89q.worldedit.math.convolution.GaussianKernel;
@@ -28,8 +31,8 @@ import static com.kryeit.telepost.post.Post.WORLD;
 
 public class PostAccommodation {
     public static void accommodate(Post post) {
-        int width = ((WIDTH - 1) / 2) + 7;
-        int biggerWidth = ((WIDTH - 1) / 2) + 10;
+        int width = ((WIDTH - 1) / 2) + 15;
+        int biggerWidth = ((WIDTH - 1) / 2) + 20;
 
         int x = post.getX();
         int y = post.getY();
@@ -43,7 +46,7 @@ public class PostAccommodation {
         start = Vector3.at(x + width, y, z + width);
         end = Vector3.at(x - width, y + 100, z - width);
 
-        cut(editSession, start, end);
+        cut(editSession, post, width);
 
         start = Vector3.at(x + width, y + 20, z + width);
         end = Vector3.at(x - width, y - 10, z - width);
@@ -55,7 +58,7 @@ public class PostAccommodation {
                     BlockTypes.AIR.getDefaultState()
             );
 
-            editSession.makeCylinder(BlockVector3.at(x, post.getY() - 15, z), editSession.getBlock(BlockVector3.at(x, post.getY() - 1, z)), width, width, 15, true);
+            editSession.makeCylinder(BlockVector3.at(x, post.getY() - 10, z), editSession.getBlock(BlockVector3.at(x, post.getY() - 1, z)), width, width, 15, true);
             editSession.close();
         } catch (MaxChangedBlocksException e) {
             e.printStackTrace();
@@ -67,10 +70,10 @@ public class PostAccommodation {
         smooth(start, end);
     }
 
-    private static void cut(EditSession editSession, Vector3 start, Vector3 end) {
-        Region region = new CuboidRegion(editSession.getWorld(), start.toBlockPoint(), end.toBlockPoint());
+    private static void cut(EditSession editSession, Post post, int witdh) {
         try {
-            editSession.setBlocks(region, FabricAdapter.adapt(Blocks.AIR).getDefaultState());
+            editSession.makeCylinder(BlockVector3.at(post.getX(), post.getY(), post.getZ()), FabricAdapter.adapt(Blocks.AIR).getDefaultState()
+                    , witdh, witdh, 100, true);
         } catch (MaxChangedBlocksException e) {
             e.printStackTrace();
         }
@@ -82,10 +85,21 @@ public class PostAccommodation {
 
         Region region = new CuboidRegion(editSession.getWorld(), start.toBlockPoint(), end.toBlockPoint());
 
+//        BlockMask blockMask = new BlockMask(null);
+//
+//        List<BlockType> blocks = new ArrayList<>(BlockCategories.LOGS.getAll().stream().toList());
+//        blocks.addAll(BlockCategories.LEAVES.getAll().stream().toList());
+//
+//        for (BlockType block : blocks) {
+//            blockMask.add(block.getDefaultState().toBaseBlock());
+//        }
+//
+//        Mask mask = Masks.negate(blockMask);
+
         HeightMap heightMap = new HeightMap(editSession, region, null);
         HeightMapFilter filter = new HeightMapFilter(new GaussianKernel(5, 1.0));
         try {
-            heightMap.applyFilter(filter, 3);
+            heightMap.applyFilter(filter, 10);
         } catch (MaxChangedBlocksException e) {
             throw new RuntimeException(e);
         }
