@@ -1,6 +1,5 @@
 package com.kryeit.telepost.config;
 
-import com.kryeit.telepost.post.Post;
 import com.kryeit.telepost.utils.JSONObject;
 
 import java.io.File;
@@ -8,9 +7,6 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
 
 public class ConfigReader {
 
@@ -22,7 +18,7 @@ public class ConfigReader {
     }
 
     public static void readFile(Path path) throws IOException {
-        String config = readOrCopyFile(path.resolve("config.json"), "/example_config.json");
+        String config = readOrCopyFile(path.resolve("config.json"), "/config.json");
         JSONObject configObject = new JSONObject(config);
         WIDTH = Integer.parseInt(configObject.getString("post-width"));
         GAP = Integer.parseInt(configObject.getString("post-gap"));
