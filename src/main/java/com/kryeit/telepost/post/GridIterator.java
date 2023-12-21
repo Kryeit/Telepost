@@ -5,7 +5,7 @@ import net.minecraft.util.math.Vec3d;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 
-import static com.kryeit.telepost.post.Post.GAP;
+import static com.kryeit.telepost.config.ConfigReader.GAP;
 import static com.kryeit.telepost.post.Post.WORLD;
 
 public class GridIterator implements Iterator<Vec3d> {

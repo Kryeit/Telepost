@@ -14,6 +14,9 @@ import java.util.Map;
 
 public class ConfigReader {
 
+    public static int GAP;
+    public static int WIDTH;
+
     private ConfigReader() {
 
     }
@@ -21,8 +24,8 @@ public class ConfigReader {
     public static void readFile(Path path) throws IOException {
         String config = readOrCopyFile(path.resolve("config.json"), "/example_config.json");
         JSONObject configObject = new JSONObject(config);
-        Post.WIDTH = Integer.parseInt(configObject.getString("post-width"));
-        Post.GAP = Integer.parseInt(configObject.getString("post-gap"));
+        WIDTH = Integer.parseInt(configObject.getString("post-width"));
+        GAP = Integer.parseInt(configObject.getString("post-gap"));
     }
 
     public static String readOrCopyFile(Path path, String exampleFile) throws IOException {

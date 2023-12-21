@@ -17,19 +17,19 @@ import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.world.World;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.*;
 
-import static com.mojang.text2speech.Narrator.LOGGER;
-
-
 public class Telepost implements DedicatedServerModInitializer {
 
     public static Telepost instance;
 
+    public static final Logger LOGGER = LoggerFactory.getLogger(Telepost.class);
     public IDatabase database;
     public PlayerNamedPosts playerNamedPosts;
     public static Map<UUID, UUID> invites = new HashMap<>();

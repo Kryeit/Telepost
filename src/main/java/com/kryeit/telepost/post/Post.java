@@ -17,12 +17,13 @@ import net.minecraft.world.biome.Biome;
 
 import java.util.Optional;
 
+import static com.kryeit.telepost.config.ConfigReader.GAP;
+import static com.kryeit.telepost.config.ConfigReader.WIDTH;
+
 public class Post {
 
     public static World WORLD = MinecraftServerSupplier.getServer().getOverworld();
 
-    public static int GAP;
-    public static int WIDTH;
     private final int x;
     private final int z;
 

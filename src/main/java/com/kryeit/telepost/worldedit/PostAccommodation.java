@@ -26,7 +26,7 @@ import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 
-import static com.kryeit.telepost.post.Post.WIDTH;
+import static com.kryeit.telepost.config.ConfigReader.WIDTH;
 import static com.kryeit.telepost.post.Post.WORLD;
 
 public class PostAccommodation {
