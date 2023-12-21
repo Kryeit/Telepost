@@ -21,8 +21,8 @@ public class Post {
 
     public static World WORLD = MinecraftServerSupplier.getServer().getOverworld();
 
-    public static final int GAP = 100;
-    public static final int WIDTH = 23;
+    public static int GAP;
+    public static int WIDTH;
     private final int x;
     private final int z;
 

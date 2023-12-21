@@ -3,6 +3,7 @@ package com.kryeit.telepost;
 import com.kryeit.telepost.commands.*;
 import com.kryeit.telepost.compat.BlueMapImpl;
 import com.kryeit.telepost.compat.CompatAddon;
+import com.kryeit.telepost.config.ConfigReader;
 import com.kryeit.telepost.listeners.ServerTick;
 import com.kryeit.telepost.post.StructureHandler;
 import com.kryeit.telepost.storage.CommandDumpDB;
@@ -19,9 +20,10 @@ import net.minecraft.world.World;
 
 import java.io.FileReader;
 import java.io.IOException;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.UUID;
+import java.nio.file.Path;
+import java.util.*;
+
+import static com.mojang.text2speech.Narrator.LOGGER;
 
 
 public class Telepost implements DedicatedServerModInitializer {
@@ -50,6 +52,13 @@ public class Telepost implements DedicatedServerModInitializer {
                 ex.printStackTrace();
             }
             BlueMapImpl.updateMarkerSet();
+        }
+
+        try {
+            LOGGER.info("Reading config file...");
+            ConfigReader.readFile(Path.of("config/telepost"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
         }
     }
 
