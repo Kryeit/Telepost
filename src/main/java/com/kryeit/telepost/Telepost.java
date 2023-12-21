@@ -84,7 +84,7 @@ public class Telepost implements DedicatedServerModInitializer {
     public void initializeDatabases() {
         database = new LevelDBImpl();
         try {
-            playerNamedPosts = new PlayerNamedPosts("mods/Telepost/PlayerPosts");
+            playerNamedPosts = new PlayerNamedPosts("mods/telepost/PlayerPosts");
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -32,7 +32,7 @@ public class LevelDBImpl implements IDatabase {
         options.cacheSize(4_194_304); // 4 MB
 
         try {
-            return Iq80DBFactory.factory.open(new File("mods/Telepost/db/" + name), options);
+            return Iq80DBFactory.factory.open(new File("mods/telepost/db/" + name), options);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

@@ -32,6 +32,8 @@ public class NearestPost {
 
         Text text;
 
+        post.build();
+
         Optional<NamedPost> namedPost = post.getNamedPost();
         if (namedPost.isPresent()) {
             text = TelepostMessages.getMessage(player, "telepost.nearest.named", Formatting.WHITE, post.getStringCoords(), namedPost.get().name());
