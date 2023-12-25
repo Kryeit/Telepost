@@ -12,6 +12,7 @@ public class ConfigReader {
 
     public static int GAP;
     public static int WIDTH;
+    public static int WORLDBORDER;
 
     private ConfigReader() {
 
@@ -22,6 +23,7 @@ public class ConfigReader {
         JSONObject configObject = new JSONObject(config);
         WIDTH = Integer.parseInt(configObject.getString("post-width"));
         GAP = Integer.parseInt(configObject.getString("post-gap"));
+        WORLDBORDER = Integer.parseInt(configObject.getString("worldborder"));
     }
 
     public static String readOrCopyFile(Path path, String exampleFile) throws IOException {

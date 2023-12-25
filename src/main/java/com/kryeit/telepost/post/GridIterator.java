@@ -6,10 +6,10 @@ import java.util.Iterator;
 import java.util.NoSuchElementException;
 
 import static com.kryeit.telepost.config.ConfigReader.GAP;
+import static com.kryeit.telepost.config.ConfigReader.WORLDBORDER;
 import static com.kryeit.telepost.post.Post.WORLD;
 
 public class GridIterator implements Iterator<Vec3d> {
-    public static int WORLDBORDER = (int) (WORLD.getWorldBorder().getSize()/2);
     private final int endX;
     private final int endZ;
     private int currentX = -(WORLDBORDER / GAP) * GAP;;

@@ -15,7 +15,7 @@ import net.minecraft.text.Text;
 
 import java.util.function.Supplier;
 
-import static com.kryeit.telepost.post.GridIterator.WORLDBORDER;
+import static com.kryeit.telepost.config.ConfigReader.WORLDBORDER;
 
 public class BuildPosts {
     public static int execute(CommandContext<ServerCommandSource> context) {
@@ -30,8 +30,8 @@ public class BuildPosts {
             return 0;
         }
 
-        if (WORLDBORDER > 1_000_000) {
-            player.sendMessage(Text.of("Your worldboder is " + WORLDBORDER + " please set your worldborder with /worldborder set <diameter>"));
+        if (WORLDBORDER > 2_000_000) {
+            player.sendMessage(Text.of("Your worldboder is " + WORLDBORDER + ", and would take too long to build posts. Select in config/telepost/config.yml a smaller border."));
             return 0;
         }
 
