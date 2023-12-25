@@ -85,16 +85,16 @@ public class PostAccommodation {
 
         Region region = new CuboidRegion(editSession.getWorld(), start.toBlockPoint(), end.toBlockPoint());
 
-//        BlockMask blockMask = new BlockMask(null);
-//
-//        List<BlockType> blocks = new ArrayList<>(BlockCategories.LOGS.getAll().stream().toList());
-//        blocks.addAll(BlockCategories.LEAVES.getAll().stream().toList());
-//
-//        for (BlockType block : blocks) {
-//            blockMask.add(block.getDefaultState().toBaseBlock());
-//        }
-//
-//        Mask mask = Masks.negate(blockMask);
+        BlockMask blockMask = new BlockMask(FabricAdapter.adapt(WORLD));
+
+        List<BlockType> blocks = new ArrayList<>(BlockCategories.LOGS.getAll().stream().toList());
+        blocks.addAll(BlockCategories.LEAVES.getAll().stream().toList());
+
+        for (BlockType block : blocks) {
+            blockMask.add(block.getDefaultState().toBaseBlock());
+        }
+
+        Mask mask = Masks.negate(blockMask);
 
         HeightMap heightMap = new HeightMap(editSession, region, null);
         HeightMapFilter filter = new HeightMapFilter(new GaussianKernel(5, 1.0));
