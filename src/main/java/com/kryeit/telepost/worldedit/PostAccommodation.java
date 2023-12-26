@@ -32,7 +32,7 @@ import static com.kryeit.telepost.post.Post.WORLD;
 public class PostAccommodation {
     public static void accommodate(Post post) {
         int width = WIDTH;
-        int biggerWidth = WIDTH + 4;
+        int biggerWidth = WIDTH + 2;
 
         int x = post.getX();
         int y = post.getY();
