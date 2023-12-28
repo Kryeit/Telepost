@@ -96,7 +96,7 @@ public class PostAccommodation {
 
         Mask mask = Masks.negate(blockMask);
 
-        HeightMap heightMap = new HeightMap(editSession, region, null);
+        HeightMap heightMap = new HeightMap(editSession, region, mask);
         HeightMapFilter filter = new HeightMapFilter(new GaussianKernel(5, 1.0));
         try {
             heightMap.applyFilter(filter, 10);
