@@ -2,9 +2,11 @@ package com.kryeit.telepost.listeners;
 
 import com.kryeit.telepost.MinecraftServerSupplier;
 import com.kryeit.telepost.Telepost;
+import com.kryeit.telepost.compat.CompatAddon;
 import com.kryeit.telepost.post.GridIterator;
 import com.kryeit.telepost.post.Post;
 import com.kryeit.telepost.post.PostBuilder;
+import com.kryeit.telepost.worldedit.PostAccommodation;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.minecraft.server.MinecraftServer;
 import net.minecraft.text.Text;
@@ -22,7 +24,7 @@ public class ServerTick implements ServerTickEvents.EndTick {
         tickCounter++;
         if (gridIterator == null) gridIterator = new GridIterator();
 
-        int timerInterval = 20;
+        int timerInterval = 200;
         if (tickCounter >= timerInterval) {
             tickCounter = 0;
 

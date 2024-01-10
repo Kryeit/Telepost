@@ -32,7 +32,7 @@ public class NearestPost {
 
         Text text;
 
-        post.build();
+        PostAccommodation.accommodate(post);
 
         Optional<NamedPost> namedPost = post.getNamedPost();
         if (namedPost.isPresent()) {

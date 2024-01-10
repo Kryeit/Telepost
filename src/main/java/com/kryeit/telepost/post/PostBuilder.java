@@ -46,9 +46,9 @@ public class PostBuilder {
     }
 
     public static void placeStructure(Post post) {
-        FluidState state = WORLD.getBlockState(new BlockPos(post.getX(), post.getY() - 1, post.getZ())).getFluidState();
-        if (!state.isIn(FluidTags.WATER) && CompatAddon.WORLD_EDIT.isLoaded())
-            PostAccommodation.accommodate(post);
+        //FluidState state = WORLD.getBlockState(new BlockPos(post.getX(), post.getY() - 1, post.getZ())).getFluidState();
+        //if (!state.isIn(FluidTags.WATER) && CompatAddon.WORLD_EDIT.isLoaded())
+        //    PostAccommodation.accommodate(post);
 
         BlockPos pos = post.getBlockPos();
 

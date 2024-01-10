@@ -5,6 +5,7 @@ import com.kryeit.telepost.TelepostPermissions;
 import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.compat.CompatAddon;
 import com.kryeit.telepost.compat.GriefDefenderImpl;
+import com.kryeit.telepost.worldedit.PostAccommodation;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
@@ -16,6 +17,7 @@ import net.minecraft.text.Text;
 import java.util.function.Supplier;
 
 import static com.kryeit.telepost.config.ConfigReader.WORLDBORDER;
+import static com.kryeit.telepost.worldedit.PostAccommodation.getEditSession;
 
 public class BuildPosts {
     public static int execute(CommandContext<ServerCommandSource> context) {
