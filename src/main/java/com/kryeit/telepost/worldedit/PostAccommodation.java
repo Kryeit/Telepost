@@ -86,7 +86,7 @@ public class PostAccommodation {
         BlockCategoryMask leavesMask = new BlockCategoryMask(editSession.getWorld(), BlockCategories.LEAVES);
 
         // Combine masks
-        Mask combinedMask = new MaskIntersection(logsMask, leavesMask);
+        Mask combinedMask = new MaskUnion(logsMask, leavesMask);
 
         // Negate the combined mask to apply smoothing to all blocks except logs and leaves
         Mask mask = Masks.negate(combinedMask);
