@@ -44,31 +44,28 @@ public class PostAccommodation {
 
         try (EditSession editSession = getEditSession()) {
 
+            cut(editSession, post, biggerWidth);
 
-            start = Vector3.at(x + width, y, z + width);
-            end = Vector3.at(x - width, y + 100, z - width);
-
-            cut(editSession, post, width);
-
-            start = Vector3.at(x + biggerWidth, y + 20, z + biggerWidth);
+            start = Vector3.at(x + biggerWidth, y - 1, z + biggerWidth);
             end = Vector3.at(x - biggerWidth, y - 10, z - biggerWidth);
-            smooth(editSession, start, end);
 
-            editSession.replaceBlocks(
-                    new CuboidRegion(editSession.getWorld(), start.toBlockPoint(), end.toBlockPoint()),
-                    getFoliage(),
-                    BlockTypes.AIR.getDefaultState()
+            removeFoliage(editSession, start.toBlockPoint(), end.toBlockPoint());
+
+            editSession.makeCylinder(
+                    BlockVector3.at(x, post.getY() - 10, z),
+                    editSession.getBlock(BlockVector3.at(x, post.getY() - 1, z)),
+                    width,
+                    width,
+                    10,
+                    true
             );
-
-            editSession.makeCylinder(BlockVector3.at(x, post.getY() - 10, z), editSession.getBlock(BlockVector3.at(x, post.getY() - 1, z)), width, width, 10, true);
-
 
         } catch (MaxChangedBlocksException e) {
             e.printStackTrace();
         }
 
-        try(EditSession editSession = getEditSession()) {
-            start = Vector3.at(x + biggerWidth, y - 10, z + biggerWidth);
+        try (EditSession editSession = getEditSession()){
+            start = Vector3.at(x + biggerWidth, y - 15, z + biggerWidth);
             end = Vector3.at(x - biggerWidth, y + 100, z - biggerWidth);
             smooth(editSession, start, end);
         } catch (MaxChangedBlocksException e) {
@@ -76,9 +73,15 @@ public class PostAccommodation {
         }
     }
 
-    private static void cut(EditSession editSession, Post post, int witdh) throws MaxChangedBlocksException {
-        editSession.makeCylinder(BlockVector3.at(post.getX(), post.getY(), post.getZ()), FabricAdapter.adapt(Blocks.AIR).getDefaultState()
-                , witdh, witdh, 100, true);
+    private static void cut(EditSession editSession, Post post, int width) throws MaxChangedBlocksException {
+        editSession.makeCylinder(
+                BlockVector3.at(post.getX(), post.getY() - 1, post.getZ()),
+                FabricAdapter.adapt(Blocks.AIR).getDefaultState(),
+                width,
+                width,
+                100,
+                true
+        );
     }
 
     public static void smooth(EditSession editSession, Vector3 start, Vector3 end) throws MaxChangedBlocksException {
@@ -99,25 +102,30 @@ public class PostAccommodation {
         heightMap.applyFilter(filter, 10);
     }
 
-    public static Set<BaseBlock> getFoliage() {
-        List<BlockType> logs = new ArrayList<>(BlockCategories.LOGS.getAll().stream().toList());
-        List<BlockType> leaves = new ArrayList<>(BlockCategories.LEAVES.getAll().stream().toList());
-
-        Set<BaseBlock> baseBlocks = new HashSet<>();
-
-        for (BlockType block : logs) {
-            baseBlocks.add(block.getDefaultState().toBaseBlock());
-        }
-
-        for (BlockType block : leaves) {
-            baseBlocks.add(block.getDefaultState().toBaseBlock());
-        }
-
-        return baseBlocks;
-    }
-
     public static EditSession getEditSession() {
         return WorldEdit.getInstance().newEditSession(FabricAdapter.adapt(WORLD));
+    }
+
+    public static void removeFoliage(EditSession editSession, BlockVector3 start, BlockVector3 end) {
+        Region region = new CuboidRegion(editSession.getWorld(), start, end);
+        Mask foliageMask = getFoliageMask(editSession);
+
+        for (BlockVector3 vec : region) {
+            if (foliageMask.test(vec)) {
+                try {
+                    editSession.setBlock(vec, BlockTypes.AIR.getDefaultState());
+                } catch (MaxChangedBlocksException e) {
+                    e.printStackTrace();
+                }
+            }
+        }
+    }
+
+    public static Mask getFoliageMask(EditSession editSession) {
+        BlockCategoryMask logsMask = new BlockCategoryMask(editSession.getWorld(), BlockCategories.LOGS);
+        BlockCategoryMask leavesMask = new BlockCategoryMask(editSession.getWorld(), BlockCategories.LEAVES);
+
+        return  new MaskUnion(logsMask, leavesMask);
     }
 
 
