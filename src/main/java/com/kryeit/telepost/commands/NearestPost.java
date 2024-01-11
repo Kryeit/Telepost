@@ -4,7 +4,6 @@ import com.kryeit.telepost.TelepostMessages;
 import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.post.Post;
 import com.kryeit.telepost.storage.bytes.NamedPost;
-import com.kryeit.telepost.worldedit.PostAccommodation;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
@@ -31,8 +30,6 @@ public class NearestPost {
         Post post = new Post(player.getPos());
 
         Text text;
-
-        PostAccommodation.accommodate(post);
 
         Optional<NamedPost> namedPost = post.getNamedPost();
         if (namedPost.isPresent()) {

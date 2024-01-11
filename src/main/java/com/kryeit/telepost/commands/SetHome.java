@@ -4,7 +4,6 @@ import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.TelepostMessages;
 import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.post.Post;
-import com.kryeit.telepost.post.PostBuilder;
 import com.kryeit.telepost.storage.bytes.HomePost;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -29,8 +28,6 @@ public class SetHome {
         }
 
         Post post = new Post(player.getPos());
-
-        PostBuilder.placeStructure(post);
 
         Text text = TelepostMessages.getMessage(player, "telepost.homepost", Formatting.GREEN, post.getStringCoords());
 
