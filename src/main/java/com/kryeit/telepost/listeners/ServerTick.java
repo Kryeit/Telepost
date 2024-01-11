@@ -31,8 +31,10 @@ public class ServerTick implements ServerTickEvents.EndTick {
 
                 Post post = new Post(loc);
                 post.build();
-                MinecraftServerSupplier.getServer().getPlayerManager().broadcast(Text.literal("Post " + post.getStringCoords() +
-                        " is built in biome " + PostBuilder.getBiomeName(post.getBiome().getKey())), true);
+                MinecraftServerSupplier.getServer().getPlayerManager().broadcast(Text.literal(
+                        "Post " + post.getStringCoords() +
+                        " is built in biome " + PostBuilder.getBiomeName(post.getBiome().getKey())),
+                        true);
 
 
             } else {

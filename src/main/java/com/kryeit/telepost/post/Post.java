@@ -7,6 +7,7 @@ import com.kryeit.telepost.compat.CompatAddon;
 import com.kryeit.telepost.compat.GriefDefenderImpl;
 import com.kryeit.telepost.storage.bytes.HomePost;
 import com.kryeit.telepost.storage.bytes.NamedPost;
+import com.kryeit.telepost.worldedit.PostAccommodation;
 import net.minecraft.registry.entry.RegistryEntry;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.BlockPos;
@@ -103,6 +104,10 @@ public class Post {
     }
 
     public void build() {
+        if (CompatAddon.WORLD_EDIT.isLoaded()) {
+            PostAccommodation.accommodate(this);
+        }
+
         PostBuilder.placeStructure(this);
 
         if (CompatAddon.GRIEF_DEFENDER.isLoaded()) {
