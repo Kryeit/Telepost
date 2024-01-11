@@ -1,13 +1,9 @@
 package com.kryeit.telepost.post;
 
 import com.kryeit.telepost.MinecraftServerSupplier;
-import com.kryeit.telepost.compat.CompatAddon;
-import com.kryeit.telepost.worldedit.PostAccommodation;
 import net.minecraft.block.Block;
-import net.minecraft.fluid.FluidState;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
-import net.minecraft.registry.tag.FluidTags;
 import net.minecraft.server.world.ServerWorld;
 import net.minecraft.structure.StructurePlacementData;
 import net.minecraft.structure.StructureTemplate;

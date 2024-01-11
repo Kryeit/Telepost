@@ -1,10 +1,12 @@
 package com.kryeit.telepost.post;
 
-import java.io.*;
-import java.nio.file.Files;
-import java.nio.file.Path;
-import java.nio.file.StandardCopyOption;
-import java.util.Objects;
+import java.io.File;
+import java.io.IOException;
+import java.net.URI;
+import java.net.URISyntaxException;
+import java.nio.file.*;
+import java.util.Collections;
+import java.util.stream.Stream;
 
 public class StructureHandler {
 
@@ -16,30 +18,38 @@ public class StructureHandler {
 
         String structuresPath = "structures/";
         try {
-            try (InputStream listStream = StructureHandler.class.getClassLoader().getResourceAsStream(structuresPath);
-                 BufferedReader reader = new BufferedReader(new InputStreamReader(Objects.requireNonNull(listStream)))) {
+            URI uri = StructureHandler.class.getResource("/" + structuresPath).toURI();
 
-                reader.lines()
-                        .filter(line -> line.endsWith(".nbt"))
-                        .forEach(structureName -> {
-                            try (InputStream inputStream = StructureHandler.class.getClassLoader().getResourceAsStream(structuresPath + structureName)) {
-                                if (inputStream != null) {
-                                    Path destinationPath = generatedStructuresDir.toPath().resolve(structureName);
-
-                                    if (!Files.exists(destinationPath)) {
-                                        Files.copy(inputStream, destinationPath, StandardCopyOption.REPLACE_EXISTING);
-                                    }
-                                }
-                            } catch (IOException e) {
-                                e.printStackTrace();
-                            }
-                        });
+            FileSystem fileSystem;
+            try {
+                fileSystem = FileSystems.newFileSystem(uri, Collections.emptyMap());
+            } catch (FileSystemAlreadyExistsException e) {
+                fileSystem = FileSystems.getFileSystem(uri);
             }
-        } catch (IOException e) {
+
+            Path myPath = fileSystem.getPath(structuresPath);
+
+            try (Stream<Path> walk = Files.walk(myPath, 1)) {
+                walk.filter(p -> p.toString().endsWith(".nbt")).forEach(filePath -> {
+                    try {
+                        Path destination = generatedStructuresDir.toPath().resolve(filePath.getFileName().toString());
+                        if (!Files.exists(destination)) {
+                            Files.copy(filePath, destination, StandardCopyOption.COPY_ATTRIBUTES);
+                        }
+                    } catch (IOException e) {
+                        System.err.println("Error copying file: " + e.getMessage());
+                        e.printStackTrace();
+                    }
+                });
+            }
+        } catch (IOException | URISyntaxException e) {
+            System.err.println("Exception occurred: " + e.getMessage());
             e.printStackTrace();
         }
     }
 }
+
+
 
 
 
