@@ -22,7 +22,7 @@ public class ServerTick implements ServerTickEvents.EndTick {
         tickCounter++;
         if (gridIterator == null) gridIterator = new GridIterator();
 
-        int timerInterval = 200;
+        int timerInterval = 1000;
         if (tickCounter >= timerInterval) {
             tickCounter = 0;
 
