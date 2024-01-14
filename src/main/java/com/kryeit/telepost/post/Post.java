@@ -116,6 +116,6 @@ public class Post {
     }
 
     public void teleport(ServerPlayerEntity player) {
-        player.teleport(getX() + 0.5, getY() + 1, getZ() + 0.5);
+        player.teleport(getX() + 0.5, WORLD.getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, x, z) + 1, getZ() + 0.5);
     }
 }
