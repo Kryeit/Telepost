@@ -84,7 +84,7 @@ public class Post {
     }
 
     public int getY() {
-        return WORLD.getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, x, z);
+        return 318;
     }
 
     public int getZ() {
@@ -117,6 +117,6 @@ public class Post {
 
     public void teleport(ServerPlayerEntity player) {
         WORLD.getChunk(x, z).setLoadedToWorld(true);
-        player.teleport(getX() + 0.5, getY() + 1, getZ() + 0.5);
+        player.teleport(getX() + 0.5, WORLD.getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, x, z) + 1, getZ() + 0.5);
     }
 }
