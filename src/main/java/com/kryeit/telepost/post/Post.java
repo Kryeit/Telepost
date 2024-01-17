@@ -3,6 +3,7 @@ package com.kryeit.telepost.post;
 import com.kryeit.telepost.MinecraftServerSupplier;
 import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.TelepostPermissions;
+import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.compat.CompatAddon;
 import com.kryeit.telepost.compat.GriefDefenderImpl;
 import com.kryeit.telepost.storage.bytes.HomePost;
@@ -84,7 +85,8 @@ public class Post {
     }
 
     public int getY() {
-        return 318;
+        Utils.loadChunk(getX() >> 4, getZ() >> 4);
+        return WORLD.getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, x, z);
     }
 
     public int getZ() {
@@ -116,7 +118,6 @@ public class Post {
     }
 
     public void teleport(ServerPlayerEntity player) {
-        WORLD.getChunk(x, z).setLoadedToWorld(true);
-        player.teleport(getX() + 0.5, WORLD.getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, x, z) + 1, getZ() + 0.5);
+        player.teleport(getX() + 0.5, getY() + 1, getZ() + 0.5);
     }
 }

@@ -3,6 +3,8 @@ package com.kryeit.telepost;
 import com.kryeit.telepost.storage.bytes.NamedPost;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.world.chunk.ChunkManager;
+import net.minecraft.world.chunk.ChunkStatus;
 
 import static com.kryeit.telepost.post.Post.WORLD;
 
@@ -30,6 +32,12 @@ public class Utils {
 
     public static void runCommand(String command, ServerCommandSource source) {
         MinecraftServerSupplier.getServer().getCommandManager().execute(MinecraftServerSupplier.getServer().getCommandManager().getDispatcher().parse(command, source), command);
+    }
+
+    public static void loadChunk(int chunkX, int chunkZ) {
+        ChunkManager chunkManager = WORLD.getChunkManager();
+
+        chunkManager.getChunk(chunkX, chunkZ, ChunkStatus.FULL, true);
     }
 
 }
