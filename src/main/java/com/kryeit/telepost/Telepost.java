@@ -14,6 +14,7 @@ import de.bluecolored.bluemap.api.gson.MarkerGson;
 import de.bluecolored.bluemap.api.markers.MarkerSet;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
+import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerWorldEvents;
 import net.minecraft.world.World;
@@ -93,10 +94,8 @@ public class Telepost implements DedicatedServerModInitializer {
     }
 
     public void registerDisableEvent() {
-        ServerWorldEvents.UNLOAD.register((server, world) -> {
-            if (world.getRegistryKey() == World.OVERWORLD) {
-                database.stop();
-            }
+        ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
+            database.stop();
         });
     }
 
