@@ -15,12 +15,12 @@
   "telepost.no_homepost": "Le poste maison n'a pas pu être trouvé",
   "telepost.no_invite": "Vous n'avez pas été invité",
   "telepost.no_permission": "Vous ne pouvez pas éxécuter la commande",
-  "telepost.postlist.no-posts": "There are no named posts",
-  "telepost.postlist.no-pages": "The page doesn't exist",
-  "telepost.postlist.page": "Page %s of %s",
-  "telepost.postlist.page.previous": "Previous page",
-  "telepost.postlist.page.next": "Next page",
-  "telepost.postlist.header": "Named posts",
-  "telepost.postlist.tooltip": "Post at %s\nClick to teleport to %s",
-  "telepost.postlist.total": "Total posts: %s"
+  "telepost.postlist.no-posts": "Il n'y a pas de postes nommés",
+  "telepost.postlist.no-pages": "La page n'existe pas",
+  "telepost.postlist.page": "Page %s sur %s",
+  "telepost.postlist.page.previous": "Page précédente",
+  "telepost.postlist.page.next": "Page suivante",
+  "telepost.postlist.header": "Postes nommés",
+  "telepost.postlist.tooltip": "Poste à %s\nCliquez pour vous téléporter à %s",
+  "telepost.postlist.total": "Total des postes : %s"
 }
