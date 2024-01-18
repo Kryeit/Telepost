@@ -1,7 +1,11 @@
+# 1.10
+- 
 
 # 1.9
 - Added compat for multi-word post names
-- 
+- Added /postlist [page]
+- Added support for multi-word names for posts!
+- Couple fixes
 
 # 1.1.f
 - When a player names a post they will get manager trust in the admin claim the post is in (GriefDefender compat)
