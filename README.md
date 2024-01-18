@@ -11,7 +11,7 @@
     <br><br>
 </h1>
 
-<h1> Mod description </h1>
+**Mod description**
 
 Telepost doesn't require any other mod to function. However, it has softdepend functions for:
 - [GriefDefender](https://www.spigotmc.org/resources/1-12-2-1-20-4-griefdefender-claim-plugin-grief-prevention-protection.68900/): to claim the posts when using /buildposts and also let players name a post if they have enough claim blocks.
