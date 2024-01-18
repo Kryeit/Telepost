@@ -49,7 +49,7 @@ public class UnnamePost {
         }
 
         if (CompatAddon.BLUE_MAP.isLoaded()) {
-            BlueMapImpl.removeMarker(postID);
+            BlueMapImpl.removeMarker(postName);
         }
 
         Telepost.getInstance().playerNamedPosts.deleteElement(postID);
