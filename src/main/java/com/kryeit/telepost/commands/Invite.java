@@ -3,7 +3,7 @@ package com.kryeit.telepost.commands;
 import com.kryeit.telepost.MinecraftServerSupplier;
 import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.TelepostMessages;
-import com.kryeit.telepost.commands.completion.PlayerSuggestionProvider;
+import com.kryeit.telepost.commands.completion.SuggestionsProvider;
 import com.kryeit.telepost.storage.bytes.HomePost;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -53,7 +53,7 @@ public class Invite {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("invite")
                 .then(CommandManager.argument("name", StringArgumentType.word())
-                        .suggests(PlayerSuggestionProvider.suggestOnlinePlayers())
+                        .suggests(SuggestionsProvider.suggestOnlinePlayers())
                         .executes(context -> execute(context, StringArgumentType.getString(context, "name")))
                 )
         );

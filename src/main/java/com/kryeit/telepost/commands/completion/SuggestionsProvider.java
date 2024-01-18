@@ -12,7 +12,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import java.util.Collection;
 import java.util.concurrent.CompletableFuture;
 
-public class PlayerSuggestionProvider {
+public class SuggestionsProvider {
     public static SuggestionProvider<ServerCommandSource> suggestOnlinePlayers() {
         return (context, builder) -> suggestMatchingPlayerNames(builder, MinecraftServerSupplier.getServer().getPlayerManager().getPlayerList());
     }

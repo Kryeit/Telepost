@@ -1,7 +1,7 @@
 package com.kryeit.telepost.commands;
 
 import com.kryeit.telepost.*;
-import com.kryeit.telepost.commands.completion.PlayerSuggestionProvider;
+import com.kryeit.telepost.commands.completion.SuggestionsProvider;
 import com.kryeit.telepost.post.Post;
 import com.kryeit.telepost.storage.bytes.HomePost;
 import com.kryeit.telepost.storage.bytes.NamedPost;
@@ -87,14 +87,14 @@ public class Visit {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("visit")
                 .then(CommandManager.argument("name", StringArgumentType.greedyString())
-                        .suggests(PlayerSuggestionProvider.suggestPostNamesAndOnlinePlayers())
+                        .suggests(SuggestionsProvider.suggestPostNamesAndOnlinePlayers())
                         .executes(Visit::execute)
                 )
         );
 
         dispatcher.register(CommandManager.literal("v")
                 .then(CommandManager.argument("name", StringArgumentType.greedyString())
-                        .suggests(PlayerSuggestionProvider.suggestPostNamesAndOnlinePlayers())
+                        .suggests(SuggestionsProvider.suggestPostNamesAndOnlinePlayers())
                         .executes(Visit::execute)
                 )
         );
