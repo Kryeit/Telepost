@@ -26,6 +26,7 @@ They will be explained further in the bottom of the page.
 Telepost can build (if needed) posts throughout the whole map, one each 2000 blocks. These posts serve as a nerfed teleportation system. Players can only execute teleport commands in those specific locations of the world, making it fun to explore and meet up with other players!
 
 <img src="https://cdn.modrinth.com/data/w8avchdW/images/1c2f0f10937a1d51eeee8614beba5aa0c46cd851.png" width="430" />
+
 - /nearestpost: tells you where the nearest post is.
 - /setpost: sets a home on the nearest post.
 - /homepost: teleports you to your home.
@@ -43,8 +44,7 @@ How to use /buildpost: place in `world/generated/structures/minecraft` a `defaul
 - telepost.admin : Helper + you can use tp-related commands everywhere in the Overworld.
 - telepost.helper : lets you visit other's home posts without needing an invitation.
 
-<img src="https://cdn.modrinth.com/data/w8avchdW/images/b984923c23ca57afce0cf535606a99081d4c9045.png
-" width="430" />
+<img src="https://cdn.modrinth.com/data/w8avchdW/images/b984923c23ca57afce0cf535606a99081d4c9045.png" width="430" />
 
 - /buildposts: It also creates a claim in each post, 3d claim and also adds it to a "Posts" claimgroup
 - Users are also able to use /namepost once if they have more than 80.000 earned claimblocks, doesn't consume them. NO PERMISSION NEEDED
