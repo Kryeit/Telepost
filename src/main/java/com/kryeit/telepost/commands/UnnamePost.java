@@ -23,7 +23,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 public class UnnamePost {
-    public static int execute(CommandContext<ServerCommandSource> context, String name) throws IOException {
+    public static int execute(CommandContext<ServerCommandSource> context) throws IOException {
         ServerCommandSource source = context.getSource();
         ServerPlayerEntity player = source.getPlayer();
 
@@ -36,17 +36,19 @@ public class UnnamePost {
         }
 
         Post post = new Post(player.getPos());
+        String postName = StringArgumentType.getString(context, "name");
+        String postID = Utils.nameToId(postName);
 
-        Optional<NamedPost> namedPost = Telepost.getDB().getNamedPost(Utils.nameToId(name));
+        Optional<NamedPost> namedPost = Telepost.getDB().getNamedPost(postID);
         if (namedPost.isEmpty()) {
             message = () -> Text.literal("The nearest post is not named");
             source.sendFeedback(message, false);
             return 0;
         }
 
-        Telepost.getInstance().playerNamedPosts.deleteElement(name);
+        Telepost.getInstance().playerNamedPosts.deleteElement(postID);
 
-        Telepost.getDB().deleteNamedPost(Utils.nameToId(name));
+        Telepost.getDB().deleteNamedPost(postID);
 
         message = () -> Text.literal(
                 "The nearest post has been unnamed at: " + post.getStringCoords());
@@ -67,11 +69,11 @@ public class UnnamePost {
                 CommandSource.suggestMatching(suggestions, builder);
 
         dispatcher.register(CommandManager.literal("unnamepost")
-                .then(CommandManager.argument("name", StringArgumentType.word())
+                .then(CommandManager.argument("name", StringArgumentType.greedyString())
                         .suggests(suggestionProvider)
                         .executes(context -> {
                             try {
-                                return execute(context, StringArgumentType.getString(context, "name"));
+                                return execute(context);
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }

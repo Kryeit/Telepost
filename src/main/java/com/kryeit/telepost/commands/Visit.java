@@ -19,7 +19,7 @@ import java.util.Optional;
 import java.util.function.Supplier;
 
 public class Visit {
-    public static int execute(CommandContext<ServerCommandSource> context, String name) {
+    public static int execute(CommandContext<ServerCommandSource> context) {
         ServerCommandSource source = context.getSource();
         ServerPlayerEntity player = source.getPlayer();
 
@@ -30,6 +30,8 @@ public class Visit {
         }
 
         Post closestPost = new Post(player.getPos());
+        String postName = StringArgumentType.getString(context, "name");
+        String postID = Utils.nameToId(postName);
 
         Text text;
 
@@ -39,7 +41,7 @@ public class Visit {
             return 0;
         }
         
-        ServerPlayerEntity visited = MinecraftServerSupplier.getServer().getPlayerManager().getPlayer(name);
+        ServerPlayerEntity visited = MinecraftServerSupplier.getServer().getPlayerManager().getPlayer(postName);
 
         // /visit Player
         if (visited != null) {
@@ -52,7 +54,7 @@ public class Visit {
                 }
                 Post homePost = new Post(home.get());
 
-                text = TelepostMessages.getMessage(player, "telepost.teleport.homepost.other", Formatting.GREEN, name);
+                text = TelepostMessages.getMessage(player, "telepost.teleport.homepost.other", Formatting.GREEN, postName);
                 player.sendMessage(text, true);
 
                 homePost.teleport(player);
@@ -65,8 +67,7 @@ public class Visit {
         }
 
         // /visit NamedPost
-        String postName = Utils.getNameById(name);
-        Optional<NamedPost> namedPostOptional = Telepost.getDB().getNamedPost(postName);
+        Optional<NamedPost> namedPostOptional = Telepost.getDB().getNamedPost(postID);
 
         if (namedPostOptional.isPresent()) {
             Post namedPost = new Post(namedPostOptional.get());
@@ -85,16 +86,16 @@ public class Visit {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("visit")
-                .then(CommandManager.argument("name", StringArgumentType.word())
+                .then(CommandManager.argument("name", StringArgumentType.greedyString())
                         .suggests(PlayerSuggestionProvider.suggestPostNamesAndOnlinePlayers())
-                        .executes(context -> execute(context, StringArgumentType.getString(context, "name")))
+                        .executes(Visit::execute)
                 )
         );
 
         dispatcher.register(CommandManager.literal("v")
-                .then(CommandManager.argument("name", StringArgumentType.word())
+                .then(CommandManager.argument("name", StringArgumentType.greedyString())
                         .suggests(PlayerSuggestionProvider.suggestPostNamesAndOnlinePlayers())
-                        .executes(context -> execute(context, StringArgumentType.getString(context, "name")))
+                        .executes(Visit::execute)
                 )
         );
     }

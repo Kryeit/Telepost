@@ -29,7 +29,7 @@ import java.util.function.Supplier;
 import static com.kryeit.telepost.compat.GriefDefenderImpl.NEEDED_CLAIMBLOCKS;
 
 public class NamePost {
-    public static int execute(CommandContext<ServerCommandSource> context, String name) throws IOException {
+    public static int execute(CommandContext<ServerCommandSource> context) throws IOException {
         ServerCommandSource source = context.getSource();
         ServerPlayerEntity player = source.getPlayer();
 
@@ -40,6 +40,8 @@ public class NamePost {
         }
 
         Post post = new Post(player.getPos());
+        String postName = StringArgumentType.getString(context, "name");
+        String postID = Utils.nameToId(postName);
 
         Text text;
 
@@ -51,7 +53,7 @@ public class NamePost {
         }
 
         // Check if name is in use
-        Optional<NamedPost> namedPost = Telepost.getDB().getNamedPost(Utils.nameToId(name));
+        Optional<NamedPost> namedPost = Telepost.getDB().getNamedPost(postID);
         if (namedPost.isPresent()) {
             text = TelepostMessages.getMessage(player, "telepost.already_named", Formatting.RED);
             player.sendMessage(text, true);
@@ -64,7 +66,7 @@ public class NamePost {
                 player.sendMessage(text);
                 return 0;
             }
-            Telepost.getInstance().playerNamedPosts.addElement(name, player.getUuid());
+            Telepost.getInstance().playerNamedPosts.addElement(postID, player.getUuid());
 
             Claim claim = GriefDefender.getCore().getClaimAt(post.getPos());
             if (claim != null && claim.isAdminClaim()) {
@@ -75,9 +77,9 @@ public class NamePost {
         //if (CompatAddon.BLUE_MAP.isLoaded()) {
         //    BlueMapImpl.createMarker(post, name);
         //}
-        Telepost.getDB().addNamedPost(new NamedPost(Utils.nameToId(name), name, post.getPos()));
+        Telepost.getDB().addNamedPost(new NamedPost(postID, postName, post.getPos()));
 
-        text = TelepostMessages.getMessage(player, "telepost.named", Formatting.GREEN, name, post.getStringCoords());
+        text = TelepostMessages.getMessage(player, "telepost.named", Formatting.GREEN, postName, post.getStringCoords());
         player.sendMessage(text);
 
         return Command.SINGLE_SUCCESS;
@@ -85,10 +87,10 @@ public class NamePost {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("namepost")
-                .then(CommandManager.argument("name", StringArgumentType.word())
+                .then(CommandManager.argument("name", StringArgumentType.greedyString())
                         .executes(context -> {
                             try {
-                                return execute(context, StringArgumentType.getString(context, "name"));
+                                return execute(context);
                             } catch (IOException e) {
                                 throw new RuntimeException(e);
                             }
