@@ -15,12 +15,12 @@
   "telepost.no_homepost": "Dieser Heim-Pfahl wurde nicht gefunden",
   "telepost.no_invite": "Du wurdest nicht eingeladen",
   "telepost.no_permission": "Du kannst diesen Befehl nicht ausführen",
-  "telepost.postlist.no-posts": "There are no named posts",
-  "telepost.postlist.no-pages": "The page doesn't exist",
-  "telepost.postlist.page": "Page %s of %s",
-  "telepost.postlist.page.previous": "Previous page",
-  "telepost.postlist.page.next": "Next page",
-  "telepost.postlist.header": "Named posts",
-  "telepost.postlist.tooltip": "Post at %s\nClick to teleport to %s",
-  "telepost.postlist.total": "Total posts: %s"
+  "telepost.postlist.no-posts": "Es gibt keine benannten Pfähle",
+  "telepost.postlist.no-pages": "Die Seite existiert nicht",
+  "telepost.postlist.page": "Seite %s von %s",
+  "telepost.postlist.page.previous": "Vorherige Seite",
+  "telepost.postlist.page.next": "Nächste Seite",
+  "telepost.postlist.header": "Benannte Pfähle",
+  "telepost.postlist.tooltip": "Pfahl bei %s\nKlicken, um zu %s zu teleportieren",
+  "telepost.postlist.total": "Gesamtzahl der Pfähle: %s"
 }
