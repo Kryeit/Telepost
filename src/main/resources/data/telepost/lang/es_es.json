@@ -15,12 +15,12 @@
   "telepost.no_homepost": "La casa no ha sido encontrada",
   "telepost.no_invite": "No has sido invitado",
   "telepost.no_permission": "No puedes ejecutar este comando",
-  "telepost.postlist.no-posts": "There are no named posts",
-  "telepost.postlist.no-pages": "The page doesn't exist",
-  "telepost.postlist.page": "Page %s of %s",
-  "telepost.postlist.page.previous": "Previous page",
-  "telepost.postlist.page.next": "Next page",
-  "telepost.postlist.header": "Named posts",
-  "telepost.postlist.tooltip": "Post at %s\nClick to teleport to %s",
-  "telepost.postlist.total": "Total posts: %s"
+  "telepost.postlist.no-posts": "No hay ningún poste nombrado",
+  "telepost.postlist.no-pages": "Esta página no existe",
+  "telepost.postlist.page": "Página %s de %s",
+  "telepost.postlist.page.previous": "Atrás",
+  "telepost.postlist.page.next": "Siguiente",
+  "telepost.postlist.header": "Postes nombrados",
+  "telepost.postlist.tooltip": "Poste en %s\nHaz clic para teletransportarte a %s",
+  "telepost.postlist.total": "Número de postes: %s"
 }
