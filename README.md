@@ -28,14 +28,15 @@ Telepost can build (if needed) posts throughout the whole map, one each 2000 blo
 <img src="https://cdn.modrinth.com/data/w8avchdW/images/1c2f0f10937a1d51eeee8614beba5aa0c46cd851.png
 " width="430" />
 
-- /nearestpost: Tells you where the nearest post is.
-- /setpost: Sets a home on the nearest post.
-- /homepost: Teleports you to your home.
-- /invite <Player>: Invite a player to your home post.
-- /visit <Player/NamedPost>: Teleports you to an invited post or to a Named Post
+- /nearestpost: tells you where the nearest post is.
+- /setpost: sets a home on the nearest post.
+- /homepost: teleports you to your home.
+- /postlist [page]: shows a pagination of the named posts.
+- /invite <Player>: invite a player to your home post.
+- /visit <Player/NamedPost>: teleports you to an invited post or to a Named Post
 - /namepost <PostName> : gives a name to the nearest post. Only for admins.
 - /unnamepost <PostName> : unnames a post. Only for admins.
-- /buildposts: Builds all posts. Only for admins
+- /buildposts: builds all posts. Only for admins
 
 How to use /buildpost: place in `world/generated/structures/minecraft` a `default.nbt`, then place any other .nbt with a biome name, such as `plains.nbt`. Posts will be built with that structure depending on the biome, if none found, the default will be used.
 
