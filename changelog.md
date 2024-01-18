@@ -1,29 +1,33 @@
-1.1.f
+
+# 1.8
+- Added compat for multi-word post names
+
+# 1.1.f
 - When a player names a post they will get manager trust in the admin claim the post is in (GriefDefender compat)
 - When anyone names a post, a bluemap poi marker will be created (BlueMap compat)
 
-1.1.e
+# 1.1.e
 - Solved debug code in /nearestpost
 
-1.1.d
+# 1.1.d
 - Added /h alias for /home
 - Added /v alias for /visit
 - Added /closestpost and /post alias for /nearestpost
 - Added latvian translation
 - Fixed GriefDefender claimgroup creation
 
-1.1.c
+# 1.1.c
 - Adjusted an entry in translation
 - Now if you have WorldEdit installed, the terrain where the post is build will be somewhat accommodated for it to be placed (softdepend)
 - Fixed the mod not being able to detect GriefDefender installed
 
-1.1.b
+# 1.1.b
 - Added brazilean portuguese
 - Changed to only-server mod, clients won't be able to run it
 - Added an icon
 - The mod can now be used in 1.20, 1.20.1 and 1.20.2
 
-1.1.a:
+# 1.1.a:
 - Fixed teleport locations being offsetted
 - Fixed /buildposts
 - Fixed /buildposts not being able to be used without GD
