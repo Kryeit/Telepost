@@ -8,6 +8,7 @@ import de.bluecolored.bluemap.api.gson.MarkerGson;
 import de.bluecolored.bluemap.api.markers.MarkerSet;
 import de.bluecolored.bluemap.api.markers.POIMarker;
 
+import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 
@@ -39,4 +40,20 @@ public class BlueMapImpl {
 
         BlueMapImpl.updateMarkerSet();
     }
+
+    public static void removeMarker(String name) {
+        // Remove the marker from the set
+        BlueMapImpl.markerSet.remove(name);
+
+        // Update the marker set file
+        try (FileWriter writer = new FileWriter("mods/telepost/marker-file.json")) {
+            MarkerGson.INSTANCE.toJson(BlueMapImpl.markerSet, writer);
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+
+        // Update BlueMap
+        BlueMapImpl.updateMarkerSet();
+    }
+
 }
