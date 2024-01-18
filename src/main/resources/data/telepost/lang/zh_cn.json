@@ -15,12 +15,12 @@
   "telepost.no_homepost": "未找到家地点",
   "telepost.no_invite": "你未被邀请",
   "telepost.no_permission": "你无法执行该命令",
-  "telepost.postlist.no-posts": "There are no named posts",
-  "telepost.postlist.no-pages": "The page doesn't exist",
-  "telepost.postlist.page": "Page %s of %s",
-  "telepost.postlist.page.previous": "Previous page",
-  "telepost.postlist.page.next": "Next page",
-  "telepost.postlist.header": "Named posts",
-  "telepost.postlist.tooltip": "Post at %s\nClick to teleport to %s",
-  "telepost.postlist.total": "Total posts: %s"
+  "telepost.postlist.no-posts": "没有命名的地点",
+  "telepost.postlist.no-pages": "该页面不存在",
+  "telepost.postlist.page": "第 %s 页，共 %s 页",
+  "telepost.postlist.page.previous": "上一页",
+  "telepost.postlist.page.next": "下一页",
+  "telepost.postlist.header": "命名的地点",
+  "telepost.postlist.tooltip": "地点在 %s\n点击传送到 %s",
+  "telepost.postlist.total": "地点总数: %s"
 }
