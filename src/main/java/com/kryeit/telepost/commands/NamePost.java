@@ -59,6 +59,13 @@ public class NamePost {
             return 0;
         }
 
+        // Check if player has already named a post
+        if (Telepost.getInstance().playerNamedPosts.getHashMap().containsValue(player.getUuid())) {
+            text = TelepostMessages.getMessage(player, "telepost.already_named", Formatting.RED);
+            player.sendMessage(text, true);
+            return 0;
+        }
+
         if (!TelepostPermissions.isAdmin(player) && CompatAddon.GRIEF_DEFENDER.isLoaded()) {
             if (GriefDefenderImpl.getClaimBlocks(player.getUuid()) < NEEDED_CLAIMBLOCKS) {
                 text = TelepostMessages.getMessage(player, "telepost.name.claimblocks", Formatting.RED, NEEDED_CLAIMBLOCKS);
