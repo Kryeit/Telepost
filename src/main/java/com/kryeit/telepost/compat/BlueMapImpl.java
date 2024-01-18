@@ -8,7 +8,6 @@ import de.bluecolored.bluemap.api.gson.MarkerGson;
 import de.bluecolored.bluemap.api.markers.MarkerSet;
 import de.bluecolored.bluemap.api.markers.POIMarker;
 
-import java.io.File;
 import java.io.FileWriter;
 import java.io.IOException;
 

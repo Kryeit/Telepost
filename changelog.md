@@ -1,5 +1,5 @@
 # 1.10
-- 
+- Fix BlueMap integration
 
 # 1.9
 - Added compat for multi-word post names
