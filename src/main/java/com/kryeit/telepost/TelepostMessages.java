@@ -22,10 +22,10 @@ public class TelepostMessages {
 
         for (int i = 0; i < parts.length; i++) {
             if (i < args.length) {
-                result.append(Text.literal(parts[i]).setStyle(Style.EMPTY.withFormatting(color)));
-                result.append(Text.literal(args[i].toString()).setStyle(Style.EMPTY.withFormatting(Formatting.GOLD)));
+                result.append(Text.literal(parts[i]).formatted(color));
+                result.append(Text.literal(args[i].toString()).formatted(Formatting.GOLD));
             } else {
-                result.append(Text.literal(parts[i]).setStyle(Style.EMPTY.withFormatting(color)));
+                result.append(Text.literal(parts[i]).formatted(color));
             }
         }
 
