@@ -14,5 +14,13 @@
   "telepost.teleport.named_post": "Bem-vindo a %s",
   "telepost.no_homepost": "O poste residencial não foi encontrado",
   "telepost.no_invite": "Você não foi convidado",
-  "telepost.no_permission": "Você não tem permissão para executar o comando"
+  "telepost.no_permission": "Você não tem permissão para executar o comando",
+  "telepost.postlist.no-posts": "There are no named posts",
+  "telepost.postlist.no-pages": "The page doesn't exist",
+  "telepost.postlist.page": "Page %s of %s",
+  "telepost.postlist.page.previous": "Previous page",
+  "telepost.postlist.page.next": "Next page",
+  "telepost.postlist.header": "Named posts",
+  "telepost.postlist.tooltip": "Post at %s\nClick to teleport to %s",
+  "telepost.postlist.total": "Total posts: %s"
 }

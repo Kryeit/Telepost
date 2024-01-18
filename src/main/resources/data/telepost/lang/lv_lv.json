@@ -14,5 +14,13 @@
   "telepost.teleport.named_post": "Sveicināti %s",
   "telepost.no_homepost": "Mājas platforma nav atrasts.",
   "telepost.no_invite": "Tu nēsi ielūgts",
-  "telepost.no_permission": "Jūs nevarat izpildīt šo komandu."
+  "telepost.no_permission": "Jūs nevarat izpildīt šo komandu.",
+  "telepost.postlist.no-posts": "There are no named posts",
+  "telepost.postlist.no-pages": "The page doesn't exist",
+  "telepost.postlist.page": "Page %s of %s",
+  "telepost.postlist.page.previous": "Previous page",
+  "telepost.postlist.page.next": "Next page",
+  "telepost.postlist.header": "Named posts",
+  "telepost.postlist.tooltip": "Post at %s\nClick to teleport to %s",
+  "telepost.postlist.total": "Total posts: %s"
 }
