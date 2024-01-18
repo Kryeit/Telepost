@@ -2,7 +2,7 @@
   <img width="200" src="https://kryeit.com/images/telepost_logo.png">
 </p>
 
-<h1 align="center">Telepost  <br>
+<h1 align="center">Telepost<br>
 	<a href="https://www.curseforge.com/minecraft/mc-mods/telepost/files"><img src="https://cf.way2muchnoise.eu/versions/telepost.svg" alt="Supported Versions"></a>
 	<a href="https://github.com/Kryeit/Telepost/LICENSE"><img src="https://img.shields.io/github/license/Creators-of-Create/Create?style=flat&color=900c3f" alt="License"></a>
 	<a href="https://discord.gg/hmaD7Se"><img src="https://img.shields.io/discord/929394649884405761?color=5865f2&label=Discord&style=flat" alt="Discord"></a>
@@ -11,11 +11,10 @@
     <br><br>
 </h1>
 
-## Mod description
+<h1> Mod description </h1>
 
 Telepost doesn't require any other mod to function. However, it has softdepend functions for:
 - [GriefDefender](https://www.spigotmc.org/resources/1-12-2-1-20-4-griefdefender-claim-plugin-grief-prevention-protection.68900/): to claim the posts when using /buildposts and also let players name a post if they have enough claim blocks.
-
 - [WorldEdit](https://modrinth.com/plugin/worldedit): when using /buildposts, the terrain will be accommodated in order for the post to look good.
 - [Bluemap](https://modrinth.com/plugin/bluemap): when using /namepost, a marker with its name will appear
 
@@ -68,7 +67,7 @@ Special thanks to the players involved on building them:
 
 Feel free to translate the mod [here](https://github.com/Kryeit/Telepost-Refabricated/tree/main/src/main/resources/data/telepost/lang)
 
-Translations are per client, therefore different players recieve messages in different languages!
+Translations are per client, therefore different players receive messages in different languages!
 
 # Current translations:
 
