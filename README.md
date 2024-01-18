@@ -20,8 +20,7 @@ Telepost doesn't require any other mod to function. However, it has softdepend f
 
 They will be explained further in the bottom of the page.
 
-<img src="https://cdn.modrinth.com/data/w8avchdW/images/392f24bba4c1cec4557709388a9691ea6637be9b.png
-" width="430" />
+<img src="https://cdn.modrinth.com/data/w8avchdW/images/392f24bba4c1cec4557709388a9691ea6637be9b.png" width="430" />
 
 Telepost can build (if needed) posts throughout the whole map, one each 2000 blocks. These posts serve as a nerfed teleportation system. Players can only execute teleport commands in those specific locations of the world, making it fun to explore and meet up with other players!
 
