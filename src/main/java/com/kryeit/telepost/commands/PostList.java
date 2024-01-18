@@ -51,14 +51,14 @@ public class PostList {
         }
 
         if(page > pages || page < 1) {
-            player.sendMessage(TelepostMessages.getMessage(player, "telepost.postlist.no-page", Formatting.RED), false);
+            player.sendMessage(TelepostMessages.getMessage(player, "telepost.postlist.no-pages", Formatting.RED), false);
             return 1;
         }
 
         // Header
         player.sendMessage(Text.literal(" ").formatted(Formatting.RESET), false);
-        player.sendMessage(TelepostMessages.getMessage(player, "telepost.postlist.no-page", Formatting.GOLD), false);
-        player.sendMessage(Text.literal("-----------------").formatted(Formatting.DARK_GRAY), false);
+        player.sendMessage(TelepostMessages.getMessage(player, "telepost.postlist.header", Formatting.GOLD), false);
+        player.sendMessage(Text.literal("------------").formatted(Formatting.DARK_GRAY), false);
 
         int startIndex = (page - 1) * 10;
         int endIndex = Math.min(startIndex + 10, posts.size());
@@ -66,43 +66,51 @@ public class PostList {
         for (int i = startIndex; i < endIndex; i++) {
             NamedPost post = posts.get(i);
             String name = post.name();
-            MutableText postText = Text.literal((i + 1) + ". ").formatted(Formatting.GRAY)
+            MutableText postText = Text.literal((i + 1) + ". ").formatted(Formatting.WHITE)
                     .append(Text.literal(name).styled(style ->
-                            style.withColor(Formatting.GRAY)
-                                    .withClickEvent(new ClickEvent(ClickEvent.Action.SUGGEST_COMMAND, "/visit " + name))
-                                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Visit " + name)))
+                            style.withColor(Formatting.WHITE)
+                                    .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/visit " + name))
+                                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                            TelepostMessages.getMessage(player, "telepost.postlist.tooltip", Formatting.GRAY, new Post(post).getStringCoords(), name)))
                     ));
 
             player.sendMessage(postText, false);
         }
 
         // Footer - Pagination Arrows
-        MutableText paginationText = Text.literal("Total posts: " + posts.size()).formatted(Formatting.LIGHT_PURPLE)
-                .append(Text.literal(" || ").formatted(Formatting.GOLD));
+        MutableText paginationText = TelepostMessages.getMessage(player, "telepost.postlist.total", Formatting.GRAY, posts.size()).copy()
+                .append(Text.literal(" | ").formatted(Formatting.GRAY));
 
         if (hasPreviousPage(page)) {
             int finalPage1 = page;
             paginationText.append(Text.literal("<<").styled(style ->
-                    style.withColor(Formatting.GOLD)
+                    style.withColor(Formatting.GREEN)
                             .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/postlist " + (finalPage1 - 1)))
-                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Previous Page")))
+                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                    TelepostMessages.getMessage(player, "telepost.postlist.page.previous", Formatting.GRAY)))
             ));
         } else {
             paginationText.append(Text.literal("<<").formatted(Formatting.GRAY));
         }
 
-        paginationText.append(Text.literal(" -- ").formatted(Formatting.GREEN));
+        paginationText.append(Text.literal(" - ").formatted(Formatting.GREEN));
 
         if (hasNextPage(page, pages)) {
             int finalPage = page;
             paginationText.append(Text.literal(">>").styled(style ->
-                    style.withColor(Formatting.GOLD)
+                    style.withColor(Formatting.GREEN)
                             .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/postlist " + (finalPage + 1)))
-                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Text.literal("Next Page")))
+                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                    TelepostMessages.getMessage(player, "telepost.postlist.page.next", Formatting.GRAY)))
             ));
         } else {
             paginationText.append(Text.literal(">>").formatted(Formatting.GRAY));
         }
+
+        paginationText.append(Text.literal(" | ").formatted(Formatting.GRAY))
+                .append(
+                TelepostMessages.getMessage(player, "telepost.postlist.page", Formatting.GRAY, page, pages
+        ));
 
         player.sendMessage(paginationText, false);
 
@@ -112,6 +120,7 @@ public class PostList {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("postlist")
+                .executes(PostList::execute)
                 .then(CommandManager.argument("page", IntegerArgumentType.integer(1))
                         .executes(PostList::execute))
         );
