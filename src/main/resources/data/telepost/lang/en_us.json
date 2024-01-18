@@ -14,5 +14,9 @@
   "telepost.teleport.named_post": "Welcome to %s",
   "telepost.no_homepost": "The home post hasn't been found",
   "telepost.no_invite": "You've not been invited",
-  "telepost.no_permission": "You can't execute the command"
+  "telepost.no_permission": "You can't execute the command",
+  "telepost.postlist.no-posts": "There are no named posts",
+  "telepost.postlist.no-pages": "The page doesn't exist",
+  "telepost.postlist.header": "Named posts",
+
 }

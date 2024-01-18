@@ -1,6 +1,7 @@
 
-# 1.8
+# 1.9
 - Added compat for multi-word post names
+- 
 
 # 1.1.f
 - When a player names a post they will get manager trust in the admin claim the post is in (GriefDefender compat)
