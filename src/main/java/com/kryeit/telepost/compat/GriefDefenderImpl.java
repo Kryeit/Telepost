@@ -26,7 +26,7 @@ public class GriefDefenderImpl {
         ClaimGroup claimGroup = GriefDefender.getCore().getAdminClaimGroupsByName().get("posts");
 
         // Calculate the corners of the claim
-        Vector3i lowerCorner = new Vector3i(post.getX() - WIDTH, post.getY() - 30, post.getZ() - WIDTH);
+        Vector3i lowerCorner = new Vector3i(post.getX() - WIDTH, post.getY() - 10, post.getZ() - WIDTH);
         Vector3i upperCorner = new Vector3i(post.getX() + WIDTH, WORLD.getHeight(), post.getZ() + WIDTH);
 
         // Create the claim
