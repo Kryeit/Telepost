@@ -109,6 +109,7 @@ public class Telepost implements DedicatedServerModInitializer {
             Visit.register(dispatcher);
             BuildPosts.register(dispatcher);
             PostList.register(dispatcher);
+            ForceVisit.register(dispatcher);
 
             CommandDumpDB.register(dispatcher);
         });

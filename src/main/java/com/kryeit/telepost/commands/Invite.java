@@ -52,9 +52,9 @@ public class Invite {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("invite")
-                .then(CommandManager.argument("name", StringArgumentType.word())
+                .then(CommandManager.argument("player", StringArgumentType.word())
                         .suggests(SuggestionsProvider.suggestOnlinePlayers())
-                        .executes(context -> execute(context, StringArgumentType.getString(context, "name")))
+                        .executes(context -> execute(context, StringArgumentType.getString(context, "player")))
                 )
         );
     }
