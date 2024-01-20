@@ -27,7 +27,7 @@ public class AutonamingUtils {
         }
 
         if (availableNames.isEmpty()) {
-            LOGGER.warn("No available names found.");
+            LOGGER.warn("Config file for Telepost doesn't have enough names for autonaming.");
             return null;
         }
 
