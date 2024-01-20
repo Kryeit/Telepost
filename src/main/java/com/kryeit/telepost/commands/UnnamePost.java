@@ -24,8 +24,10 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import static com.kryeit.telepost.Telepost.LOGGER;
+
 public class UnnamePost {
-    public static int execute(CommandContext<ServerCommandSource> context) throws IOException {
+    public static int execute(CommandContext<ServerCommandSource> context) {
         ServerCommandSource source = context.getSource();
         ServerPlayerEntity player = source.getPlayer();
 
@@ -52,7 +54,12 @@ public class UnnamePost {
             BlueMapImpl.removeMarker(postName);
         }
 
-        Telepost.getInstance().playerNamedPosts.deleteElement(postID);
+        try {
+            Telepost.getInstance().playerNamedPosts.deleteElement(postID);
+        } catch (IOException e) {
+            e.printStackTrace();
+            LOGGER.warn("Failed to delete player named post element (Was admin post?): " + postID);
+        }
 
         Telepost.getDB().deleteNamedPost(postID);
 
@@ -77,13 +84,7 @@ public class UnnamePost {
         dispatcher.register(CommandManager.literal("unnamepost")
                 .then(CommandManager.argument("name", StringArgumentType.greedyString())
                         .suggests(suggestionProvider)
-                        .executes(context -> {
-                            try {
-                                return execute(context);
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                        })
+                        .executes(UnnamePost::execute)
                 )
         );
     }
