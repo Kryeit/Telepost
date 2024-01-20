@@ -1,5 +1,6 @@
 package com.kryeit.telepost;
 
+import com.kryeit.telepost.storage.bytes.NamedPost;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.chunk.ChunkManager;
 import net.minecraft.world.chunk.ChunkStatus;
@@ -19,6 +20,10 @@ public class Utils {
     public static void loadChunk(int chunkX, int chunkZ) {
         ChunkManager chunkManager = WORLD.getChunkManager();
         chunkManager.getChunk(chunkX, chunkZ, ChunkStatus.FULL, true);
+    }
+
+    public static boolean isPostNamedByAdmin(NamedPost post) {
+        return !Telepost.getInstance().playerNamedPosts.getHashMap().containsKey(post.id());
     }
 
 }

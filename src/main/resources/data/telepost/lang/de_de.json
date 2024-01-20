@@ -22,5 +22,6 @@
   "telepost.postlist.page.next": "Nächste Seite",
   "telepost.postlist.header": "Benannte Pfähle",
   "telepost.postlist.tooltip": "Pfahl bei %s\nKlicken, um zu %s zu teleportieren",
-  "telepost.postlist.total": "Gesamtzahl der Pfähle: %s"
+  "telepost.postlist.total": "Gesamtzahl der Pfähle: %s",
+  "telepost.autonamed": "A new post has been named %s, it's located at: %s"
 }

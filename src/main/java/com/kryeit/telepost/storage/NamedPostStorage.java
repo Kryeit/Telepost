@@ -9,11 +9,11 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.UUID;
 
-public class PlayerNamedPosts {
+public class NamedPostStorage {
     private File file;
     private Properties properties;
 
-    public PlayerNamedPosts(String filePath) throws IOException {
+    public NamedPostStorage(String filePath) throws IOException {
         this.file = new File(filePath);
         if (!file.exists()) {
             file.createNewFile();
@@ -38,15 +38,15 @@ public class PlayerNamedPosts {
         properties.store(new FileOutputStream(file), null);
     }
 
-    public void addElement(String name, UUID playerID) throws IOException {
+    public void addElement(String postID, UUID playerID) throws IOException {
         HashMap<String, UUID> hashMap = getHashMap();
-        hashMap.put(name, playerID);
+        hashMap.put(postID, playerID);
         setHashMap(hashMap);
     }
 
-    public void deleteElement(String name) throws IOException {
+    public void deleteElement(String postID) throws IOException {
         HashMap<String, UUID> hashMap = getHashMap();
-        hashMap.remove(name);
+        hashMap.remove(postID);
         setHashMap(hashMap);
     }
 }
