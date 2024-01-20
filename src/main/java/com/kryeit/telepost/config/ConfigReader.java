@@ -28,7 +28,7 @@ public class ConfigReader {
         WIDTH = Integer.parseInt(configObject.getString("post-width"));
         GAP = Integer.parseInt(configObject.getString("post-gap"));
         WORLDBORDER = Integer.parseInt(configObject.getString("worldborder"));
-        AUTONAMING = configObject.getBoolean("autonaming");
+        AUTONAMING = configObject.getBoolean("auto-naming");
 
         if(configObject.has("next-post-names")) {
             var postNamesArray = configObject.getArray("next-post-names");
