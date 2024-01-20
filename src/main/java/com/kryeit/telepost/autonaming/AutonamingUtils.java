@@ -49,6 +49,8 @@ public class AutonamingUtils {
             }
 
             Telepost.getDB().addNamedPost(new NamedPost(Utils.nameToId(name), name, post.getPos()));
+            Utils.executeCommandAsServer("/setworldspawn " + post.getX() + " " + (post.getY() + 1) + " " + post.getZ());
+
             // Broadcast to all players
             MinecraftServerSupplier.getServer().getPlayerManager().broadcast(
                     TelepostMessages.getMessage(null, "telepost.autonamed", Formatting.GREEN, name, post.getStringCoords()),

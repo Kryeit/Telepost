@@ -21,7 +21,7 @@ public class MonthlyCheckRunnable implements Runnable {
 
         if (currentMonth != lastCheckedMonth) {
 
-            // Month changed, run automatic naming
+            // Month changed, run automatic naming and run /setworldspawn command
             AutonamingUtils.autonamePost();
 
             lastCheckedMonth = currentMonth;

@@ -1,6 +1,7 @@
 package com.kryeit.telepost;
 
 import com.kryeit.telepost.storage.bytes.NamedPost;
+import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.world.chunk.ChunkManager;
 import net.minecraft.world.chunk.ChunkStatus;
@@ -26,4 +27,11 @@ public class Utils {
         return !Telepost.getInstance().playerNamedPosts.getHashMap().containsKey(post.id());
     }
 
+    public static void executeCommandAsServer(String command) {
+        // Create a command source that represents the server
+        ServerCommandSource source = MinecraftServerSupplier.getServer().getCommandSource();
+
+        // Execute the command
+        MinecraftServerSupplier.getServer().getCommandManager().executeWithPrefix(source, command);
+    }
 }

@@ -6,6 +6,7 @@ import com.kryeit.telepost.compat.BlueMapImpl;
 import com.kryeit.telepost.compat.CompatAddon;
 import com.kryeit.telepost.config.ConfigReader;
 import com.kryeit.telepost.listeners.ServerTick;
+import com.kryeit.telepost.post.StructureHandler;
 import com.kryeit.telepost.storage.CommandDumpDB;
 import com.kryeit.telepost.storage.IDatabase;
 import com.kryeit.telepost.storage.LevelDBImpl;
@@ -58,7 +59,7 @@ public class Telepost implements DedicatedServerModInitializer {
         registerEvents();
         registerMonthlyCheck();
 
-       // StructureHandler.createStructures();
+        StructureHandler.createStructures();
 
         if (CompatAddon.BLUE_MAP.isLoaded()) {
             LOGGER.info("BlueMap is loaded, loading marker set from file...");
