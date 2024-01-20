@@ -78,6 +78,8 @@ public class NamePost {
             Claim claim = GriefDefender.getCore().getClaimAt(post.getPos());
             if (claim != null && claim.isAdminClaim()) {
                 claim.addUserTrust(player.getUuid(), TrustTypes.MANAGER);
+            } else {
+                player.sendMessage(Text.literal("This should not happen, please report to the admin. Reason: Claim not found or not admin claim at " + post.getStringCoords()));
             }
         }
 
