@@ -7,7 +7,7 @@ import java.nio.file.Paths;
 import java.util.Calendar;
 
 public class MonthlyCheckRunnable implements Runnable {
-    private static final String FILE_PATH = "lastCheckedMonth.txt";
+    private static final String FILE_PATH = "mods/telepost/lastCheckedMonth.txt";
     private int lastCheckedMonth;
 
     public MonthlyCheckRunnable() {
