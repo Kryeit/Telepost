@@ -1,5 +1,6 @@
 package com.kryeit.telepost;
 
+import com.kryeit.telepost.offlines.Offlines;
 import com.kryeit.telepost.storage.bytes.NamedPost;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -25,6 +26,10 @@ public class Utils {
 
     public static boolean isPostNamedByAdmin(NamedPost post) {
         return !Telepost.getInstance().playerNamedPosts.getHashMap().containsKey(post.id());
+    }
+
+    public static String getNamedPostOwner(NamedPost post) {
+        return Offlines.getNameByUUID(Telepost.getInstance().playerNamedPosts.getHashMap().get(post.id()));
     }
 
     public static void executeCommandAsServer(String command) {
