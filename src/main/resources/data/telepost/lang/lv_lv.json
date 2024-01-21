@@ -1,6 +1,7 @@
 {
   "telepost.standing": "Jums vajag jāstāv uz platformās.",
   "telepost.invite": "Tu esi ielūdzis %s uz savu mājas platformu līdz nākamajam restartam.",
+  "telepost.invited": "You've been invited by %s, use /visit %s",
   "telepost.nearest.named": "Tuvākā platforma ir: %s, tā ir %s",
   "telepost.nearest": "Tuvākā platforma ir: %s",
   "telepost.already_named": "Platformai jau ir vārds.",

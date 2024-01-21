@@ -1,6 +1,7 @@
 {
   "telepost.standing": "Du musst auf einem Pfahl stehen",
   "telepost.invite": "Du hast %s zu deinem Heim-Pfahl bis zum nächsten Server Neustart eingeladen",
+  "telepost.invited": "You've been invited by %s, use /visit %s",
   "telepost.nearest.named": "Der nächste Pfahl steht bei: %s, er heißt %s",
   "telepost.nearest": "Der nächste Pfahl steht bei: %s",
   "telepost.already_named": "Der Pfahl hat schon einen Namen",

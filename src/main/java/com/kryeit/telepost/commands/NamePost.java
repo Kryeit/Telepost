@@ -83,14 +83,14 @@ public class NamePost {
             }
         }
 
-        //if (CompatAddon.BLUE_MAP.isLoaded()) {
-        //    BlueMapImpl.createMarker(post, postName);
-        //}
-
         Telepost.getDB().addNamedPost(new NamedPost(postID, postName, post.getPos()));
 
         text = TelepostMessages.getMessage(player, "telepost.named", Formatting.GREEN, postName, post.getStringCoords());
         player.sendMessage(text);
+
+        //if (CompatAddon.BLUE_MAP.isLoaded()) {
+        //    BlueMapImpl.createMarker(post, postName);
+        //}
 
         return Command.SINGLE_SUCCESS;
     }

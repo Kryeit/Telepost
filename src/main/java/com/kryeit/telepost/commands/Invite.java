@@ -47,6 +47,9 @@ public class Invite {
         text = TelepostMessages.getMessage(player, "telepost.invite", Formatting.GREEN, name);
         player.sendMessage(text);
 
+        text = TelepostMessages.getMessage(invited, "telepost.invited", Formatting.GREEN, player.getName().getString(), player.getName().getString());
+        invited.sendMessage(text);
+        
         return Command.SINGLE_SUCCESS;
     }
 
