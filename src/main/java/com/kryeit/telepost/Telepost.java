@@ -59,6 +59,7 @@ public class Telepost implements DedicatedServerModInitializer {
         registerEvents();
         registerMonthlyCheck();
 
+        // Comment this out in dev environment
         StructureHandler.createStructures();
 
         if (CompatAddon.BLUE_MAP.isLoaded()) {
