@@ -29,7 +29,7 @@ public class Utils {
     }
 
     public static String getNamedPostOwner(NamedPost post) {
-        return Offlines.getNameByUUID(Telepost.getInstance().playerNamedPosts.getHashMap().get(post.id()));
+        return Offlines.getNameByUUID(Telepost.getInstance().playerNamedPosts.getElement(post.id()));
     }
 
     public static void executeCommandAsServer(String command) {

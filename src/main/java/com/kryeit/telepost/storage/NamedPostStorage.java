@@ -49,4 +49,8 @@ public class NamedPostStorage {
         hashMap.remove(postID);
         setHashMap(hashMap);
     }
+
+    public UUID getElement(String postID) {
+        return getHashMap().get(postID);
+    }
 }
