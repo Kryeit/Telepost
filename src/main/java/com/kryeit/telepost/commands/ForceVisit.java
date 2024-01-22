@@ -50,8 +50,8 @@ public class ForceVisit {
                 )
                 .then(CommandManager.argument("post", StringArgumentType.greedyString())
                         .suggests(SuggestionsProvider.suggestPostNamesAndOnlinePlayers())
-                        .executes(ForceVisit::execute)
                 )
+                .executes(ForceVisit::execute)
         );
     }
 }
