@@ -12,6 +12,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -82,6 +83,7 @@ public class UnnamePost {
                 CommandSource.suggestMatching(suggestions, builder);
 
         dispatcher.register(CommandManager.literal("unnamepost")
+                .requires(source -> Permissions.check(source, "telepost.unnamepost"))
                 .then(CommandManager.argument("name", StringArgumentType.greedyString())
                         .suggests(suggestionProvider)
                         .executes(UnnamePost::execute)

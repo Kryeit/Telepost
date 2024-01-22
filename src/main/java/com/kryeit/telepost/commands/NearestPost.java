@@ -7,6 +7,7 @@ import com.kryeit.telepost.storage.bytes.NamedPost;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
+import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -43,14 +44,17 @@ public class NearestPost {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("nearestpost")
+                .requires(source -> Permissions.check(source, "telepost.nearestpost", true))
                 .executes(NearestPost::execute)
         );
 
         dispatcher.register(CommandManager.literal("closestpost")
+                .requires(source -> Permissions.check(source, "telepost.nearestpost", true))
                 .executes(NearestPost::execute)
         );
 
         dispatcher.register(CommandManager.literal("post")
+                .requires(source -> Permissions.check(source, "telepost.nearestpost", true))
                 .executes(NearestPost::execute)
         );
     }

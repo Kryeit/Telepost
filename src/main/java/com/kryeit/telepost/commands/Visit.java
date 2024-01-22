@@ -9,6 +9,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -86,6 +87,7 @@ public class Visit {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("visit")
+                .requires(source -> Permissions.check(source, "telepost.visit", true))
                 .then(CommandManager.argument("name", StringArgumentType.greedyString())
                         .suggests(SuggestionsProvider.suggestPostNamesAndOnlinePlayers())
                         .executes(Visit::execute)
@@ -93,6 +95,7 @@ public class Visit {
         );
 
         dispatcher.register(CommandManager.literal("v")
+                .requires(source -> Permissions.check(source, "telepost.visit", true))
                 .then(CommandManager.argument("name", StringArgumentType.greedyString())
                         .suggests(SuggestionsProvider.suggestPostNamesAndOnlinePlayers())
                         .executes(Visit::execute)
