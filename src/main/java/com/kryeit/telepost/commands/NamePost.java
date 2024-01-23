@@ -7,7 +7,6 @@ import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.TelepostMessages;
 import com.kryeit.telepost.TelepostPermissions;
 import com.kryeit.telepost.Utils;
-import com.kryeit.telepost.compat.BlueMapImpl;
 import com.kryeit.telepost.compat.CompatAddon;
 import com.kryeit.telepost.compat.GriefDefenderImpl;
 import com.kryeit.telepost.post.Post;

@@ -2,7 +2,7 @@
   "post-width": "31",
   "post-gap": "2000",
   "worldborder": "5000",
-  "auto-naming": "true",
+  "auto-naming": true,
   "next-post-names": [
     "Atacama",
     "Socarrat",
