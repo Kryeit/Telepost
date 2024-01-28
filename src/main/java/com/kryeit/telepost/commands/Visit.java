@@ -55,7 +55,7 @@ public class Visit {
                 }
                 Post homePost = new Post(home.get());
 
-                text = TelepostMessages.getMessage(player, "telepost.teleport.homepost.other", Formatting.GREEN, postName);
+                text = TelepostMessages.getMessage(player, "telepost.teleport.homepost.other", Formatting.GREEN, visited.getName().getString());
                 player.sendMessage(text, true);
 
                 homePost.teleport(player);
@@ -73,7 +73,7 @@ public class Visit {
         if (namedPostOptional.isPresent()) {
             Post namedPost = new Post(namedPostOptional.get());
 
-            text = TelepostMessages.getMessage(player, "telepost.teleport.named_post", Formatting.GREEN, postName);
+            text = TelepostMessages.getMessage(player, "telepost.teleport.named_post", Formatting.GREEN, namedPostOptional.get().name());
             player.sendMessage(text, true);
 
             namedPost.teleport(player);

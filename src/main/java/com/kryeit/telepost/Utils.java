@@ -31,17 +31,9 @@ public class Utils {
     }
 
     public static String getNamedPostOwner(NamedPost post) {
-        UUID id = null;
-        try {
-            id = Telepost.getInstance().playerNamedPosts.getElement(post.id());
+        UUID id = Telepost.getInstance().playerNamedPosts.getElement(post.id());
 
-        } catch (Exception ex) {
-            ex.printStackTrace();
-        }
         if (id == null) return "Admin";
-        ServerPlayerEntity player = MinecraftServerSupplier.getServer().getPlayerManager().getPlayer(id);
-        if (player != null)
-            return player.getName().getString();
 
         return Offlines.getNameByUUID(id);
     }
