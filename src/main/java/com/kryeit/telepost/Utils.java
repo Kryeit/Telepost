@@ -27,7 +27,7 @@ public class Utils {
     }
 
     public static boolean isPostNamedByAdmin(NamedPost post) {
-        return !Telepost.getInstance().playerNamedPosts.getHashMap().containsKey(post.id());
+        return Telepost.getInstance().playerNamedPosts.getElement(post.id()) == null;
     }
 
     public static String getNamedPostOwner(NamedPost post) {

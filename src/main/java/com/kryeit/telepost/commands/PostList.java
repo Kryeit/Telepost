@@ -129,13 +129,13 @@ public class PostList {
 
     public static Text getListEntry(NamedPost post, String name, ServerPlayerEntity player) {
         return Text.literal(name).formatted(Utils.isPostNamedByAdmin(post) ? Formatting.GOLD : Formatting.WHITE)
-                        .setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/visit " + name))
+                        .setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/v " + name))
                                 .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
                                         TelepostMessages.getMessage(player, "telepost.postlist.tooltip", Formatting.GRAY, new Post(post).getStringCoords(), name).copy().append(
-                                                Utils.isPostNamedByAdmin(post) ? Text.literal("\n").append(
+                                                Text.literal("\nNamed by ").append(
                                                         Utils.getNamedPostOwner(post)
-                                                ).formatted(Formatting.GRAY).setStyle(Style.EMPTY.withFormatting(Formatting.ITALIC)) : Text.literal("")
-                                        ))));
+                                                ).formatted(Formatting.GRAY, Formatting.ITALIC))
+                                        )));
     }
 
 }
