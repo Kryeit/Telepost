@@ -33,7 +33,7 @@ public class Home {
 
         Text text;
 
-        if (!post.isInside(player, player.getPos())) {
+        if (!post.isInside(player.getPos())) {
             text = TelepostMessages.getMessage(player, "telepost.standing", Formatting.RED);
             player.sendMessage(text, true);
             return 0;

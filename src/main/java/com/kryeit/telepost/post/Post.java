@@ -2,7 +2,6 @@ package com.kryeit.telepost.post;
 
 import com.kryeit.telepost.MinecraftServerSupplier;
 import com.kryeit.telepost.Telepost;
-import com.kryeit.telepost.TelepostPermissions;
 import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.compat.CompatAddon;
 import com.kryeit.telepost.compat.GriefDefenderImpl;
@@ -49,8 +48,7 @@ public class Post {
         this.z = z;
     }
 
-    public boolean isInside(ServerPlayerEntity player, Vec3d pos) {
-        if (TelepostPermissions.isAdmin(player)) return true;
+    public boolean isInside(Vec3d pos) {
         int halfWidth = (WIDTH - 1)/ 2;
 
         boolean insideX = pos.getX() >= (x - halfWidth) && pos.getX() <= (x + halfWidth);

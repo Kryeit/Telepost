@@ -1,7 +1,6 @@
 package com.kryeit.telepost.commands;
 
 import com.kryeit.telepost.Telepost;
-import com.kryeit.telepost.TelepostPermissions;
 import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.post.Post;
 import com.kryeit.telepost.storage.bytes.NamedPost;
@@ -32,7 +31,7 @@ public class UnnamePost {
 
         Supplier<Text> message;
 
-        if (player == null || !Utils.isInOverworld(player) || !TelepostPermissions.isAdmin(player)) {
+        if (player == null || !Utils.isInOverworld(player)) {
             message = () -> Text.translatable("telepost.no_permission");
             source.sendFeedback(message, false);
             return 0;
@@ -81,7 +80,7 @@ public class UnnamePost {
                 CommandSource.suggestMatching(suggestions, builder);
 
         dispatcher.register(CommandManager.literal("unnamepost")
-                .requires(source -> Permissions.check(source, "telepost.unnamepost"))
+                .requires(source -> Permissions.check(source, "telepost.unnamepost", false))
                 .then(CommandManager.argument("name", StringArgumentType.greedyString())
                         .suggests(suggestionProvider)
                         .executes(UnnamePost::execute)

@@ -1,7 +1,6 @@
 package com.kryeit.telepost.commands;
 
 import com.kryeit.telepost.Telepost;
-import com.kryeit.telepost.TelepostPermissions;
 import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.compat.CompatAddon;
 import com.kryeit.telepost.compat.GriefDefenderImpl;
@@ -25,7 +24,7 @@ public class BuildPosts {
 
         Supplier<Text> message;
 
-        if (player == null || !Utils.isInOverworld(player) || !TelepostPermissions.isAdmin(player)) {
+        if (player == null || !Utils.isInOverworld(player)) {
             message = () -> Text.translatable("telepost.no_permission");
             source.sendFeedback(message, false);
             return 0;
@@ -49,7 +48,7 @@ public class BuildPosts {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("buildposts")
-                .requires(source -> Permissions.check(source, "telepost.buildposts"))
+                .requires(source -> Permissions.check(source, "telepost.buildposts", false))
                 .executes(BuildPosts::execute)
         );
     }

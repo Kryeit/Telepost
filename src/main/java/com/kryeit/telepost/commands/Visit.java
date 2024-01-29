@@ -36,7 +36,7 @@ public class Visit {
 
         Text text;
 
-        if (!closestPost.isInside(player, player.getPos())) {
+        if (!closestPost.isInside(player.getPos())) {
             text = TelepostMessages.getMessage(player, "telepost.standing", Formatting.RED);
             player.sendMessage(text, true);
             return 0;
@@ -46,7 +46,7 @@ public class Visit {
 
         // /visit Player
         if (visited != null) {
-            if (Utils.isInvited(visited, player) || TelepostPermissions.isHelperOrAdmin(player)) {
+            if (Utils.isInvited(visited, player) || Permissions.check(source, "telepost.visit.others", false)) {
                 Optional<HomePost> home = Telepost.getDB().getHome(visited.getUuid());
                 if (home.isEmpty()) {
                     text = TelepostMessages.getMessage(player, "telepost.no_homepost", Formatting.RED);
