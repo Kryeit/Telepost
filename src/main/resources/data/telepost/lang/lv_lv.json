@@ -24,5 +24,6 @@
   "telepost.postlist.header": "Nosauktās platformas",
   "telepost.postlist.tooltip": "Platforma %s\nNospied, lai teleportētu uz %s",
   "telepost.postlist.total": "Kopējais platformu skaits: %s",
-  "telepost.autonamed": "A new post has been named %s, it's located at: %s"
+  "telepost.autonamed": "A new post has been named %s, it's located at: %s",
+  "telepost.already-there": "You're are there already"
 }

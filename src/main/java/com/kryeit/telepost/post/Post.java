@@ -48,6 +48,10 @@ public class Post {
         this.z = z;
     }
 
+    public boolean isSame(Post post) {
+        return post.getX() == getX() && post.getZ() == getZ();
+    }
+
     public boolean isInside(Vec3d pos) {
         int halfWidth = (WIDTH - 1)/ 2;
 

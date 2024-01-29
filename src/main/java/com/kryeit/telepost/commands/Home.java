@@ -42,10 +42,16 @@ public class Home {
         Optional<HomePost> home = Telepost.getDB().getHome(player.getUuid());
 
         if (home.isPresent()) {
+            Post homePost = new Post(home.get());
+
+            if (post.isSame(homePost)) {
+                text = TelepostMessages.getMessage(player, "telepost.already-there", Formatting.RED);
+                player.sendMessage(text, true);
+                return 0;
+            }
+
             text = TelepostMessages.getMessage(player, "telepost.teleport.homepost", Formatting.GREEN);
             player.sendMessage(text, true);
-
-            Post homePost = new Post(home.get());
             homePost.teleport(player);
         } else {
             text = TelepostMessages.getMessage(player, "telepost.no_homepost", Formatting.RED);

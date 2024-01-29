@@ -31,8 +31,8 @@ public class Visit {
         }
 
         Post closestPost = new Post(player.getPos());
-        String postName = StringArgumentType.getString(context, "name");
-        String postID = Utils.nameToId(postName);
+        String postNameOrPlayer = StringArgumentType.getString(context, "name");
+        String postID = Utils.nameToId(postNameOrPlayer);
 
         Text text;
 
@@ -42,7 +42,7 @@ public class Visit {
             return 0;
         }
         
-        ServerPlayerEntity visited = MinecraftServerSupplier.getServer().getPlayerManager().getPlayer(postName);
+        ServerPlayerEntity visited = MinecraftServerSupplier.getServer().getPlayerManager().getPlayer(postNameOrPlayer);
 
         // /visit Player
         if (visited != null) {
@@ -54,6 +54,12 @@ public class Visit {
                     return 0;
                 }
                 Post homePost = new Post(home.get());
+
+                if (closestPost.isSame(homePost)) {
+                    text = TelepostMessages.getMessage(player, "telepost.already-there", Formatting.RED);
+                    player.sendMessage(text, true);
+                    return 0;
+                }
 
                 text = TelepostMessages.getMessage(player, "telepost.teleport.homepost.other", Formatting.GREEN, visited.getName().getString());
                 player.sendMessage(text, true);
@@ -72,6 +78,12 @@ public class Visit {
 
         if (namedPostOptional.isPresent()) {
             Post namedPost = new Post(namedPostOptional.get());
+
+            if (closestPost.isSame(namedPost)) {
+                text = TelepostMessages.getMessage(player, "telepost.already-there", Formatting.RED);
+                player.sendMessage(text, true);
+                return 0;
+            }
 
             text = TelepostMessages.getMessage(player, "telepost.teleport.named_post", Formatting.GREEN, namedPostOptional.get().name());
             player.sendMessage(text, true);
