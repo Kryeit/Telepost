@@ -2,6 +2,7 @@ package com.kryeit.telepost;
 
 import com.kryeit.telepost.autonaming.MonthlyCheckRunnable;
 import com.kryeit.telepost.commands.*;
+import com.kryeit.telepost.commands.cooldown.CooldownStorage;
 import com.kryeit.telepost.compat.BlueMapImpl;
 import com.kryeit.telepost.compat.CompatAddon;
 import com.kryeit.telepost.config.ConfigReader;
@@ -37,6 +38,8 @@ public class Telepost implements DedicatedServerModInitializer {
     public IDatabase database;
     public NamedPostStorage playerNamedPosts;
     public static Map<UUID, UUID> invites = new HashMap<>();
+
+    public static CooldownStorage randomPostCooldown;
     public static boolean postBuilding = false;
 
     @Override
@@ -99,6 +102,13 @@ public class Telepost implements DedicatedServerModInitializer {
     public void initializeDatabases() {
         // Database of all posts and homeposts, with their locations and such
         database = new LevelDBImpl();
+
+        // For /randompost cooldown
+        try {
+            randomPostCooldown = new CooldownStorage("mods/" + ID + "/randompostcooldown");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
         // Database of simple POST_ID -> PLAYER_ID mappings for QoL additions and Server Owner convenience
         try {

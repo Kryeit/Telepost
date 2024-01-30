@@ -1,5 +1,6 @@
 package com.kryeit.telepost.commands;
 
+import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.post.Post;
 import com.mojang.brigadier.CommandDispatcher;
@@ -10,6 +11,7 @@ import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
+import java.io.IOException;
 import java.util.List;
 import java.util.function.Supplier;
 
@@ -25,12 +27,22 @@ public class RandomPost {
             return 0;
         }
 
+        if (Telepost.randomPostCooldown.hasPlayer(player.getUuid())) {
+            return 0;
+        }
+
         // Choose a post at random from the list
         List<Post> posts = Utils.getNonNamedPosts();
         Post post = posts.get((int) (Math.random() * posts.size()));
 
-        post.teleport(player);
+        try {
+            Telepost.randomPostCooldown.addPlayer(player.getUuid());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
         
+        post.teleport(player);
+
         return 1;
     }
 
