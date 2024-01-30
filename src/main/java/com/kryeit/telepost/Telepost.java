@@ -11,8 +11,6 @@ import com.kryeit.telepost.storage.CommandDumpDB;
 import com.kryeit.telepost.storage.IDatabase;
 import com.kryeit.telepost.storage.LevelDBImpl;
 import com.kryeit.telepost.storage.NamedPostStorage;
-import de.bluecolored.bluemap.api.gson.MarkerGson;
-import de.bluecolored.bluemap.api.markers.MarkerSet;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -20,8 +18,6 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
@@ -62,29 +58,9 @@ public class Telepost implements DedicatedServerModInitializer {
         // Comment this out in dev environment
         StructureHandler.createStructures();
 
-        if (CompatAddon.BLUE_MAP.isLoaded()) {
+        if (CompatAddon.BLUEMAP.isLoaded()) {
             LOGGER.info("BlueMap is loaded, loading marker set from file...");
-            File directory = new File("mods/" + ID);
-            if (!directory.exists())
-                directory.mkdirs();
-
-            File file = new File(directory, "marker-file.json");
-            if (!file.exists()) {
-                try {
-                    file.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return;
-                }
-            }
-
-            try (FileReader reader = new FileReader(file)) {
-                BlueMapImpl.markerSet = MarkerGson.INSTANCE.fromJson(reader, MarkerSet.class);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-
-            BlueMapImpl.updateMarkerSet();
+            BlueMapImpl.loadMarkerSet();
             LOGGER.info("BlueMap loaded successfully");
         }
     }

@@ -2,6 +2,8 @@ package com.kryeit.telepost.commands;
 
 import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.Utils;
+import com.kryeit.telepost.compat.BlueMapImpl;
+import com.kryeit.telepost.compat.CompatAddon;
 import com.kryeit.telepost.post.Post;
 import com.kryeit.telepost.storage.bytes.NamedPost;
 import com.mojang.brigadier.Command;
@@ -48,10 +50,6 @@ public class UnnamePost {
             return 0;
         }
 
-        //if (CompatAddon.BLUE_MAP.isLoaded()) {
-        //    BlueMapImpl.removeMarker(postName);
-        //}
-
         try {
             Telepost.getInstance().playerNamedPosts.deleteElement(postID);
         } catch (IOException e) {
@@ -65,6 +63,10 @@ public class UnnamePost {
                 "The nearest post has been unnamed at: " + post.getStringCoords());
 
         source.sendFeedback(message, false);
+
+        if (CompatAddon.BLUEMAP.isLoaded()) {
+            BlueMapImpl.removeMarker(postName);
+        }
 
         return Command.SINGLE_SUCCESS;
     }
