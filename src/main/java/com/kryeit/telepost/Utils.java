@@ -1,12 +1,19 @@
 package com.kryeit.telepost;
 
 import com.kryeit.telepost.offlines.Offlines;
+import com.kryeit.telepost.post.GridIterator;
+import com.kryeit.telepost.post.Post;
+import com.kryeit.telepost.post.PostBuilder;
 import com.kryeit.telepost.storage.bytes.NamedPost;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.chunk.ChunkManager;
 import net.minecraft.world.chunk.ChunkStatus;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 import static com.kryeit.telepost.post.Post.WORLD;
@@ -36,6 +43,22 @@ public class Utils {
         if (id == null) return "Admin";
 
         return Offlines.getNameByUUID(id);
+    }
+
+    public static List<Post> getNonNamedPosts() {
+        GridIterator iterator = new GridIterator();
+        List<Post> posts = new ArrayList<>();
+
+        if (iterator.hasNext()) {
+            Vec3d loc = iterator.next();
+
+            Post post = new Post(loc);
+            if (!post.isNamed()) {
+                posts.add(post);
+            }
+        }
+
+        return posts;
     }
 
     public static void executeCommandAsServer(String command) {

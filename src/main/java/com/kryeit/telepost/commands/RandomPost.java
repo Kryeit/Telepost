@@ -1,0 +1,43 @@
+package com.kryeit.telepost.commands;
+
+import com.kryeit.telepost.Utils;
+import com.kryeit.telepost.post.Post;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.context.CommandContext;
+import me.lucko.fabric.api.permissions.v0.Permissions;
+import net.minecraft.server.command.CommandManager;
+import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+
+import java.util.List;
+import java.util.function.Supplier;
+
+public class RandomPost {
+
+    public static int execute(CommandContext<ServerCommandSource> context) {
+        ServerCommandSource source = context.getSource();
+        ServerPlayerEntity player = source.getPlayer();
+
+        if (player == null || !Utils.isInOverworld(player)) {
+            Supplier<Text> message = () -> Text.translatable("telepost.no_permission");
+            source.sendFeedback(message, false);
+            return 0;
+        }
+
+        // Choose a post at random from the list
+        List<Post> posts = Utils.getNonNamedPosts();
+        Post post = posts.get((int) (Math.random() * posts.size()));
+
+        post.teleport(player);
+        
+        return 1;
+    }
+
+    public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+        dispatcher.register(CommandManager.literal("randompost")
+                .requires(source -> Permissions.check(source, "telepost.randompost", true))
+                .executes(RandomPost::execute)
+        );
+    }
+}
