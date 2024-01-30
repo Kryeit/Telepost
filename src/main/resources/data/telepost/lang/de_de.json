@@ -8,6 +8,7 @@
   "telepost.name.claimblocks": "Du brauchst mindestens %s Claim-Blöcke, um diesen Pfahl zu benennen",
   "telepost.named": "Der nächste Pfahl wurde %s benannt. Er steht bei: %s",
   "telepost.homepost": "Du hast den Pfahl bei %s zu deinem Zuhause gemacht",
+  "telepost.randompost.cooldown": "You can't use /randompost until next month",
   "telepost.unknown_post": "Unbekannter Pfahl",
   "telepost.unknown_player": "Unbekannter Spieler",
   "telepost.teleport.homepost": "Du wurdest zu deinem Heim-Pfahl teleportiert",
@@ -25,5 +26,5 @@
   "telepost.postlist.tooltip": "Pfahl bei %s\nKlicken, um zu %s zu teleportieren",
   "telepost.postlist.total": "Gesamtzahl der Pfähle: %s",
   "telepost.autonamed": "A new post has been named %s, it's located at: %s",
-  "telepost.already-there": "You're are there already"
+  "telepost.already-there": "You're there already"
 }

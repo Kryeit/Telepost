@@ -28,6 +28,8 @@ public class RandomPost {
         }
 
         if (Telepost.randomPostCooldown.hasPlayer(player.getUuid())) {
+            Supplier<Text> message = () -> Text.translatable("telepost.randompost.cooldown");
+            source.sendFeedback(message, false);
             return 0;
         }
 
@@ -40,7 +42,7 @@ public class RandomPost {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        
+
         post.teleport(player);
 
         return 1;

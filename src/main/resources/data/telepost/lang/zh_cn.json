@@ -8,6 +8,7 @@
   "telepost.name.claimblocks": "你至少需要 %s 领地方块来命名该地点",
   "telepost.named": "最近的地点已命名为 %s 位于：%s",
   "telepost.homepost": "你已将地点设为家：%s",
+  "telepost.randompost.cooldown": "You can't use /randompost until next month",
   "telepost.unknown_post": "未知地点",
   "telepost.unknown_player": "未知玩家",
   "telepost.teleport.homepost": "你已被传送到你的家地点",
@@ -25,5 +26,5 @@
   "telepost.postlist.tooltip": "地点在 %s\n点击传送到 %s",
   "telepost.postlist.total": "地点总数: %s",
   "telepost.autonamed": "A new post has been named %s, it's located at: %s",
-  "telepost.already-there": "You're are there already"
+  "telepost.already-there": "You're there already"
 }
