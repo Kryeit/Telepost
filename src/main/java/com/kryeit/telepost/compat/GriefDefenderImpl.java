@@ -53,4 +53,16 @@ public class GriefDefenderImpl {
                 .syncMode(ClaimGroupSyncModes.ALL)
                 .build();
     }
+
+    public static Claim getClaim(Post post) {
+        Claim claim = null;
+        for (Claim c : GriefDefender.getCore().getAllClaims()) {
+            if (c.isAdminClaim()) {
+                if (c.contains(post.getX(), post.getY(), post.getZ())) {
+                    claim = c;
+                }
+            }
+        }
+        return claim;
+    }
 }

@@ -1,6 +1,9 @@
 package com.kryeit.telepost.commands;
 
-import com.kryeit.telepost.*;
+import com.kryeit.telepost.MinecraftServerSupplier;
+import com.kryeit.telepost.Telepost;
+import com.kryeit.telepost.TelepostMessages;
+import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.commands.completion.SuggestionsProvider;
 import com.kryeit.telepost.post.Post;
 import com.kryeit.telepost.storage.bytes.HomePost;

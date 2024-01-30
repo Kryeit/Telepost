@@ -1,6 +1,5 @@
 package com.kryeit.telepost.commands;
 
-import com.griefdefender.api.GriefDefender;
 import com.griefdefender.api.claim.Claim;
 import com.griefdefender.api.claim.TrustTypes;
 import com.kryeit.telepost.Telepost;
@@ -74,9 +73,9 @@ public class NamePost {
             }
             Telepost.getInstance().playerNamedPosts.addElement(postID, player.getUuid());
 
-            Claim claim = GriefDefender.getCore().getClaimAt(post.getPos());
+            Claim claim = GriefDefenderImpl.getClaim(post);
             if (claim != null && claim.isAdminClaim()) {
-                claim.addUserTrust(player.getUuid(), TrustTypes.MANAGER);
+                claim.addUserTrust(player.getUuid(), TrustTypes.BUILDER);
             } else {
                 player.sendMessage(Text.literal("This should not happen, please report to the admin. Reason: Claim not found or not admin claim at " + post.getStringCoords()));
             }
