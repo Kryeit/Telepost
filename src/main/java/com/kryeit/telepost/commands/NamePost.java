@@ -74,10 +74,9 @@ public class NamePost {
             Telepost.getInstance().playerNamedPosts.addElement(postID, player.getUuid());
 
             Claim claim = GriefDefenderImpl.getClaim(post);
-            if (claim != null && claim.isAdminClaim()) {
+            if (claim != null) {
+                player.sendMessage(Text.literal("You've been granted builder trust in the post claim"));
                 claim.addUserTrust(player.getUuid(), TrustTypes.BUILDER);
-            } else {
-                player.sendMessage(Text.literal("This should not happen, please report to the admin. Reason: Claim not found or not admin claim at " + post.getStringCoords()));
             }
         }
 
