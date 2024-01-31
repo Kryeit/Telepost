@@ -36,7 +36,7 @@ public class Telepost implements DedicatedServerModInitializer {
 
     public static final Logger LOGGER = LoggerFactory.getLogger(NAME);
     public IDatabase database;
-    public NamedPostStorage playerNamedPosts;
+    public static NamedPostStorage playerNamedPosts;
     public static Map<UUID, UUID> invites = new HashMap<>();
 
     public static CooldownStorage randomPostCooldown;

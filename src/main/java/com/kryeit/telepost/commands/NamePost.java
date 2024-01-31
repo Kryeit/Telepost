@@ -60,7 +60,7 @@ public class NamePost {
         }
 
         // Check if player has already named a post
-        if (Telepost.getInstance().playerNamedPosts.getHashMap().containsValue(player.getUuid())) {
+        if (Telepost.playerNamedPosts.getHashMap().containsValue(player.getUuid())) {
             text = TelepostMessages.getMessage(player, "telepost.already_named", Formatting.RED);
             player.sendMessage(text, true);
             return 0;
@@ -72,7 +72,8 @@ public class NamePost {
                 player.sendMessage(text);
                 return 0;
             }
-            Telepost.getInstance().playerNamedPosts.addElement(postID, player.getUuid());
+
+            Telepost.playerNamedPosts.addElement(postID, player.getUuid());
 
             Claim claim = GriefDefenderImpl.getClaim(post);
             if (claim != null) {

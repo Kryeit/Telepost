@@ -51,7 +51,7 @@ public class UnnamePost {
         }
 
         try {
-            Telepost.getInstance().playerNamedPosts.deleteElement(postID);
+            Telepost.playerNamedPosts.deleteElement(postID);
         } catch (IOException e) {
             e.printStackTrace();
             LOGGER.warn("Failed to delete player named post element (Was admin post?): " + postID);

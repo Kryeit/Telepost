@@ -53,7 +53,7 @@ public class PostList {
         }
 
         // Header
-        player.sendMessage(Text.literal(" ").formatted(Formatting.RESET), false);
+        player.sendMessage(Text.literal("------------").formatted(Formatting.DARK_GRAY), false);
         player.sendMessage(TelepostMessages.getMessage(player, "telepost.postlist.header", Formatting.GOLD), false);
         player.sendMessage(Text.literal("------------").formatted(Formatting.DARK_GRAY), false);
 
