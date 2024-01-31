@@ -59,7 +59,7 @@ public class Telepost implements DedicatedServerModInitializer {
         registerMonthlyCheck();
 
         // Comment this out in dev environment
-        //StructureHandler.createStructures();
+        StructureHandler.createStructures();
 
         if (CompatAddon.BLUEMAP.isLoaded()) {
             LOGGER.info("BlueMap is loaded, loading marker set from file...");
@@ -92,7 +92,7 @@ public class Telepost implements DedicatedServerModInitializer {
             ForceVisit.register(dispatcher);
             RandomPost.register(dispatcher);
 
-            CommandDumpDB.register(dispatcher);
+            //CommandDumpDB.register(dispatcher);
         });
     }
 

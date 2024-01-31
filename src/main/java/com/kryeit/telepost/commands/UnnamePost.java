@@ -82,7 +82,7 @@ public class UnnamePost {
                 CommandSource.suggestMatching(suggestions, builder);
 
         dispatcher.register(CommandManager.literal("unnamepost")
-                .requires(source -> Permissions.check(source, "telepost.unnamepost", false))
+                .requires(source -> Permissions.check(source, "telepost.unnamepost", false) || source.hasPermissionLevel(4))
                 .then(CommandManager.argument("name", StringArgumentType.greedyString())
                         .suggests(suggestionProvider)
                         .executes(UnnamePost::execute)

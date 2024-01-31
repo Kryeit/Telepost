@@ -96,7 +96,7 @@ public class NamePost {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("namepost")
-                .requires(source -> Permissions.check(source, "telepost.namepost", true))
+                .requires(source -> Permissions.check(source, "telepost.namepost", true) || source.hasPermissionLevel(4))
                 .then(CommandManager.argument("name", StringArgumentType.greedyString())
                         .executes(context -> {
                             try {

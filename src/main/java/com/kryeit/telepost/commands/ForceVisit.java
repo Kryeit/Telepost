@@ -38,7 +38,7 @@ public class ForceVisit {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("forcevisit")
-                .requires(source -> Permissions.check(source, "telepost.forcevisit", false))
+                .requires(source -> Permissions.check(source, "telepost.forcevisit", false) || source.hasPermissionLevel(4))
                 .then(CommandManager.argument("player", StringArgumentType.string())
                         .suggests(SuggestionsProvider.suggestOnlinePlayers())
                         .then(CommandManager.argument("post", StringArgumentType.greedyString())
