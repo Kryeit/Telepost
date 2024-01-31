@@ -60,7 +60,13 @@ public class PostList {
         int startIndex = (page - 1) * 10;
         int endIndex = Math.min(startIndex + 10, posts.size());
 
-        for (int i = startIndex; i < endIndex; i++) {
+        for (int i = startIndex; i < 10; i++) {
+
+            if (i > endIndex) {
+                player.sendMessage(Text.literal(""), false);
+                continue;
+            }
+            
             NamedPost post = posts.get(i);
             String name = post.name();
             MutableText postText = Text.literal((i + 1) + ". ").formatted(Formatting.WHITE)
