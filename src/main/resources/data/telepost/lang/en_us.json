@@ -1,12 +1,14 @@
 {
   "telepost.standing": "You need to be standing on a post",
   "telepost.invite": "You've invited %s to your home post until the next restart",
+  "telepost.invited": "You've been invited by %s, use /visit %s",
   "telepost.nearest.named": "The nearest post is at: %s, it's %s",
   "telepost.nearest": "The nearest post is at: %s",
   "telepost.already_named": "The post is already named",
   "telepost.name.claimblocks": "You need at least %s claim blocks to name the post",
   "telepost.named": "The nearest post has been named %s at: %s",
   "telepost.homepost": "You've made the post at: %s your home",
+  "telepost.randompost.cooldown": "You can't use /randompost until next month",
   "telepost.unknown_post": "Unknown post",
   "telepost.unknown_player": "Unknown player",
   "telepost.teleport.homepost": "Welcome to your home post",
@@ -22,5 +24,7 @@
   "telepost.postlist.page.next": "Next page",
   "telepost.postlist.header": "Named posts",
   "telepost.postlist.tooltip": "Post at %s\nClick to teleport to %s",
-  "telepost.postlist.total": "Total posts: %s"
+  "telepost.postlist.total": "Total posts: %s",
+  "telepost.autonamed": "A new post has been named %s, it's located at: %s",
+  "telepost.already-there": "You're there already"
 }

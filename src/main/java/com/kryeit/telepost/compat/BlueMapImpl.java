@@ -8,18 +8,40 @@ import de.bluecolored.bluemap.api.gson.MarkerGson;
 import de.bluecolored.bluemap.api.markers.MarkerSet;
 import de.bluecolored.bluemap.api.markers.POIMarker;
 
+import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 
 import static com.kryeit.telepost.post.Post.WORLD;
 
 public class BlueMapImpl {
-    public static MarkerSet markerSet;
+    private static final String MARKER_FILE_PATH = "mods/telepost/marker-file.json";
+    public static MarkerSet markerSet = new MarkerSet("telepost-markers");
+
+    static {
+        loadMarkerSet();
+    }
+
+    public static void loadMarkerSet() {
+        try {
+            if (Files.exists(Paths.get(MARKER_FILE_PATH))) {
+                try (FileReader reader = new FileReader(MARKER_FILE_PATH)) {
+                    markerSet = MarkerGson.INSTANCE.fromJson(reader, MarkerSet.class);
+                }
+            }
+        } catch (IOException ex) {
+            ex.printStackTrace();
+        }
+        if (markerSet == null) markerSet = new MarkerSet("telepost-markers");
+        updateMarkerSet();
+    }
 
     public static void updateMarkerSet() {
         BlueMapAPI.getInstance().flatMap(instance -> instance.getWorld(WORLD)).ifPresent(world -> {
             for (BlueMapMap map : world.getMaps()) {
-                map.getMarkerSets().put("posts", BlueMapImpl.markerSet);
+                map.getMarkerSets().put("telepost-markers", markerSet);
             }
         });
     }
@@ -29,30 +51,24 @@ public class BlueMapImpl {
                 .label(name)
                 .position(new Vector3d(post.getX(), post.getY(), post.getZ()))
                 .build();
-        BlueMapImpl.markerSet.put(name, marker);
+        markerSet.getMarkers().put(name, marker);
 
-        try (FileWriter writer = new FileWriter("marker-file.json")) {
-            MarkerGson.INSTANCE.toJson(BlueMapImpl.markerSet, writer);
-        } catch (IOException ex) {
-            ex.printStackTrace();
-        }
-
-        BlueMapImpl.updateMarkerSet();
+        saveMarkerSet();
+        updateMarkerSet();
     }
 
     public static void removeMarker(String name) {
-        // Remove the marker from the set
-        BlueMapImpl.markerSet.remove(name);
+        markerSet.getMarkers().remove(name);
 
-        // Update the marker set file
-        try (FileWriter writer = new FileWriter("mods/telepost/marker-file.json")) {
-            MarkerGson.INSTANCE.toJson(BlueMapImpl.markerSet, writer);
+        saveMarkerSet();
+        updateMarkerSet();
+    }
+
+    private static void saveMarkerSet() {
+        try (FileWriter writer = new FileWriter(MARKER_FILE_PATH)) {
+            MarkerGson.INSTANCE.toJson(markerSet, writer);
         } catch (IOException ex) {
             ex.printStackTrace();
         }
-
-        // Update BlueMap
-        BlueMapImpl.updateMarkerSet();
     }
-
 }

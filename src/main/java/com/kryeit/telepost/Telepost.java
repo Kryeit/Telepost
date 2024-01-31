@@ -1,6 +1,8 @@
 package com.kryeit.telepost;
 
+import com.kryeit.telepost.autonaming.MonthlyCheckRunnable;
 import com.kryeit.telepost.commands.*;
+import com.kryeit.telepost.commands.cooldown.CooldownStorage;
 import com.kryeit.telepost.compat.BlueMapImpl;
 import com.kryeit.telepost.compat.CompatAddon;
 import com.kryeit.telepost.config.ConfigReader;
@@ -9,9 +11,7 @@ import com.kryeit.telepost.post.StructureHandler;
 import com.kryeit.telepost.storage.CommandDumpDB;
 import com.kryeit.telepost.storage.IDatabase;
 import com.kryeit.telepost.storage.LevelDBImpl;
-import com.kryeit.telepost.storage.PlayerNamedPosts;
-import de.bluecolored.bluemap.api.gson.MarkerGson;
-import de.bluecolored.bluemap.api.markers.MarkerSet;
+import com.kryeit.telepost.storage.NamedPostStorage;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -19,65 +19,63 @@ import net.fabricmc.fabric.api.event.lifecycle.v1.ServerTickEvents;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.File;
-import java.io.FileReader;
 import java.io.IOException;
 import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 public class Telepost implements DedicatedServerModInitializer {
 
     public static Telepost instance;
+    public static final String ID = "telepost";
+    public static final String NAME = "Telepost";
 
-    public static final Logger LOGGER = LoggerFactory.getLogger(Telepost.class);
+    public static final Logger LOGGER = LoggerFactory.getLogger(NAME);
     public IDatabase database;
-    public PlayerNamedPosts playerNamedPosts;
+    public static NamedPostStorage playerNamedPosts;
     public static Map<UUID, UUID> invites = new HashMap<>();
+
+    public static CooldownStorage randomPostCooldown;
     public static boolean postBuilding = false;
 
     @Override
     public void onInitializeServer() {
+        try {
+            LOGGER.info("Reading config file...");
+            ConfigReader.readFile(Path.of("config/" + ID));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+
         initializeDatabases();
         instance = this;
         registerCommands();
         registerDisableEvent();
         registerEvents();
+        registerMonthlyCheck();
 
+        // Comment this out in dev environment
         StructureHandler.createStructures();
 
-        if (CompatAddon.BLUE_MAP.isLoaded()) {
-            File directory = new File("mods/telepost");
-            if (!directory.exists())
-                directory.mkdirs();
-
-            File file = new File(directory, "marker-file.json");
-            if (!file.exists()) {
-                try {
-                    file.createNewFile();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    return;
-                }
-            }
-
-            try (FileReader reader = new FileReader(file)) {
-                BlueMapImpl.markerSet = MarkerGson.INSTANCE.fromJson(reader, MarkerSet.class);
-            } catch (IOException ex) {
-                ex.printStackTrace();
-            }
-
-            BlueMapImpl.updateMarkerSet();
+        if (CompatAddon.BLUEMAP.isLoaded()) {
+            LOGGER.info("BlueMap is loaded, loading marker set from file...");
+            BlueMapImpl.loadMarkerSet();
+            LOGGER.info("BlueMap loaded successfully");
         }
+    }
 
+    public void registerMonthlyCheck() {
+        if (!ConfigReader.AUTONAMING) return;
 
-        try {
-            LOGGER.info("Reading config file...");
-            ConfigReader.readFile(Path.of("config/telepost"));
-        } catch (IOException e) {
-            throw new RuntimeException(e);
-        }
+        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
+        MonthlyCheckRunnable monthCheckRunnable = new MonthlyCheckRunnable();
+
+        // Schedule to run every hour
+        executor.scheduleAtFixedRate(monthCheckRunnable, 0, 1, TimeUnit.HOURS);
     }
 
     public void registerCommands() {
@@ -91,8 +89,10 @@ public class Telepost implements DedicatedServerModInitializer {
             Visit.register(dispatcher);
             BuildPosts.register(dispatcher);
             PostList.register(dispatcher);
+            ForceVisit.register(dispatcher);
+            RandomPost.register(dispatcher);
 
-            CommandDumpDB.register(dispatcher);
+            //CommandDumpDB.register(dispatcher);
         });
     }
 
@@ -101,9 +101,19 @@ public class Telepost implements DedicatedServerModInitializer {
     }
 
     public void initializeDatabases() {
+        // Database of all posts and homeposts, with their locations and such
         database = new LevelDBImpl();
+
+        // For /randompost cooldown
         try {
-            playerNamedPosts = new PlayerNamedPosts("mods/telepost/PlayerPosts");
+            randomPostCooldown = new CooldownStorage("mods/" + ID + "/randompostcooldown");
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        // Database of simple POST_ID -> PLAYER_ID mappings for QoL additions and Server Owner convenience
+        try {
+            playerNamedPosts = new NamedPostStorage("mods/" + ID +"/PlayerPosts");
         } catch (IOException e) {
             e.printStackTrace();
         }

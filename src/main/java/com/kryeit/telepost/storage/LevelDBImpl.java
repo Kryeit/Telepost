@@ -17,6 +17,8 @@ import java.util.List;
 import java.util.Optional;
 import java.util.UUID;
 
+import static com.kryeit.telepost.Telepost.ID;
+
 public class LevelDBImpl implements IDatabase {
     private final DB postsDB;
     private final DB homesDB;
@@ -32,7 +34,7 @@ public class LevelDBImpl implements IDatabase {
         options.cacheSize(4_194_304); // 4 MB
 
         try {
-            return Iq80DBFactory.factory.open(new File("mods/telepost/db/" + name), options);
+            return Iq80DBFactory.factory.open(new File("mods/" + ID + "/db/" + name), options);
         } catch (IOException e) {
             throw new RuntimeException(e);
         }

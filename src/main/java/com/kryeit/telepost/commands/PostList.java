@@ -2,19 +2,18 @@ package com.kryeit.telepost.commands;
 
 import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.TelepostMessages;
+import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.post.Post;
 import com.kryeit.telepost.storage.bytes.NamedPost;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
-import net.minecraft.text.ClickEvent;
-import net.minecraft.text.HoverEvent;
-import net.minecraft.text.MutableText;
-import net.minecraft.text.Text;
+import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 
 import java.util.Collections;
@@ -54,23 +53,24 @@ public class PostList {
         }
 
         // Header
-        player.sendMessage(Text.literal(" ").formatted(Formatting.RESET), false);
+        player.sendMessage(Text.literal("------------").formatted(Formatting.DARK_GRAY), false);
         player.sendMessage(TelepostMessages.getMessage(player, "telepost.postlist.header", Formatting.GOLD), false);
         player.sendMessage(Text.literal("------------").formatted(Formatting.DARK_GRAY), false);
 
         int startIndex = (page - 1) * 10;
         int endIndex = Math.min(startIndex + 10, posts.size());
 
-        for (int i = startIndex; i < endIndex; i++) {
+        for (int i = startIndex; i < 10; i++) {
+
+            if (i >= endIndex) {
+                player.sendMessage(Text.literal(""), false);
+                continue;
+            }
+            
             NamedPost post = posts.get(i);
             String name = post.name();
             MutableText postText = Text.literal((i + 1) + ". ").formatted(Formatting.WHITE)
-                    .append(Text.literal(name).styled(style ->
-                            style.withColor(Formatting.WHITE)
-                                    .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/visit " + name))
-                                    .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                            TelepostMessages.getMessage(player, "telepost.postlist.tooltip", Formatting.GRAY, new Post(post).getStringCoords(), name)))
-                    ));
+                    .append(getListEntry(post, name, player));
 
             player.sendMessage(postText, false);
         }
@@ -118,6 +118,7 @@ public class PostList {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("postlist")
+                .requires(source -> Permissions.check(source, "telepost.postlist", true))
                 .executes(PostList::execute)
                 .then(CommandManager.argument("page", IntegerArgumentType.integer(1))
                         .executes(PostList::execute))
@@ -130,6 +131,17 @@ public class PostList {
 
     public static boolean hasNextPage(int currentPage, int maxPages) {
         return currentPage < maxPages;
+    }
+
+    public static Text getListEntry(NamedPost post, String name, ServerPlayerEntity player) {
+        return Text.literal(name).formatted(Utils.isPostNamedByAdmin(post) ? Formatting.GOLD : Formatting.WHITE)
+                        .setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/v " + name))
+                                .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
+                                        TelepostMessages.getMessage(player, "telepost.postlist.tooltip", Formatting.GRAY, new Post(post).getStringCoords(), name).copy().append(
+                                                Text.literal("\nNamed by ").append(
+                                                        Utils.getNamedPostOwner(post)
+                                                ).formatted(Formatting.GRAY, Formatting.ITALIC))
+                                        )));
     }
 
 }

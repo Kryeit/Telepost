@@ -1,7 +1,6 @@
 package com.kryeit.telepost.commands;
 
 import com.kryeit.telepost.Telepost;
-import com.kryeit.telepost.TelepostPermissions;
 import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.compat.BlueMapImpl;
 import com.kryeit.telepost.compat.CompatAddon;
@@ -12,6 +11,7 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
+import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.command.CommandSource;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
@@ -24,14 +24,16 @@ import java.util.List;
 import java.util.Optional;
 import java.util.function.Supplier;
 
+import static com.kryeit.telepost.Telepost.LOGGER;
+
 public class UnnamePost {
-    public static int execute(CommandContext<ServerCommandSource> context) throws IOException {
+    public static int execute(CommandContext<ServerCommandSource> context) {
         ServerCommandSource source = context.getSource();
         ServerPlayerEntity player = source.getPlayer();
 
         Supplier<Text> message;
 
-        if (player == null || !Utils.isInOverworld(player) || !TelepostPermissions.isAdmin(player)) {
+        if (player == null || !Utils.isInOverworld(player)) {
             message = () -> Text.translatable("telepost.no_permission");
             source.sendFeedback(message, false);
             return 0;
@@ -48,11 +50,12 @@ public class UnnamePost {
             return 0;
         }
 
-        if (CompatAddon.BLUE_MAP.isLoaded()) {
-            BlueMapImpl.removeMarker(postName);
+        try {
+            Telepost.playerNamedPosts.deleteElement(postID);
+        } catch (IOException e) {
+            e.printStackTrace();
+            LOGGER.warn("Failed to delete player named post element (Was admin post?): " + postID);
         }
-
-        Telepost.getInstance().playerNamedPosts.deleteElement(postID);
 
         Telepost.getDB().deleteNamedPost(postID);
 
@@ -60,6 +63,10 @@ public class UnnamePost {
                 "The nearest post has been unnamed at: " + post.getStringCoords());
 
         source.sendFeedback(message, false);
+
+        if (CompatAddon.BLUEMAP.isLoaded()) {
+            BlueMapImpl.removeMarker(postName);
+        }
 
         return Command.SINGLE_SUCCESS;
     }
@@ -75,15 +82,10 @@ public class UnnamePost {
                 CommandSource.suggestMatching(suggestions, builder);
 
         dispatcher.register(CommandManager.literal("unnamepost")
+                .requires(source -> Permissions.check(source, "telepost.unnamepost", false) || source.hasPermissionLevel(4))
                 .then(CommandManager.argument("name", StringArgumentType.greedyString())
                         .suggests(suggestionProvider)
-                        .executes(context -> {
-                            try {
-                                return execute(context);
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                        })
+                        .executes(UnnamePost::execute)
                 )
         );
     }

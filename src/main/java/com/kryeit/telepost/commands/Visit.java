@@ -1,6 +1,9 @@
 package com.kryeit.telepost.commands;
 
-import com.kryeit.telepost.*;
+import com.kryeit.telepost.MinecraftServerSupplier;
+import com.kryeit.telepost.Telepost;
+import com.kryeit.telepost.TelepostMessages;
+import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.commands.completion.SuggestionsProvider;
 import com.kryeit.telepost.post.Post;
 import com.kryeit.telepost.storage.bytes.HomePost;
@@ -9,6 +12,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -30,22 +34,22 @@ public class Visit {
         }
 
         Post closestPost = new Post(player.getPos());
-        String postName = StringArgumentType.getString(context, "name");
-        String postID = Utils.nameToId(postName);
+        String postNameOrPlayer = StringArgumentType.getString(context, "name");
+        String postID = Utils.nameToId(postNameOrPlayer);
 
         Text text;
 
-        if (!closestPost.isInside(player, player.getPos())) {
+        if (!closestPost.isInside(player.getPos())) {
             text = TelepostMessages.getMessage(player, "telepost.standing", Formatting.RED);
             player.sendMessage(text, true);
             return 0;
         }
         
-        ServerPlayerEntity visited = MinecraftServerSupplier.getServer().getPlayerManager().getPlayer(postName);
+        ServerPlayerEntity visited = MinecraftServerSupplier.getServer().getPlayerManager().getPlayer(postNameOrPlayer);
 
         // /visit Player
         if (visited != null) {
-            if (Utils.isInvited(visited, player) || TelepostPermissions.isHelperOrAdmin(player)) {
+            if (Utils.isInvited(visited, player) || Permissions.check(source, "telepost.visit.others", false)) {
                 Optional<HomePost> home = Telepost.getDB().getHome(visited.getUuid());
                 if (home.isEmpty()) {
                     text = TelepostMessages.getMessage(player, "telepost.no_homepost", Formatting.RED);
@@ -54,7 +58,13 @@ public class Visit {
                 }
                 Post homePost = new Post(home.get());
 
-                text = TelepostMessages.getMessage(player, "telepost.teleport.homepost.other", Formatting.GREEN, postName);
+                if (closestPost.isSame(homePost)) {
+                    text = TelepostMessages.getMessage(player, "telepost.already-there", Formatting.RED);
+                    player.sendMessage(text, true);
+                    return 0;
+                }
+
+                text = TelepostMessages.getMessage(player, "telepost.teleport.homepost.other", Formatting.GREEN, visited.getName().getString());
                 player.sendMessage(text, true);
 
                 homePost.teleport(player);
@@ -72,7 +82,13 @@ public class Visit {
         if (namedPostOptional.isPresent()) {
             Post namedPost = new Post(namedPostOptional.get());
 
-            text = TelepostMessages.getMessage(player, "telepost.teleport.named_post", Formatting.GREEN, postName);
+            if (closestPost.isSame(namedPost)) {
+                text = TelepostMessages.getMessage(player, "telepost.already-there", Formatting.RED);
+                player.sendMessage(text, true);
+                return 0;
+            }
+
+            text = TelepostMessages.getMessage(player, "telepost.teleport.named_post", Formatting.GREEN, namedPostOptional.get().name());
             player.sendMessage(text, true);
 
             namedPost.teleport(player);
@@ -86,6 +102,7 @@ public class Visit {
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("visit")
+                .requires(source -> Permissions.check(source, "telepost.visit", true))
                 .then(CommandManager.argument("name", StringArgumentType.greedyString())
                         .suggests(SuggestionsProvider.suggestPostNamesAndOnlinePlayers())
                         .executes(Visit::execute)
@@ -93,6 +110,7 @@ public class Visit {
         );
 
         dispatcher.register(CommandManager.literal("v")
+                .requires(source -> Permissions.check(source, "telepost.visit", true))
                 .then(CommandManager.argument("name", StringArgumentType.greedyString())
                         .suggests(SuggestionsProvider.suggestPostNamesAndOnlinePlayers())
                         .executes(Visit::execute)

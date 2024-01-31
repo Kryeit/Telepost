@@ -1,11 +1,9 @@
 package com.kryeit.telepost.commands;
 
-import com.griefdefender.api.GriefDefender;
 import com.griefdefender.api.claim.Claim;
 import com.griefdefender.api.claim.TrustTypes;
 import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.TelepostMessages;
-import com.kryeit.telepost.TelepostPermissions;
 import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.compat.BlueMapImpl;
 import com.kryeit.telepost.compat.CompatAddon;
@@ -16,6 +14,7 @@ import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.server.command.CommandManager;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
@@ -61,28 +60,26 @@ public class NamePost {
         }
 
         // Check if player has already named a post
-        if (Telepost.getInstance().playerNamedPosts.getHashMap().containsValue(player.getUuid())) {
+        if (Telepost.playerNamedPosts.getHashMap().containsValue(player.getUuid())) {
             text = TelepostMessages.getMessage(player, "telepost.already_named", Formatting.RED);
             player.sendMessage(text, true);
             return 0;
         }
 
-        if (!TelepostPermissions.isAdmin(player) && CompatAddon.GRIEF_DEFENDER.isLoaded()) {
+        if (Permissions.check(source, "telepost.namepost", false) && CompatAddon.GRIEF_DEFENDER.isLoaded()) {
             if (GriefDefenderImpl.getClaimBlocks(player.getUuid()) < NEEDED_CLAIMBLOCKS) {
                 text = TelepostMessages.getMessage(player, "telepost.name.claimblocks", Formatting.RED, NEEDED_CLAIMBLOCKS);
                 player.sendMessage(text);
                 return 0;
             }
-            Telepost.getInstance().playerNamedPosts.addElement(postID, player.getUuid());
 
-            Claim claim = GriefDefender.getCore().getClaimAt(post.getPos());
-            if (claim != null && claim.isAdminClaim()) {
-                claim.addUserTrust(player.getUuid(), TrustTypes.MANAGER);
+            Telepost.playerNamedPosts.addElement(postID, player.getUuid());
+
+            Claim claim = GriefDefenderImpl.getClaim(post);
+            if (claim != null) {
+                player.sendMessage(Text.literal("You've been granted builder trust in the post claim"));
+                claim.addUserTrust(player.getUuid(), TrustTypes.BUILDER);
             }
-        }
-
-        if (CompatAddon.BLUE_MAP.isLoaded()) {
-            BlueMapImpl.createMarker(post, postName);
         }
 
         Telepost.getDB().addNamedPost(new NamedPost(postID, postName, post.getPos()));
@@ -90,11 +87,16 @@ public class NamePost {
         text = TelepostMessages.getMessage(player, "telepost.named", Formatting.GREEN, postName, post.getStringCoords());
         player.sendMessage(text);
 
+        if (CompatAddon.BLUEMAP.isLoaded()) {
+            BlueMapImpl.createMarker(post, postName);
+        }
+
         return Command.SINGLE_SUCCESS;
     }
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         dispatcher.register(CommandManager.literal("namepost")
+                .requires(source -> Permissions.check(source, "telepost.namepost", true) || source.hasPermissionLevel(4))
                 .then(CommandManager.argument("name", StringArgumentType.greedyString())
                         .executes(context -> {
                             try {

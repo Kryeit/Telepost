@@ -9,7 +9,15 @@ import xyz.nucleoid.server.translations.api.Localization;
 public class TelepostMessages {
 
     public static Text getMessage(ServerPlayerEntity player, String key, Formatting color, Object... args) {
-        String translation = Localization.raw(key, player);
+
+        String translation;
+
+        if (player == null) {
+            translation = Text.translatable(key).getString();
+        } else {
+            translation = Localization.raw(key, player);
+        }
+
         if (translation == null) return Text.of("");
         String[] parts = translation.split("%s", -1);
 

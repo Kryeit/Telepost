@@ -4,8 +4,6 @@ import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.TelepostMessages;
 import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.post.Post;
-import com.kryeit.telepost.storage.bytes.HomePost;
-import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.context.CommandContext;
 import me.lucko.fabric.api.permissions.v0.Permissions;
@@ -15,10 +13,12 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import java.util.Optional;
+import java.io.IOException;
+import java.util.List;
 import java.util.function.Supplier;
 
-public class Home {
+public class RandomPost {
+
     public static int execute(CommandContext<ServerCommandSource> context) {
         ServerCommandSource source = context.getSource();
         ServerPlayerEntity player = source.getPlayer();
@@ -29,47 +29,39 @@ public class Home {
             return 0;
         }
 
-        Post post = new Post(player.getPos());
-
         Text text;
 
-        if (!post.isInside(player.getPos())) {
+        if (!new Post(player.getPos()).isInside(player.getPos())) {
             text = TelepostMessages.getMessage(player, "telepost.standing", Formatting.RED);
             player.sendMessage(text, true);
             return 0;
         }
 
-        Optional<HomePost> home = Telepost.getDB().getHome(player.getUuid());
-
-        if (home.isPresent()) {
-            Post homePost = new Post(home.get());
-
-            if (post.isSame(homePost)) {
-                text = TelepostMessages.getMessage(player, "telepost.already-there", Formatting.RED);
-                player.sendMessage(text, true);
-                return 0;
-            }
-
-            text = TelepostMessages.getMessage(player, "telepost.teleport.homepost", Formatting.GREEN);
+        if (Telepost.randomPostCooldown.hasPlayer(player.getUuid())) {
+            text = TelepostMessages.getMessage(player, "telepost.randompost.cooldown", Formatting.RED);
             player.sendMessage(text, true);
-            homePost.teleport(player);
-        } else {
-            text = TelepostMessages.getMessage(player, "telepost.no_homepost", Formatting.RED);
-            player.sendMessage(text, true);
+            return 0;
         }
 
-        return Command.SINGLE_SUCCESS;
+        // Choose a post at random from the list
+        List<Post> posts = Utils.getNonNamedPosts();
+        Post post = posts.get((int) (Math.random() * posts.size()));
+
+        try {
+            Telepost.randomPostCooldown.addPlayer(player.getUuid());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        post.teleport(player);
+
+        return 1;
     }
 
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
-        dispatcher.register(CommandManager.literal("home")
-                .requires(source -> Permissions.check(source, "telepost.homepost", true))
-                .executes(Home::execute)
-        );
-
-        dispatcher.register(CommandManager.literal("h")
-                .requires(source -> Permissions.check(source, "telepost.homepost", true))
-                .executes(Home::execute)
+        dispatcher.register(CommandManager.literal("randompost")
+                .requires(source -> Permissions.check(source, "telepost.randompost", true))
+                .executes(RandomPost::execute)
         );
     }
 }

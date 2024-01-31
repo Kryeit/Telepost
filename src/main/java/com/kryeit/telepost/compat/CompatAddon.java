@@ -5,7 +5,7 @@ import net.fabricmc.loader.api.FabricLoader;
 public enum CompatAddon {
     GRIEF_DEFENDER("griefdefender"),
     WORLD_EDIT("worldedit"),
-    BLUE_MAP("bluemap");
+    BLUEMAP("bluemap");
 
     private final String id;
 

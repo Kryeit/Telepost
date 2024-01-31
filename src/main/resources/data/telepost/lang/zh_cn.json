@@ -1,12 +1,14 @@
 {
   "telepost.standing": "你需要站在一个地点",
   "telepost.invite": "你已邀请 %s 到你的家地点，直到下次重启",
+  "telepost.invited": "You've been invited by %s, use /visit %s",
   "telepost.nearest.named": "最近的地点位于：%s，距离 %s",
   "telepost.nearest": "最近的地点位于：%s",
   "telepost.already_named": "该地点已经有名称",
   "telepost.name.claimblocks": "你至少需要 %s 领地方块来命名该地点",
   "telepost.named": "最近的地点已命名为 %s 位于：%s",
   "telepost.homepost": "你已将地点设为家：%s",
+  "telepost.randompost.cooldown": "You can't use /randompost until next month",
   "telepost.unknown_post": "未知地点",
   "telepost.unknown_player": "未知玩家",
   "telepost.teleport.homepost": "你已被传送到你的家地点",
@@ -22,5 +24,7 @@
   "telepost.postlist.page.next": "下一页",
   "telepost.postlist.header": "命名的地点",
   "telepost.postlist.tooltip": "地点在 %s\n点击传送到 %s",
-  "telepost.postlist.total": "地点总数: %s"
+  "telepost.postlist.total": "地点总数: %s",
+  "telepost.autonamed": "A new post has been named %s, it's located at: %s",
+  "telepost.already-there": "You're there already"
 }

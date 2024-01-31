@@ -1,12 +1,14 @@
 {
   "telepost.standing": "Vous devez vous tenir sur un poste",
   "telepost.invite": "Vous avez invité %s à votre poste maison jusqu'au prochain redémarrage",
+  "telepost.invited": "You've been invited by %s, use /visit %s",
   "telepost.nearest.named": "Le poste le plus proche est à: %s, c'est %s",
   "telepost.nearest": "Le poste le plus proche est à: %s",
   "telepost.already_named": "Le poste est déjà nommé",
   "telepost.name.claimblocks": "Vous avez besoin d'au moins %s blocs de claim pour nommer ce post",
   "telepost.named": "Le poste le plus proche a été nommé à %s à: %s",
   "telepost.homepost": "Vous avez fait du poste à: %s votre poste maison",
+  "telepost.randompost.cooldown": "You can't use /randompost until next month",
   "telepost.unknown_post": "Poste inconnu",
   "telepost.unknown_player": "Joueur inconnu",
   "telepost.teleport.homepost": "Bienvenue à votre poste maison",
@@ -22,5 +24,7 @@
   "telepost.postlist.page.next": "Page suivante",
   "telepost.postlist.header": "Postes nommés",
   "telepost.postlist.tooltip": "Poste à %s\nCliquez pour vous téléporter à %s",
-  "telepost.postlist.total": "Total des postes : %s"
+  "telepost.postlist.total": "Total des postes : %s",
+  "telepost.autonamed": "A new post has been named %s, it's located at: %s",
+  "telepost.already-there": "You're there already"
 }
