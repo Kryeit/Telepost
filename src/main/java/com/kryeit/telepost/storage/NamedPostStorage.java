@@ -12,9 +12,10 @@ import static com.kryeit.telepost.Telepost.ID;
 public class NamedPostStorage {
 
     private ConcurrentMap<String, UUID> map;
+    private DB db;
 
     public NamedPostStorage() {
-        DB db = DBMaker
+        db = DBMaker
                 .fileDB("mods/" + ID +"/db/player_posts.db")
                 .fileMmapEnable()
                 .make();
@@ -38,5 +39,9 @@ public class NamedPostStorage {
 
     public UUID getPlayer(String postID) {
         return map.get(postID);
+    }
+
+    public void close() {
+        db.close();
     }
 }

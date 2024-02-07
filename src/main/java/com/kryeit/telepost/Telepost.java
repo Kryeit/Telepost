@@ -117,6 +117,9 @@ public class Telepost implements DedicatedServerModInitializer {
     public void registerDisableEvent() {
         ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
             database.stop();
+
+            if (CompatAddon.GRIEF_DEFENDER.isLoaded())
+                playerNamedPosts.close();
         });
     }
 
