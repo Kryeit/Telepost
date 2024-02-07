@@ -8,7 +8,6 @@ import com.kryeit.telepost.compat.CompatAddon;
 import com.kryeit.telepost.config.ConfigReader;
 import com.kryeit.telepost.listeners.ServerTick;
 import com.kryeit.telepost.post.StructureHandler;
-import com.kryeit.telepost.storage.CommandDumpDB;
 import com.kryeit.telepost.storage.IDatabase;
 import com.kryeit.telepost.storage.LevelDBImpl;
 import com.kryeit.telepost.storage.NamedPostStorage;
@@ -111,12 +110,8 @@ public class Telepost implements DedicatedServerModInitializer {
             e.printStackTrace();
         }
 
-        // Database of simple POST_ID -> PLAYER_ID mappings for QoL additions and Server Owner convenience
-        try {
-            playerNamedPosts = new NamedPostStorage("mods/" + ID +"/PlayerPosts");
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+        if (CompatAddon.GRIEF_DEFENDER.isLoaded())
+            playerNamedPosts = new NamedPostStorage();
     }
 
     public void registerDisableEvent() {

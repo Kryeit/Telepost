@@ -32,11 +32,11 @@ public class Utils {
     }
 
     public static boolean isPostNamedByAdmin(NamedPost post) {
-        return Telepost.playerNamedPosts.getElement(post.id()) == null;
+        return Telepost.playerNamedPosts.getPlayer(post.id()) == null;
     }
 
     public static String getNamedPostOwner(NamedPost post) {
-        UUID id = Telepost.playerNamedPosts.getElement(post.id());
+        UUID id = Telepost.playerNamedPosts.getPlayer(post.id());
 
         if (id == null) return "Admin";
 

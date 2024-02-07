@@ -21,14 +21,13 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
-import java.io.IOException;
 import java.util.Optional;
 import java.util.function.Supplier;
 
 import static com.kryeit.telepost.compat.GriefDefenderImpl.NEEDED_CLAIMBLOCKS;
 
 public class NamePost {
-    public static int execute(CommandContext<ServerCommandSource> context) throws IOException {
+    public static int execute(CommandContext<ServerCommandSource> context) {
         ServerCommandSource source = context.getSource();
         ServerPlayerEntity player = source.getPlayer();
 
@@ -60,7 +59,7 @@ public class NamePost {
         }
 
         // Check if player has already named a post
-        if (Telepost.playerNamedPosts.getHashMap().containsValue(player.getUuid())) {
+        if (Telepost.playerNamedPosts.hasPlayer(player.getUuid())) {
             text = TelepostMessages.getMessage(player, "telepost.already_named", Formatting.RED);
             player.sendMessage(text, true);
             return 0;
@@ -73,7 +72,7 @@ public class NamePost {
                 return 0;
             }
 
-            Telepost.playerNamedPosts.addElement(postID, player.getUuid());
+            Telepost.playerNamedPosts.put(postID, player.getUuid());
 
             Claim claim = GriefDefenderImpl.getClaim(post);
             if (claim != null) {
@@ -98,13 +97,7 @@ public class NamePost {
         dispatcher.register(CommandManager.literal("namepost")
                 .requires(source -> Permissions.check(source, "telepost.namepost", true) || source.hasPermissionLevel(4))
                 .then(CommandManager.argument("name", StringArgumentType.greedyString())
-                        .executes(context -> {
-                            try {
-                                return execute(context);
-                            } catch (IOException e) {
-                                throw new RuntimeException(e);
-                            }
-                        })
+                        .executes(NamePost::execute)
                 )
         );
     }
