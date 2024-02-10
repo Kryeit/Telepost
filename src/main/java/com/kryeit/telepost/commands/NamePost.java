@@ -4,7 +4,7 @@ import com.griefdefender.api.claim.Claim;
 import com.griefdefender.api.claim.TrustTypes;
 import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.TelepostMessages;
-import com.kryeit.telepost.Utils;
+import com.kryeit.telepost.utils.Utils;
 import com.kryeit.telepost.compat.BlueMapImpl;
 import com.kryeit.telepost.compat.CompatAddon;
 import com.kryeit.telepost.compat.GriefDefenderImpl;
@@ -72,13 +72,15 @@ public class NamePost {
                 return 0;
             }
 
-            Telepost.playerNamedPosts.put(postID, player.getUuid());
-
             Claim claim = GriefDefenderImpl.getClaim(post);
             if (claim != null) {
                 player.sendMessage(Text.literal("You've been granted builder trust in the post claim"));
                 claim.addUserTrust(player.getUuid(), TrustTypes.BUILDER);
             }
+        }
+
+        if (!Utils.check(source, "telepost.namepost.admin", false)){
+            Telepost.playerNamedPosts.assignPostToPlayer(postID, player.getUuid());
         }
 
         Telepost.getDB().addNamedPost(new NamedPost(postID, postName, post.getPos()));

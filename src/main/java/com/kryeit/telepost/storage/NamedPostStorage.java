@@ -1,47 +1,67 @@
 package com.kryeit.telepost.storage;
 
-import org.mapdb.DB;
-import org.mapdb.DBMaker;
-import org.mapdb.Serializer;
-
+import java.io.*;
+import java.nio.file.Files;
+import java.nio.file.Paths;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.ConcurrentMap;
-
-import static com.kryeit.telepost.Telepost.ID;
 
 public class NamedPostStorage {
 
-    private ConcurrentMap<String, UUID> map;
-    private DB db;
+    private final File registryFile;
+    private Map<String, UUID> postPlayerMap = new HashMap<>();
 
-    public NamedPostStorage() {
-        db = DBMaker
-                .fileDB("mods/" + ID +"/db/player_posts.db")
-                .fileMmapEnable()
-                .make();
-
-        map = db
-                .hashMap("player_posts", Serializer.STRING, Serializer.UUID)
-                .createOrOpen();
+    public NamedPostStorage(String directory, String fileName) throws IOException {
+        Files.createDirectories(Paths.get(directory)); // Ensure directory exists
+        this.registryFile = new File(directory, fileName);
+        loadRegistry();
     }
 
-    public void put(String postID, UUID playerID) {
-        map.put(postID, playerID);
+    private void loadRegistry() {
+        if (!registryFile.exists()) return;
+        try (BufferedReader reader = new BufferedReader(new FileReader(registryFile))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                String[] parts = line.split("=", 2);
+                if (parts.length == 2) {
+                    postPlayerMap.put(parts[0], UUID.fromString(parts[1]));
+                }
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
-    public void deleteElement(String postID) {
-        map.remove(postID);
+    public void assignPostToPlayer(String postId, UUID playerUuid) {
+        postPlayerMap.put(postId, playerUuid);
+        saveRegistry();
     }
 
-    public boolean hasPlayer(UUID playerID) {
-        return map.containsValue(playerID);
+    public void revokePost(String postId) {
+        postPlayerMap.remove(postId);
+        saveRegistry();
     }
 
-    public UUID getPlayer(String postID) {
-        return map.get(postID);
+    public UUID getPlayerForPost(String postId) {
+        return postPlayerMap.get(postId);
     }
 
-    public void close() {
-        db.close();
+    public boolean hasPost(String postId) {
+        return postPlayerMap.containsKey(postId);
+    }
+
+    public boolean hasPlayer(UUID playerUuid) {
+        return postPlayerMap.containsValue(playerUuid);
+    }
+
+    public void saveRegistry() {
+        try (PrintWriter writer = new PrintWriter(new FileWriter(registryFile, false))) {
+            for (Map.Entry<String, UUID> entry : postPlayerMap.entrySet()) {
+                writer.println(entry.getKey() + "=" + entry.getValue());
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }

@@ -7,7 +7,6 @@ import com.kryeit.telepost.compat.BlueMapImpl;
 import com.kryeit.telepost.compat.CompatAddon;
 import com.kryeit.telepost.config.ConfigReader;
 import com.kryeit.telepost.listeners.ServerTick;
-import com.kryeit.telepost.post.StructureHandler;
 import com.kryeit.telepost.storage.IDatabase;
 import com.kryeit.telepost.storage.LevelDBImpl;
 import com.kryeit.telepost.storage.NamedPostStorage;
@@ -20,14 +19,15 @@ import org.slf4j.LoggerFactory;
 
 import java.io.IOException;
 import java.nio.file.Path;
+import java.time.Duration;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.Timer;
 import java.util.UUID;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.TimeUnit;
 
 public class Telepost implements DedicatedServerModInitializer {
+
+    private static final Timer MONTHLY_TIMER = new Timer();
 
     public static Telepost instance;
     public static final String ID = "telepost";
@@ -58,7 +58,7 @@ public class Telepost implements DedicatedServerModInitializer {
         registerMonthlyCheck();
 
         // Comment this out in dev environment
-        StructureHandler.createStructures();
+        //StructureHandler.createStructures();
 
         if (CompatAddon.BLUEMAP.isLoaded()) {
             LOGGER.info("BlueMap is loaded, loading marker set from file...");
@@ -70,11 +70,8 @@ public class Telepost implements DedicatedServerModInitializer {
     public void registerMonthlyCheck() {
         if (!ConfigReader.AUTONAMING) return;
 
-        ScheduledExecutorService executor = Executors.newSingleThreadScheduledExecutor();
-        MonthlyCheckRunnable monthCheckRunnable = new MonthlyCheckRunnable();
-
-        // Schedule to run every hour
-        executor.scheduleAtFixedRate(monthCheckRunnable, 0, 1, TimeUnit.HOURS);
+        long interval = Duration.ofHours(1).toMillis();
+        MONTHLY_TIMER.schedule(new MonthlyCheckRunnable(), interval, interval);
     }
 
     public void registerCommands() {
@@ -106,20 +103,15 @@ public class Telepost implements DedicatedServerModInitializer {
         // For /randompost cooldown
         try {
             randomPostCooldown = new CooldownStorage("mods/" + ID + "/randompostcooldown");
+            playerNamedPosts = new NamedPostStorage("mods/" + ID, "playerPosts.properties");
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        if (CompatAddon.GRIEF_DEFENDER.isLoaded())
-            playerNamedPosts = new NamedPostStorage();
     }
 
     public void registerDisableEvent() {
-        ServerLifecycleEvents.SERVER_STOPPING.register(server -> {
+        ServerLifecycleEvents.SERVER_STOPPED.register(server -> {
             database.stop();
-
-            if (CompatAddon.GRIEF_DEFENDER.isLoaded())
-                playerNamedPosts.close();
         });
     }
 

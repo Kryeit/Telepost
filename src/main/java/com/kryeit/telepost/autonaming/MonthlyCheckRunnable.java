@@ -7,9 +7,12 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.util.Calendar;
+import java.util.TimerTask;
 
-public class MonthlyCheckRunnable implements Runnable {
-    private static final String FILE_PATH = "mods/telepost/lastCheckedMonth.txt";
+import static com.kryeit.telepost.Telepost.ID;
+
+public class MonthlyCheckRunnable extends TimerTask {
+    private static final String FILE_PATH = "mods/" + ID + "/lastCheckedMonth.txt";
     private int lastCheckedMonth;
 
     public MonthlyCheckRunnable() {

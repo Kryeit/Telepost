@@ -1,7 +1,7 @@
 package com.kryeit.telepost.commands;
 
 import com.kryeit.telepost.Telepost;
-import com.kryeit.telepost.Utils;
+import com.kryeit.telepost.utils.Utils;
 import com.kryeit.telepost.compat.BlueMapImpl;
 import com.kryeit.telepost.compat.CompatAddon;
 import com.kryeit.telepost.post.Post;
@@ -47,7 +47,7 @@ public class UnnamePost {
             return 0;
         }
 
-        Telepost.playerNamedPosts.deleteElement(postID);
+        Telepost.playerNamedPosts.revokePost(postID);
 
         Telepost.getDB().deleteNamedPost(postID);
 
