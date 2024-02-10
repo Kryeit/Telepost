@@ -55,14 +55,8 @@ public class GriefDefenderImpl {
     }
 
     public static Claim getClaim(Post post) {
-        Claim claim = null;
-        for (Claim c : GriefDefender.getCore().getAllClaims()) {
-            if (c.isAdminClaim()) {
-                if (c.contains(post.getX(), post.getY(), post.getZ())) {
-                    claim = c;
-                }
-            }
-        }
-        return claim;
+        UUID id = GriefDefender.getCore().getWorldUniqueId(WORLD);
+
+        return GriefDefender.getCore().getClaimAt(id, post.getX(), post.getY(), post.getZ());
     }
 }
