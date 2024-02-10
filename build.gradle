@@ -49,8 +49,6 @@ dependencies {
     modImplementation include("xyz.nucleoid:server-translations-api:${servertranslations_version}")
     modImplementation "com.sk89q.worldedit:worldedit-fabric-mc${worldedit_version}"
     compileOnly "com.github.BlueMap-Minecraft:BlueMapAPI:${bluemap_version}"
-
-    implementation 'org.mapdb:mapdb:3.1.0'
 }
 
 processResources {
