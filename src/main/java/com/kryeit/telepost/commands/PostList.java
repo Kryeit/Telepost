@@ -58,11 +58,16 @@ public class PostList {
         player.sendMessage(Text.literal("------------").formatted(Formatting.DARK_GRAY), false);
 
         int startIndex = (page - 1) * 10;
-        int endIndex = Math.min(startIndex + 10, posts.size());
+        int endIndex;
+        if (posts.size() % 10 == 0) {
+            endIndex = posts.size();
+        } else {
+            endIndex = ((posts.size() / 10) + 1) * 10;
+        }
 
-        for (int i = startIndex; i < 10; i++) {
+        for (int i = startIndex; i < endIndex; i++) {
 
-            if (i >= endIndex) {
+            if (i >= posts.size()) {
                 player.sendMessage(Text.literal(""), false);
                 continue;
             }
