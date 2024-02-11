@@ -67,7 +67,7 @@ public class PostList {
 
         for (int i = startIndex; i < endIndex; i++) {
 
-            if (i >= posts.size()) {
+            if (i > posts.size()) {
                 player.sendMessage(Text.literal(""), false);
                 continue;
             }
