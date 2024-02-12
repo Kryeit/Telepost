@@ -40,7 +40,7 @@ public class Utils {
     }
 
     public static boolean isPostNamedByAdmin(NamedPost post) {
-        return Telepost.playerNamedPosts.getPlayerForPost(post.id()) == null;
+        return Telepost.playerNamedPosts.hasPost(post.id());
     }
 
     public static String getNamedPostOwner(NamedPost post) {

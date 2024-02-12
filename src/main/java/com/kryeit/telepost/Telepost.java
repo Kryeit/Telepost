@@ -27,7 +27,7 @@ import java.util.UUID;
 
 public class Telepost implements DedicatedServerModInitializer {
 
-    private static final Timer MONTHLY_TIMER = new Timer();
+    private static final Timer MONTHLY_TIMER = new Timer(true);
 
     public static Telepost instance;
     public static final String ID = "telepost";

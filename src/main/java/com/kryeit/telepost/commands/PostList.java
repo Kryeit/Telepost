@@ -59,6 +59,7 @@ public class PostList {
 
         int startIndex = (page - 1) * 10;
         int endIndex;
+
         if (posts.size() % 10 == 0) {
             endIndex = posts.size();
         } else {

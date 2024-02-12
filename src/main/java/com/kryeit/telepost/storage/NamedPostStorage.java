@@ -13,10 +13,10 @@ public class NamedPostStorage {
     private Map<String, UUID> postPlayerMap = new HashMap<>();
 
     public NamedPostStorage(String directory, String fileName) throws IOException {
-        Files.createDirectories(Paths.get(directory)); // Ensure directory exists
+        Files.createDirectories(Paths.get(directory));
         this.registryFile = new File(directory, fileName);
         if (!registryFile.exists()) {
-            registryFile.createNewFile(); // This will create the file if it doesn't exist
+            registryFile.createNewFile();
         }
         loadRegistry();
     }
