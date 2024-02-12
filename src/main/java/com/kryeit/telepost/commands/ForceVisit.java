@@ -2,10 +2,10 @@ package com.kryeit.telepost.commands;
 
 import com.kryeit.telepost.MinecraftServerSupplier;
 import com.kryeit.telepost.Telepost;
-import com.kryeit.telepost.utils.Utils;
 import com.kryeit.telepost.commands.completion.SuggestionsProvider;
 import com.kryeit.telepost.post.Post;
 import com.kryeit.telepost.storage.bytes.NamedPost;
+import com.kryeit.telepost.utils.Utils;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
