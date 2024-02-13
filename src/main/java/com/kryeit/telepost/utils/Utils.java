@@ -55,7 +55,7 @@ public class Utils {
         GridIterator iterator = new GridIterator();
         List<Post> posts = new ArrayList<>();
 
-        if (iterator.hasNext()) {
+        while (iterator.hasNext()) {
             Vec3d loc = iterator.next();
 
             Post post = new Post(loc);
