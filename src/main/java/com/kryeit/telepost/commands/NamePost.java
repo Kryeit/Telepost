@@ -65,7 +65,7 @@ public class NamePost {
             return 0;
         }
 
-        if (Permissions.check(source, "telepost.namepost", false) && CompatAddon.GRIEF_DEFENDER.isLoaded()) {
+        if (CompatAddon.GRIEF_DEFENDER.isLoaded()) {
             if (GriefDefenderImpl.getClaimBlocks(player.getUuid()) < NEEDED_CLAIMBLOCKS) {
                 text = TelepostMessages.getMessage(player, "telepost.name.claimblocks", Formatting.RED, NEEDED_CLAIMBLOCKS);
                 player.sendMessage(text);
