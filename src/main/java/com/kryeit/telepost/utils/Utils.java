@@ -51,7 +51,7 @@ public class Utils {
         return Offlines.getNameByUUID(id);
     }
 
-    public static List<Post> getNonNamedPosts() {
+    public static List<Post> getPosts() {
         GridIterator iterator = new GridIterator();
         List<Post> posts = new ArrayList<>();
 
@@ -59,12 +59,19 @@ public class Utils {
             Vec3d loc = iterator.next();
 
             Post post = new Post(loc);
+            posts.add(post);
             if (!post.isNamed()) {
-                posts.add(post);
+
             }
         }
 
         return posts;
+    }
+
+    public static List<Post> getUnnamedPosts() {
+        List<Post> unnamed = getPosts();
+        unnamed.removeIf(Post::isNamed);
+        return unnamed;
     }
 
     public static void executeCommandAsServer(String command) {

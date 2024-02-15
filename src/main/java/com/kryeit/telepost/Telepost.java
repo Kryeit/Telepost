@@ -11,6 +11,7 @@ import com.kryeit.telepost.post.StructureHandler;
 import com.kryeit.telepost.storage.IDatabase;
 import com.kryeit.telepost.storage.LevelDBImpl;
 import com.kryeit.telepost.storage.NamedPostStorage;
+import com.kryeit.telepost.utils.Utils;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -25,6 +26,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.UUID;
+
+import static com.kryeit.telepost.post.Post.ALL_POSTS;
+import static com.kryeit.telepost.post.Post.ALL_UNNAMED_POSTS;
 
 public class Telepost implements DedicatedServerModInitializer {
 
@@ -57,6 +61,9 @@ public class Telepost implements DedicatedServerModInitializer {
         registerDisableEvent();
         registerEvents();
         registerMonthlyCheck();
+
+        ALL_POSTS = Utils.getPosts();
+        ALL_UNNAMED_POSTS = Utils.getUnnamedPosts();
 
         // Comment this out in dev environment
         StructureHandler.createStructures();

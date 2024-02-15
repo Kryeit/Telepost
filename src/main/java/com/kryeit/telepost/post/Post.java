@@ -17,12 +17,16 @@ import net.minecraft.world.Heightmap;
 import net.minecraft.world.World;
 import net.minecraft.world.biome.Biome;
 
+import java.util.List;
 import java.util.Optional;
 
 import static com.kryeit.telepost.config.ConfigReader.GAP;
 import static com.kryeit.telepost.config.ConfigReader.WIDTH;
 
 public class Post {
+
+    public static List<Post> ALL_POSTS;
+    public static List<Post> ALL_UNNAMED_POSTS;
 
     public static World WORLD = MinecraftServerSupplier.getServer().getOverworld();
 
