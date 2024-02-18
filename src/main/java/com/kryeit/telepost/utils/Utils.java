@@ -23,8 +23,6 @@ import java.util.UUID;
 import static com.kryeit.telepost.post.Post.WORLD;
 
 public class Utils {
-    private static final LuckPerms luckPerms = LuckPermsProvider.get();
-
     public static String nameToId(String name) {
         return name.replace(" ", ".").toLowerCase();
     }
@@ -85,7 +83,7 @@ public class Utils {
     }
 
     public static boolean check(ServerCommandSource source, String permission, boolean defaultValue) {
-        User user = luckPerms.getUserManager().getUser(source.getPlayer().getUuid());
+        User user = LuckPermsProvider.get().getUserManager().getUser(source.getPlayer().getUuid());
 
         if (user == null) {
             return defaultValue;

@@ -62,9 +62,6 @@ public class Telepost implements DedicatedServerModInitializer {
         registerEvents();
         registerMonthlyCheck();
 
-        ALL_POSTS = Utils.getPosts();
-        ALL_UNNAMED_POSTS = Utils.getUnnamedPosts();
-
         // Comment this out in dev environment
         StructureHandler.createStructures();
 
@@ -102,6 +99,11 @@ public class Telepost implements DedicatedServerModInitializer {
 
     public void registerEvents() {
         ServerTickEvents.END_SERVER_TICK.register(new ServerTick());
+
+        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+            ALL_POSTS = Utils.getPosts();
+            ALL_UNNAMED_POSTS = Utils.getUnnamedPosts();
+        });
     }
 
     public void initializeDatabases() {
