@@ -32,7 +32,9 @@ public class Utils {
         return player.getWorld().equals(WORLD);
     }
     public static boolean isInvited(ServerPlayerEntity owner, ServerPlayerEntity invited) {
-        return Telepost.invites.containsKey(invited.getUuid()) && Telepost.invites.get(invited.getUuid()).equals(owner.getUuid());
+        if (!Telepost.invites.containsKey(invited.getUuid())) return false;
+
+        return Telepost.invites.get(invited.getUuid()).equals(owner.getUuid());
     }
     public static void loadChunk(int chunkX, int chunkZ) {
         ChunkManager chunkManager = WORLD.getChunkManager();
