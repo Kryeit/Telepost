@@ -6,13 +6,13 @@ import com.kryeit.telepost.offlines.Offlines;
 import com.kryeit.telepost.post.GridIterator;
 import com.kryeit.telepost.post.Post;
 import com.kryeit.telepost.storage.bytes.NamedPost;
-import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.luckperms.api.model.user.User;
 import net.luckperms.api.node.NodeType;
 import net.minecraft.server.command.ServerCommandSource;
 import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.util.math.Vec3d;
+import net.minecraft.world.World;
 import net.minecraft.world.chunk.ChunkManager;
 import net.minecraft.world.chunk.ChunkStatus;
 
@@ -34,8 +34,8 @@ public class Utils {
 
         return Telepost.invites.get(invited.getUuid()).equals(owner.getUuid());
     }
-    public static void loadChunk(int chunkX, int chunkZ) {
-        ChunkManager chunkManager = WORLD.getChunkManager();
+    public static void loadChunk(World world, int chunkX, int chunkZ) {
+        ChunkManager chunkManager = world.getChunkManager();
         chunkManager.getChunk(chunkX, chunkZ, ChunkStatus.FULL, true);
     }
 

@@ -92,7 +92,7 @@ public class Post {
     }
 
     public int getY() {
-        Utils.loadChunk(getX() >> 4, getZ() >> 4);
+        Utils.loadChunk(WORLD, getX() >> 4, getZ() >> 4);
         return WORLD.getTopY(Heightmap.Type.MOTION_BLOCKING_NO_LEAVES, x, z);
     }
 
