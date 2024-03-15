@@ -27,9 +27,6 @@ import java.util.Map;
 import java.util.Timer;
 import java.util.UUID;
 
-import static com.kryeit.telepost.post.Post.ALL_POSTS;
-import static com.kryeit.telepost.post.Post.ALL_UNNAMED_POSTS;
-
 public class Telepost implements DedicatedServerModInitializer {
 
     private static final Timer MONTHLY_TIMER = new Timer(true);
@@ -99,11 +96,6 @@ public class Telepost implements DedicatedServerModInitializer {
 
     public void registerEvents() {
         ServerTickEvents.END_SERVER_TICK.register(new ServerTick());
-
-        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-            ALL_POSTS = Utils.getPosts();
-            ALL_UNNAMED_POSTS = Utils.getUnnamedPosts();
-        });
     }
 
     public void initializeDatabases() {

@@ -59,7 +59,7 @@ public class NamePost {
         }
 
         // Check if player has already named a post
-        if (Telepost.playerNamedPosts.hasPlayer(player.getUuid())) {
+        if (Telepost.playerNamedPosts.hasPlayer(player.getUuid()) && !Utils.check(source, "telepost.namepost", false)) {
             text = TelepostMessages.getMessage(player, "telepost.already_named", Formatting.RED);
             player.sendMessage(text, true);
             return 0;

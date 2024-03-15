@@ -17,8 +17,6 @@ import java.io.IOException;
 import java.util.List;
 import java.util.function.Supplier;
 
-import static com.kryeit.telepost.post.Post.ALL_UNNAMED_POSTS;
-
 public class RandomPost {
 
     public static int execute(CommandContext<ServerCommandSource> context) {
@@ -46,7 +44,7 @@ public class RandomPost {
         }
 
         // Choose a post at random from the list
-        List<Post> posts = ALL_UNNAMED_POSTS;
+        List<Post> posts = Utils.getUnnamedPosts();
         Post post = posts.get((int) (Math.random() * posts.size()));
 
         try {
