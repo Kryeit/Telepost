@@ -74,12 +74,12 @@ public class NamePost {
 
             Claim claim = GriefDefenderImpl.getClaim(post);
             if (claim != null) {
-                player.sendMessage(Text.literal("You've been granted builder trust in the post claim"));
-                claim.addUserTrust(player.getUuid(), TrustTypes.BUILDER);
+                player.sendMessage(Text.literal("You've been granted manager trust in the post claim"));
+                claim.addUserTrust(player.getUuid(), TrustTypes.MANAGER);
             }
         }
 
-        if (!Utils.check(source, "telepost.namepost.admin", false)){
+        if (!Utils.check(source, "telepost.namepost", false)){
             Telepost.playerNamedPosts.assignPostToPlayer(postID, player.getUuid());
         }
 
