@@ -88,10 +88,6 @@ public class NamePost {
         text = TelepostMessages.getMessage(player, "telepost.named", Formatting.GREEN, postName, post.getStringCoords());
         player.sendMessage(text);
 
-        if (CompatAddon.BLUEMAP.isLoaded()) {
-            BlueMapImpl.createMarker(post, postName);
-        }
-
         return Command.SINGLE_SUCCESS;
     }
 
