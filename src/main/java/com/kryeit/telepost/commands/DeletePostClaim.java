@@ -1,18 +1,15 @@
 package com.kryeit.telepost.commands;
 
+import com.griefdefender.api.GriefDefender;
 import com.griefdefender.api.claim.Claim;
-import com.kryeit.telepost.MinecraftServerSupplier;
 import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.TelepostMessages;
-import com.kryeit.telepost.commands.completion.SuggestionsProvider;
 import com.kryeit.telepost.compat.GriefDefenderImpl;
 import com.kryeit.telepost.post.Post;
-import com.kryeit.telepost.storage.bytes.HomePost;
 import com.kryeit.telepost.storage.bytes.NamedPost;
 import com.kryeit.telepost.utils.Utils;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
-import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import me.lucko.fabric.api.permissions.v0.Permissions;
 import net.minecraft.server.command.CommandManager;
@@ -50,8 +47,7 @@ public class DeletePostClaim {
             Post namedPost = new Post(namedPostOptional.get());
             Claim claim = GriefDefenderImpl.getClaim(namedPost);
 
-            // TODO: test this
-            claim.deleteChildren();
+            GriefDefender.getCore().getClaimManager(GriefDefenderImpl.getWorldUUID()).deleteClaim(claim);
 
             text = TelepostMessages.getMessage(player, "telepost.teleport.named_post", Formatting.GREEN, namedPostOptional.get().name());
             player.sendMessage(text, true);

@@ -32,7 +32,7 @@ public class GriefDefenderImpl {
         // Create the claim
         ClaimResult claimResult = Claim.builder()
                 .bounds(lowerCorner, upperCorner)
-                .world(GriefDefender.getCore().getWorldUniqueId(WORLD))
+                .world(getWorldUUID())
                 .cuboid(true)
                 .denyMessages(true)
                 .type(ClaimTypes.ADMIN)
@@ -55,8 +55,11 @@ public class GriefDefenderImpl {
     }
 
     public static Claim getClaim(Post post) {
-        UUID id = GriefDefender.getCore().getWorldUniqueId(WORLD);
+        return GriefDefender.getCore().getClaimAt(getWorldUUID(),
+                post.getX(), post.getY(), post.getZ());
+    }
 
-        return GriefDefender.getCore().getClaimAt(id, post.getX(), post.getY(), post.getZ());
+    public static UUID getWorldUUID() {
+        return GriefDefender.getCore().getWorldUniqueId(WORLD);
     }
 }

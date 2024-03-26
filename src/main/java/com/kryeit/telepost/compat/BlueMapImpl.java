@@ -4,20 +4,8 @@ import com.flowpowered.math.vector.Vector3d;
 import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.post.Post;
 import com.kryeit.telepost.storage.bytes.NamedPost;
-import com.kryeit.telepost.utils.Utils;
-import de.bluecolored.bluemap.api.BlueMapAPI;
-import de.bluecolored.bluemap.api.BlueMapMap;
-import de.bluecolored.bluemap.api.gson.MarkerGson;
 import de.bluecolored.bluemap.api.markers.MarkerSet;
 import de.bluecolored.bluemap.api.markers.POIMarker;
-
-import java.io.FileReader;
-import java.io.FileWriter;
-import java.io.IOException;
-import java.nio.file.Files;
-import java.nio.file.Paths;
-
-import static com.kryeit.telepost.post.Post.WORLD;
 
 public class BlueMapImpl {
     public static final MarkerSet markerSet = new MarkerSet("telepost-markers");
