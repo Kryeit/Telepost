@@ -49,6 +49,15 @@ public class NamedPostStorage {
         return postPlayerMap.get(postId);
     }
 
+    public String getPostIDForPlayer(UUID playerUuid) {
+        for (Map.Entry<String, UUID> entry : postPlayerMap.entrySet()) {
+            if (entry.getValue().equals(playerUuid)) {
+                return entry.getKey();
+            }
+        }
+        return null;
+    }
+
     public boolean hasPost(String postId) {
         return postPlayerMap.containsKey(postId);
     }

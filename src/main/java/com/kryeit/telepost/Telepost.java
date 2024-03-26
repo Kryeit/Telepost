@@ -90,6 +90,10 @@ public class Telepost implements DedicatedServerModInitializer {
             ForceVisit.register(dispatcher);
             RandomPost.register(dispatcher);
 
+            if (CompatAddon.GRIEF_DEFENDER.isLoaded()) {
+                DeletePostClaim.register(dispatcher);
+            }
+            
             //CommandDumpDB.register(dispatcher);
         });
     }
