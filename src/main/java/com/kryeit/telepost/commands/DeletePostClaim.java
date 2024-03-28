@@ -47,6 +47,7 @@ public class DeletePostClaim {
             Post namedPost = new Post(namedPostOptional.get());
             Claim claim = GriefDefenderImpl.getClaim(namedPost);
 
+            if (claim == null) return 0;
             GriefDefender.getCore().getClaimManager(GriefDefenderImpl.getWorldUUID()).deleteClaim(claim);
 
             text = Text.literal("Post claim deleted").formatted(Formatting.GREEN);
