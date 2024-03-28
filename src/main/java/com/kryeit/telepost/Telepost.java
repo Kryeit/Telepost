@@ -60,12 +60,6 @@ public class Telepost implements DedicatedServerModInitializer {
 
         // Comment this out in dev environment
         StructureHandler.createStructures();
-
-        if (CompatAddon.BLUEMAP.isLoaded()) {
-            LOGGER.info("BlueMap is loaded, loading marker set from file...");
-            BlueMapImpl.loadMarkerSet();
-            LOGGER.info("BlueMap loaded successfully");
-        }
     }
 
     public void registerMonthlyCheck() {
@@ -99,6 +93,13 @@ public class Telepost implements DedicatedServerModInitializer {
 
     public void registerEvents() {
         ServerTickEvents.END_SERVER_TICK.register(new ServerTick());
+        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
+            if (CompatAddon.BLUEMAP.isLoaded()) {
+                LOGGER.info("BlueMap is loaded, loading marker set from file...");
+                BlueMapImpl.loadMarkerSet();
+                LOGGER.info("BlueMap loaded successfully");
+            }
+        });
     }
 
     public void initializeDatabases() {

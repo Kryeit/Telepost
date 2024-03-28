@@ -49,7 +49,7 @@ public class DeletePostClaim {
 
             GriefDefender.getCore().getClaimManager(GriefDefenderImpl.getWorldUUID()).deleteClaim(claim);
 
-            text = TelepostMessages.getMessage(player, "telepost.teleport.named_post", Formatting.GREEN, namedPostOptional.get().name());
+            text = Text.literal("Post claim deleted").formatted(Formatting.GREEN);
             player.sendMessage(text, true);
             return Command.SINGLE_SUCCESS;
         }
