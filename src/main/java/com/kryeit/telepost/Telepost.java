@@ -11,6 +11,9 @@ import com.kryeit.telepost.post.StructureHandler;
 import com.kryeit.telepost.storage.IDatabase;
 import com.kryeit.telepost.storage.LevelDBImpl;
 import com.kryeit.telepost.storage.NamedPostStorage;
+import de.bluecolored.bluemap.api.BlueMapAPI;
+import de.bluecolored.bluemap.api.BlueMapMap;
+import de.bluecolored.bluemap.api.markers.MarkerSet;
 import net.fabricmc.api.DedicatedServerModInitializer;
 import net.fabricmc.fabric.api.command.v2.CommandRegistrationCallback;
 import net.fabricmc.fabric.api.event.lifecycle.v1.ServerLifecycleEvents;
@@ -25,6 +28,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Timer;
 import java.util.UUID;
+
+import static com.kryeit.telepost.compat.BlueMapImpl.markerSet;
+import static com.kryeit.telepost.post.Post.WORLD;
 
 public class Telepost implements DedicatedServerModInitializer {
 
@@ -93,13 +99,14 @@ public class Telepost implements DedicatedServerModInitializer {
 
     public void registerEvents() {
         ServerTickEvents.END_SERVER_TICK.register(new ServerTick());
-        ServerLifecycleEvents.SERVER_STARTED.register(server -> {
-            if (CompatAddon.BLUEMAP.isLoaded()) {
-                LOGGER.info("BlueMap is loaded, loading marker set from file...");
-                BlueMapImpl.loadMarkerSet();
-                LOGGER.info("BlueMap loaded successfully");
-            }
-        });
+        BlueMapAPI.onEnable(api ->
+                api.getWorld(WORLD).ifPresent(blueWorld -> {
+                    BlueMapImpl.loadMarkerSet();
+                    for (BlueMapMap map : blueWorld.getMaps()) {
+                        map.getMarkerSets().put("posts", markerSet);
+                    }
+                })
+        );
     }
 
     public void initializeDatabases() {
