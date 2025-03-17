@@ -1,10 +1,10 @@
 package com.kryeit.telepost.commands;
 
-import com.kryeit.telepost.Telepost;
+import com.kryeit.telepost.beans.NamedPost;
+import com.kryeit.telepost.beans.Post;
+import com.kryeit.telepost.beans.PostApi;
 import com.kryeit.telepost.compat.BlueMapImpl;
 import com.kryeit.telepost.compat.CompatAddon;
-import com.kryeit.telepost.post.Post;
-import com.kryeit.telepost.storage.bytes.NamedPost;
 import com.kryeit.telepost.utils.Utils;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -36,23 +36,27 @@ public class UnnamePost {
             return 0;
         }
 
-        Post post = new Post(player.getPos());
-        String postName = StringArgumentType.getString(context, "name");
-        String postID = Utils.nameToId(postName);
+        Optional<Post> post = PostApi.getClosest(player);
 
-        Optional<NamedPost> namedPost = Telepost.getDB().getNamedPost(postID);
+        if (post.isEmpty()) {
+            message = () -> Text.translatable("telepost.no_post");
+            source.sendFeedback(message, false);
+            return 0;
+        }
+
+        String postName = StringArgumentType.getString(context, "name");
+
+        Optional<NamedPost> namedPost = PostApi.NamedPostApi.get(postName);
         if (namedPost.isEmpty()) {
             message = () -> Text.literal("The nearest post is not named");
             source.sendFeedback(message, false);
             return 0;
         }
 
-        Telepost.playerNamedPosts.revokePost(postID);
-
-        Telepost.getDB().deleteNamedPost(postID);
+        PostApi.NamedPostApi.delete(namedPost.get().id());
 
         message = () -> Text.literal(
-                "The nearest post has been unnamed at: " + post.getStringCoords());
+                "The nearest post has been unnamed at: " + post.get().getCoordinates());
 
         source.sendFeedback(message, false);
 
@@ -66,7 +70,7 @@ public class UnnamePost {
     public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
         List<String> suggestions = new ArrayList<>();
 
-        for (NamedPost namedPost : Telepost.getDB().getNamedPosts()) {
+        for (NamedPost namedPost : PostApi.NamedPostApi.get()) {
             suggestions.add(namedPost.name());
         }
 

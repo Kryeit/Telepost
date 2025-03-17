@@ -6,12 +6,12 @@ import com.griefdefender.api.claim.*;
 import com.griefdefender.api.data.ClaimData;
 import com.griefdefender.lib.flowpowered.math.vector.Vector3i;
 import com.griefdefender.lib.kyori.adventure.text.Component;
-import com.kryeit.telepost.post.Post;
+import com.kryeit.telepost.beans.Post;
+import com.kryeit.telepost.beans.PostApi;
+import com.kryeit.telepost.config.ConfigReader;
 
 import java.util.UUID;
 
-import static com.kryeit.telepost.config.ConfigReader.WIDTH;
-import static com.kryeit.telepost.post.Post.WORLD;
 
 public class GriefDefenderImpl {
 
@@ -21,12 +21,12 @@ public class GriefDefenderImpl {
     }
 
     public static void createClaim(Post post) {
-
+        final int WIDTH = ConfigReader.PostSystem.POST_WIDTH;
         ClaimGroup claimGroup = GriefDefender.getCore().getAdminClaimGroupsByName().get("posts");
 
         // Calculate the corners of the claim
-        Vector3i lowerCorner = new Vector3i(post.getX() - WIDTH, post.getY() - 10, post.getZ() - WIDTH);
-        Vector3i upperCorner = new Vector3i(post.getX() + WIDTH, WORLD.getHeight(), post.getZ() + WIDTH);
+        Vector3i lowerCorner = new Vector3i(post.x() - WIDTH, post.y(), post.z() - WIDTH);
+        Vector3i upperCorner = new Vector3i(post.x() + WIDTH, PostApi.OVERWORLD.getHeight(), post.z() + WIDTH);
 
         // Create the claim
         ClaimResult claimResult = Claim.builder()
@@ -54,11 +54,10 @@ public class GriefDefenderImpl {
     }
 
     public static Claim getClaim(Post post) {
-        return GriefDefender.getCore().getClaimAt(getWorldUUID(),
-                post.getX(), post.getY(), post.getZ());
+        return GriefDefender.getCore().getClaimAt(getWorldUUID(), post.x(), PostApi.OVERWORLD.getHeight() - 10, post.z());
     }
 
     public static UUID getWorldUUID() {
-        return GriefDefender.getCore().getWorldUniqueId(WORLD);
+        return GriefDefender.getCore().getWorldUniqueId(PostApi.OVERWORLD);
     }
 }

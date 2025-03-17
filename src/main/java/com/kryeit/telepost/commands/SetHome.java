@@ -1,9 +1,8 @@
 package com.kryeit.telepost.commands;
 
-import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.TelepostMessages;
-import com.kryeit.telepost.post.Post;
-import com.kryeit.telepost.storage.bytes.HomePost;
+import com.kryeit.telepost.beans.Post;
+import com.kryeit.telepost.beans.PostApi;
 import com.kryeit.telepost.utils.Utils;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -15,6 +14,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 import net.minecraft.util.Formatting;
 
+import java.util.Optional;
 import java.util.function.Supplier;
 
 public class SetHome {
@@ -28,12 +28,17 @@ public class SetHome {
             return 0;
         }
 
-        Post post = new Post(player.getPos());
+        Optional<Post> post = PostApi.getClosest(player);
 
-        Text text = TelepostMessages.getMessage(player, "telepost.homepost", Formatting.GREEN, post.getStringCoords());
+        if (post.isEmpty()) {
+            Supplier<Text> message = () -> Text.translatable("telepost.no_post");
+            source.sendFeedback(message, false);
+            return 0;
+        }
 
-        Telepost.getDB().setHome(player.getUuid(), new HomePost(player.getUuid(), post.getPos()));
+        Text text = TelepostMessages.getMessage(player, "telepost.homepost", Formatting.GREEN, post.get().getCoordinates());
 
+        PostApi.HomePostApi.create(player);
         player.sendMessage(text);
 
         return Command.SINGLE_SUCCESS;

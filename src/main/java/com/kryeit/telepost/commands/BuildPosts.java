@@ -3,6 +3,7 @@ package com.kryeit.telepost.commands;
 import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.compat.CompatAddon;
 import com.kryeit.telepost.compat.GriefDefenderImpl;
+import com.kryeit.telepost.config.ConfigReader;
 import com.kryeit.telepost.utils.Utils;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -14,8 +15,6 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.Text;
 
 import java.util.function.Supplier;
-
-import static com.kryeit.telepost.config.ConfigReader.WORLDBORDER;
 
 public class BuildPosts {
     public static int execute(CommandContext<ServerCommandSource> context) {
@@ -30,8 +29,8 @@ public class BuildPosts {
             return 0;
         }
 
-        if (WORLDBORDER > 2_000_000) {
-            player.sendMessage(Text.of("Your worldboder is " + WORLDBORDER + ", and would take too long to build posts. Select in config/telepost/config.yml a smaller border."));
+        if (ConfigReader.PostSystem.INNER_WORLDBORDER > 2_000_000) {
+            player.sendMessage(Text.of("Your worldboder is " + ConfigReader.PostSystem.INNER_WORLDBORDER + ", and would take too long to build posts. Select in config/telepost/config.yml a smaller inner border."));
             return 0;
         }
 

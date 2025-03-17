@@ -1,24 +1,25 @@
 package com.kryeit.telepost.autonaming;
 
+import com.kryeit.telepost.beans.Post;
+import com.kryeit.telepost.beans.PostApi;
 import com.kryeit.telepost.config.ConfigReader;
-import com.kryeit.telepost.post.Post;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.Iterator;
+import java.util.Optional;
 
 public class SpiralIterator implements Iterator<Post> {
     private int x = 0;
     private int y = 0;
     private int dx = 0;
     private int dy = -1;
-    private final int worldBorder;
     private final int gap;
     private int steps = 0;
     private final int maxSteps;
 
     public SpiralIterator() {
-        this.worldBorder = ConfigReader.WORLDBORDER;
-        this.gap = ConfigReader.GAP;
+        int worldBorder = ConfigReader.PostSystem.INNER_WORLDBORDER;
+        this.gap = ConfigReader.PostSystem.INNER_POST_CLEARANCE;
         this.maxSteps = (worldBorder / gap) * (worldBorder / gap);
     }
 
@@ -30,7 +31,8 @@ public class SpiralIterator implements Iterator<Post> {
     @Override
     public Post next() {
         Vec3d pos = new Vec3d(x * gap, 0, y * gap);
-        Post current = new Post(pos);
+        Optional<Post> current = PostApi.getClosest(pos);
+
 
         if ((x == y) || (x < 0 && x == -y) || (x > 0 && x == 1 - y)) {
             int temp = dx;
@@ -42,7 +44,7 @@ public class SpiralIterator implements Iterator<Post> {
         y += dy;
         steps++;
 
-        return current;
+        return current.get();
     }
 }
 

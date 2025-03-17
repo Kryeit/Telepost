@@ -1,6 +1,7 @@
 plugins {
-    id 'fabric-loom' version '1.5-SNAPSHOT'
+    id 'fabric-loom' version '1.9+'
     id 'maven-publish'
+    id 'com.gradleup.shadow' version '8.3.0+'
 }
 
 version = project.mod_version
@@ -49,6 +50,18 @@ dependencies {
     modImplementation include("xyz.nucleoid:server-translations-api:${servertranslations_version}")
     modImplementation "com.sk89q.worldedit:worldedit-fabric-mc${worldedit_version}"
     compileOnly "com.github.BlueMap-Minecraft:BlueMapAPI:${bluemap_version}"
+
+    implementation 'org.jdbi:jdbi3-core:3.45.1'
+    shadow 'org.jdbi:jdbi3-core:3.45.1'
+
+    implementation "org.jdbi:jdbi3-jackson2:3.45.1"
+    shadow "org.jdbi:jdbi3-jackson2:3.45.1"
+
+    implementation 'org.postgresql:postgresql:42.7.2'
+    shadow 'org.postgresql:postgresql:42.7.2'
+
+    implementation 'com.zaxxer:HikariCP:5.1.0'
+    shadow 'com.zaxxer:HikariCP:5.1.0'
 }
 
 processResources {
@@ -59,39 +72,30 @@ processResources {
     }
 }
 
-tasks.withType(JavaCompile).configureEach {
-    it.options.release = 17
+java {
+    toolchain {
+        languageVersion = JavaLanguageVersion.of(17)
+    }
 }
 
-java {
-    // Loom will automatically attach sourcesJar to a RemapSourcesJar task and to the "build" task
-    // if it is present.
-    // If you remove this line, sources will not be generated.
-    withSourcesJar()
+remapJar {
+    dependsOn(shadowJar)
+    mustRunAfter(shadowJar)
+    inputFile = file(shadowJar.archivePath)
+}
 
-    sourceCompatibility = JavaVersion.VERSION_17
-    targetCompatibility = JavaVersion.VERSION_17
+shadowJar {
+    configurations = [project.configurations.shadow]
+    mergeServiceFiles()
+    exclude("META-INF")
+}
+
+tasks.build {
+    dependsOn tasks.shadowJar
 }
 
 jar {
     from("LICENSE") {
-        rename { "${it}_${project.base.archivesName.get()}"}
-    }
-}
-
-// configure the maven publication
-publishing {
-    publications {
-        mavenJava(MavenPublication) {
-            from components.java
-        }
-    }
-
-    // See https://docs.gradle.org/current/userguide/publishing_maven.html for information on how to set up publishing.
-    repositories {
-        // Add repositories to publish to here.
-        // Notice: This block does NOT have the same function as the block in the top level.
-        // The repositories here will be used for publishing your artifact, not for
-        // retrieving dependencies.
+        rename { "${it}_${project.archivesBaseName}"}
     }
 }

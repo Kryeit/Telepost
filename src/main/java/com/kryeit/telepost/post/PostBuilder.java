@@ -1,6 +1,8 @@
 package com.kryeit.telepost.post;
 
 import com.kryeit.telepost.MinecraftServerSupplier;
+import com.kryeit.telepost.beans.Post;
+import com.kryeit.telepost.beans.PostApi;
 import net.minecraft.block.Block;
 import net.minecraft.registry.RegistryKey;
 import net.minecraft.registry.entry.RegistryEntry;
@@ -15,8 +17,6 @@ import net.minecraft.util.math.random.Random;
 import net.minecraft.world.biome.Biome;
 
 import java.util.Optional;
-
-import static com.kryeit.telepost.post.Post.WORLD;
 
 
 public class PostBuilder {
@@ -58,7 +58,7 @@ public class PostBuilder {
             BlockBox boundingBox = template.get().calculateBoundingBox(placementData, pos);
 
             template.get().place(
-                    ((ServerWorld) WORLD),
+                    ((ServerWorld) PostApi.OVERWORLD),
                     pos.add(-boundingBox.getBlockCountX()/2, -1, -boundingBox.getBlockCountZ()/2),
                     pos.add(-boundingBox.getBlockCountX()/2, -1, -boundingBox.getBlockCountZ()/2),
                     placementData,

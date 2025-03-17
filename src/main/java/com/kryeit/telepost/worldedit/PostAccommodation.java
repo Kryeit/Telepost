@@ -1,6 +1,8 @@
 package com.kryeit.telepost.worldedit;
 
-import com.kryeit.telepost.post.Post;
+import com.kryeit.telepost.beans.Post;
+import com.kryeit.telepost.beans.PostApi;
+import com.kryeit.telepost.config.ConfigReader;
 import com.sk89q.worldedit.EditSession;
 import com.sk89q.worldedit.MaxChangedBlocksException;
 import com.sk89q.worldedit.WorldEdit;
@@ -20,17 +22,14 @@ import com.sk89q.worldedit.world.block.BlockCategories;
 import com.sk89q.worldedit.world.block.BlockTypes;
 import net.minecraft.block.Blocks;
 
-import static com.kryeit.telepost.config.ConfigReader.WIDTH;
-import static com.kryeit.telepost.post.Post.WORLD;
-
 public class PostAccommodation {
     public static void accommodate(Post post) {
-        int width = WIDTH;
-        int biggerWidth = WIDTH + 5;
+        int width = ConfigReader.PostSystem.POST_WIDTH;
+        int biggerWidth = width + 5;
 
-        int x = post.getX();
-        int y = post.getY();
-        int z = post.getZ();
+        int x = post.x();
+        int y = post.y();
+        int z = post.z();
 
         Vector3 start;
         Vector3 end;
@@ -45,8 +44,8 @@ public class PostAccommodation {
             removeFoliage(editSession, start.toBlockPoint(), end.toBlockPoint());
 
             editSession.makeCylinder(
-                    BlockVector3.at(x, post.getY() - 10, z),
-                    editSession.getBlock(BlockVector3.at(x, post.getY() - 1, z)),
+                    BlockVector3.at(x, post.y() - 10, z),
+                    editSession.getBlock(BlockVector3.at(x, post.y() - 1, z)),
                     width,
                     width,
                     10,
@@ -68,7 +67,7 @@ public class PostAccommodation {
 
     private static void cut(EditSession editSession, Post post, int width) throws MaxChangedBlocksException {
         editSession.makeCylinder(
-                BlockVector3.at(post.getX(), post.getY() - 1, post.getZ()),
+                BlockVector3.at(post.x(), post.y() - 1, post.z()),
                 FabricAdapter.adapt(Blocks.AIR).getDefaultState(),
                 width,
                 width,
@@ -96,7 +95,7 @@ public class PostAccommodation {
     }
 
     public static EditSession getEditSession() {
-        return WorldEdit.getInstance().newEditSession(FabricAdapter.adapt(WORLD));
+        return WorldEdit.getInstance().newEditSession(FabricAdapter.adapt(PostApi.OVERWORLD));
     }
 
     public static void removeFoliage(EditSession editSession, BlockVector3 start, BlockVector3 end) {

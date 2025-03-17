@@ -1,8 +1,7 @@
 package com.kryeit.telepost.commands;
 
-import com.kryeit.telepost.Telepost;
-import com.kryeit.telepost.post.Post;
-import com.kryeit.telepost.storage.bytes.NamedPost;
+import com.kryeit.telepost.beans.NamedPost;
+import com.kryeit.telepost.beans.PostApi;
 import com.kryeit.telepost.utils.Utils;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -27,27 +26,11 @@ public class PrivatePost {
             return 0;
         }
 
-        Post post = new Post(player.getPos());
-
-        Optional<NamedPost> namedPost = post.getNamedPost();
+        Optional<NamedPost> namedPost = PostApi.NamedPostApi.get(player);
         if (namedPost.isEmpty())
             return 0;
 
-        if (Telepost.playerNamedPosts.getPlayerForPost(namedPost.get().id()).equals(player.getUuid())) {
-
-            boolean wasPrivate = namedPost.get().isPrivate();
-            String id = namedPost.get().id();
-            String name = namedPost.get().name();
-
-            Telepost.getDB().deleteNamedPost(namedPost.get().id());
-            Telepost.getDB().addNamedPost(new NamedPost(
-                    id,
-                    name,
-                    post.getPos(),
-                    !wasPrivate));
-
-            player.sendMessage(Text.literal("The post is now " + (namedPost.get().isPrivate() ? "public" : "private")), true);
-        }
+        namedPost.get().togglePrivacy();
         return Command.SINGLE_SUCCESS;
     }
 

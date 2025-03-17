@@ -2,11 +2,10 @@ package com.kryeit.telepost.commands;
 
 import com.griefdefender.api.GriefDefender;
 import com.griefdefender.api.claim.Claim;
-import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.TelepostMessages;
+import com.kryeit.telepost.beans.NamedPost;
+import com.kryeit.telepost.beans.PostApi;
 import com.kryeit.telepost.compat.GriefDefenderImpl;
-import com.kryeit.telepost.post.Post;
-import com.kryeit.telepost.storage.bytes.NamedPost;
 import com.kryeit.telepost.utils.Utils;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -34,18 +33,10 @@ public class DeletePostClaim {
 
         Text text;
 
-        String postID = Telepost.playerNamedPosts.getPostIDForPlayer(player.getUuid());
+        Optional<NamedPost> namedPost = PostApi.NamedPostApi.get(player);
 
-        if (postID == null) {
-            text = TelepostMessages.getMessage(player, "telepost.unknown_post", Formatting.RED);
-            player.sendMessage(text, true);
-        }
-
-        Optional<NamedPost> namedPostOptional = Telepost.getDB().getNamedPost(postID);
-
-        if (namedPostOptional.isPresent()) {
-            Post namedPost = new Post(namedPostOptional.get());
-            Claim claim = GriefDefenderImpl.getClaim(namedPost);
+        if (namedPost.isPresent()) {
+            Claim claim = GriefDefenderImpl.getClaim(namedPost.get().asPost());
 
             if (claim == null) return 0;
             GriefDefender.getCore().getClaimManager(GriefDefenderImpl.getWorldUUID()).deleteClaim(claim);

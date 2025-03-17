@@ -1,10 +1,9 @@
 package com.kryeit.telepost.commands;
 
-import com.kryeit.telepost.Telepost;
+import com.kryeit.telepost.PlayerApi;
 import com.kryeit.telepost.TelepostMessages;
-import com.kryeit.telepost.post.Post;
-import com.kryeit.telepost.storage.bytes.NamedPost;
-import com.kryeit.telepost.utils.Utils;
+import com.kryeit.telepost.beans.NamedPost;
+import com.kryeit.telepost.beans.PostApi;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -16,7 +15,7 @@ import net.minecraft.server.network.ServerPlayerEntity;
 import net.minecraft.text.*;
 import net.minecraft.util.Formatting;
 
-import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 import java.util.function.Supplier;
 import java.util.stream.Collectors;
@@ -35,8 +34,8 @@ public class PostList {
             return 0;
         }
 
-        List<NamedPost> posts = Telepost.getInstance().database.getNamedPosts().stream()
-                .filter(post -> !post.isPrivate())
+        List<NamedPost> posts = PostApi.NamedPostApi.get().stream()
+                .filter(post -> !post.privated())
                 .collect(Collectors.toList());;
 
         if (posts.isEmpty()) {
@@ -44,7 +43,7 @@ public class PostList {
             return 1;
         }
 
-        Collections.sort(posts);
+        posts.sort(Comparator.comparing(NamedPost::name));
 
         int pages = (int) Math.ceil((double) posts.size() / PAGE_SIZE);
         int page;
@@ -139,12 +138,12 @@ public class PostList {
     }
 
     public static Text getListEntry(NamedPost post, String name, ServerPlayerEntity player) {
-        return Text.literal(name).formatted(Utils.isPostNamedByAdmin(post) ? Formatting.GOLD : Formatting.WHITE)
+        return Text.literal(name).formatted(post.isAdmin() ? Formatting.GOLD : Formatting.WHITE)
                         .setStyle(Style.EMPTY.withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/v " + name))
                                 .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT,
-                                        TelepostMessages.getMessage(player, "telepost.postlist.tooltip", Formatting.GRAY, new Post(post).getStringCoords(), name).copy().append(
+                                        TelepostMessages.getMessage(player, "telepost.postlist.tooltip", Formatting.GRAY, post.asPost().getCoordinates(), name).copy().append(
                                                 Text.literal("\nNamed by ").append(
-                                                        Utils.getNamedPostOwner(post)
+                                                        new PlayerApi().getNameFromUuid(post.player())
                                                 ).formatted(Formatting.GRAY, Formatting.ITALIC))
                                         )));
     }

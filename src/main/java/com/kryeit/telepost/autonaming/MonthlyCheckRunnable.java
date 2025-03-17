@@ -29,13 +29,6 @@ public class MonthlyCheckRunnable extends TimerTask {
             // Month changed, run automatic naming and run /setworldspawn command
             AutonamingUtils.autonamePost();
 
-            // Also reset /randompost cooldowns
-            try {
-                Telepost.randomPostCooldown.resetFile();
-            } catch (IOException e) {
-                throw new RuntimeException(e);
-            }
-
             lastCheckedMonth = currentMonth;
             writeLastCheckedMonthToFile(currentMonth);
 

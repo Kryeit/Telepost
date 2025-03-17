@@ -1,8 +1,8 @@
 package com.kryeit.telepost.commands.completion;
 
 import com.kryeit.telepost.MinecraftServerSupplier;
-import com.kryeit.telepost.Telepost;
-import com.kryeit.telepost.storage.bytes.NamedPost;
+import com.kryeit.telepost.beans.NamedPost;
+import com.kryeit.telepost.beans.PostApi;
 import com.mojang.brigadier.suggestion.SuggestionProvider;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
@@ -39,8 +39,8 @@ public class SuggestionsProvider {
     private static void suggestPostNames(SuggestionsBuilder builder) {
         String remaining = builder.getRemaining().toLowerCase();
 
-        for (NamedPost namedPost : Telepost.getDB().getNamedPosts()) {
-            if (namedPost.name().toLowerCase().startsWith(remaining) && !namedPost.isPrivate()) {
+        for (NamedPost namedPost : PostApi.NamedPostApi.get()) {
+            if (namedPost.name().toLowerCase().startsWith(remaining) && !namedPost.privated()) {
                 builder.suggest(namedPost.name());
             }
         }

@@ -3,8 +3,8 @@ package com.kryeit.telepost.autonaming;
 import com.kryeit.telepost.MinecraftServerSupplier;
 import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.TelepostMessages;
-import com.kryeit.telepost.post.Post;
-import com.kryeit.telepost.storage.bytes.NamedPost;
+import com.kryeit.telepost.beans.Post;
+import com.kryeit.telepost.beans.PostApi;
 import com.kryeit.telepost.utils.Utils;
 import net.minecraft.util.Formatting;
 
@@ -20,7 +20,7 @@ public class AutonamingUtils {
         List<String> availableNames = new ArrayList<>();
 
         for (String name : POST_NAMES) {
-            if (Telepost.getDB().getNamedPost(Utils.nameToId(name)).isPresent())
+            if (PostApi.NamedPostApi.get(name).isPresent())
                 continue;
 
             availableNames.add(name);
@@ -48,15 +48,15 @@ public class AutonamingUtils {
                 return;
             }
 
-            Telepost.getDB().addNamedPost(new NamedPost(Utils.nameToId(name), name, post.getPos(), false));
-            Utils.executeCommandAsServer("/setworldspawn " + post.getX() + " " + (post.getY() + 1) + " " + post.getZ());
+            PostApi.NamedPostApi.create(post.id(), name, false, null, true);
+            Utils.executeCommandAsServer("/setworldspawn " + post.x() + " " + (post.y() + 1) + " " + post.z());
 
             // Broadcast to all players
             MinecraftServerSupplier.getServer().getPlayerManager().broadcast(
-                    TelepostMessages.getMessage(null, "telepost.autonamed", Formatting.GREEN, name, post.getStringCoords()),
+                    TelepostMessages.getMessage(null, "telepost.autonamed", Formatting.GREEN, name, post.getCoordinates()),
                     false
             );
-            LOGGER.info("[Monthly Autonaming] Named post " + name + " at " + post.getStringCoords());
+            LOGGER.info("[Monthly Autonaming] Named post " + name + " at " + post.getCoordinates());
             return;
         }
         LOGGER.warn("Config file for Telepost doesn't have enough names for autonaming.");

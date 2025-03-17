@@ -1,8 +1,8 @@
 package com.kryeit.telepost.commands;
 
 import com.kryeit.telepost.TelepostMessages;
-import com.kryeit.telepost.post.Post;
-import com.kryeit.telepost.storage.bytes.NamedPost;
+import com.kryeit.telepost.beans.Post;
+import com.kryeit.telepost.beans.PostApi;
 import com.kryeit.telepost.utils.Utils;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -28,15 +28,20 @@ public class NearestPost {
             return 0;
         }
 
-        Post post = new Post(player.getPos());
+        Optional<Post> post = PostApi.getClosest(player);
+
+        if (post.isEmpty()) {
+            Text text = TelepostMessages.getMessage(player, "telepost.no_post", Formatting.RED);
+            player.sendMessage(text, true);
+            return 0;
+        }
 
         Text text;
 
-        Optional<NamedPost> namedPost = post.getNamedPost();
-        if (namedPost.isPresent()) {
-            text = TelepostMessages.getMessage(player, "telepost.nearest.named", Formatting.WHITE, post.getStringCoords(), namedPost.get().name());
+        if (post.get().isNamed()) {
+            text = TelepostMessages.getMessage(player, "telepost.nearest.named", Formatting.WHITE, post.get().getCoordinates(), PostApi.NamedPostApi.getName(post.get().id()));
         } else {
-            text = TelepostMessages.getMessage(player, "telepost.nearest", Formatting.WHITE, post.getStringCoords());
+            text = TelepostMessages.getMessage(player, "telepost.nearest", Formatting.WHITE, post.get().getCoordinates());
         }
         player.sendMessage(text);
         return Command.SINGLE_SUCCESS;

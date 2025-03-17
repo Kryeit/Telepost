@@ -1,9 +1,9 @@
 package com.kryeit.telepost.commands;
 
-import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.TelepostMessages;
-import com.kryeit.telepost.post.Post;
-import com.kryeit.telepost.storage.bytes.HomePost;
+import com.kryeit.telepost.beans.HomePost;
+import com.kryeit.telepost.beans.Post;
+import com.kryeit.telepost.beans.PostApi;
 import com.kryeit.telepost.utils.Utils;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -29,22 +29,26 @@ public class Home {
             return 0;
         }
 
-        Post post = new Post(player.getPos());
+        Optional<Post> post = PostApi.getClosest(player);
+
+        if (post.isEmpty()) {
+            Text text = TelepostMessages.getMessage(player, "telepost.no_post", Formatting.RED);
+            player.sendMessage(text, true);
+            return 0;
+        }
 
         Text text;
 
-        if (!post.isInside(player.getPos())) {
+        if (!post.get().isInside(player)) {
             text = TelepostMessages.getMessage(player, "telepost.standing", Formatting.RED);
             player.sendMessage(text, true);
             return 0;
         }
 
-        Optional<HomePost> home = Telepost.getDB().getHome(player.getUuid());
+        Optional<HomePost> home = PostApi.HomePostApi.get(player.getUuid());
 
         if (home.isPresent()) {
-            Post homePost = new Post(home.get());
-
-            if (post.isSame(homePost)) {
+            if (post.get().equals(home.get().asPost())) {
                 text = TelepostMessages.getMessage(player, "telepost.already-there", Formatting.RED);
                 player.sendMessage(text, true);
                 return 0;
@@ -52,7 +56,7 @@ public class Home {
 
             text = TelepostMessages.getMessage(player, "telepost.teleport.homepost", Formatting.GREEN);
             player.sendMessage(text, true);
-            homePost.teleport(player);
+            home.get().asPost().teleport(player);
         } else {
             text = TelepostMessages.getMessage(player, "telepost.no_homepost", Formatting.RED);
             player.sendMessage(text, true);

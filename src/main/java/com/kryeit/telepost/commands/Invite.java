@@ -3,8 +3,9 @@ package com.kryeit.telepost.commands;
 import com.kryeit.telepost.MinecraftServerSupplier;
 import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.TelepostMessages;
+import com.kryeit.telepost.beans.HomePost;
+import com.kryeit.telepost.beans.PostApi;
 import com.kryeit.telepost.commands.completion.SuggestionsProvider;
-import com.kryeit.telepost.storage.bytes.HomePost;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.StringArgumentType;
@@ -35,7 +36,7 @@ public class Invite {
             return 0;
         }
 
-        Optional<HomePost> home = Telepost.getDB().getHome(player.getUuid());
+        Optional<HomePost> home = PostApi.HomePostApi.get(player.getUuid());
 
         if (home.isEmpty()) {
             text = TelepostMessages.getMessage(player, "telepost.no_homepost", Formatting.RED);

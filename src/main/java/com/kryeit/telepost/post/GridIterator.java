@@ -1,14 +1,17 @@
 package com.kryeit.telepost.post;
 
+import com.kryeit.telepost.beans.Post;
+import com.kryeit.telepost.beans.PostApi;
+import com.kryeit.telepost.config.ConfigReader;
 import net.minecraft.util.math.Vec3d;
 
 import java.util.Iterator;
 import java.util.NoSuchElementException;
-
-import static com.kryeit.telepost.config.ConfigReader.GAP;
-import static com.kryeit.telepost.config.ConfigReader.WORLDBORDER;
+import java.util.Optional;
 
 public class GridIterator implements Iterator<Vec3d> {
+    private final int WORLDBORDER = ConfigReader.PostSystem.INNER_WORLDBORDER;
+    private final int GAP = ConfigReader.PostSystem.INNER_POST_CLEARANCE;
     private final int endX;
     private final int endZ;
     private int currentX = -(WORLDBORDER / GAP) * GAP;;
@@ -30,7 +33,7 @@ public class GridIterator implements Iterator<Vec3d> {
             throw new NoSuchElementException();
         }
 
-        Post post = new Post(currentX, currentZ);
+        Optional<Post> post = PostApi.getClosest(new Vec3d(currentX, 0, currentZ));
         // Move to the next location in the grid.
         currentX += GAP;
         if (currentX > endX) {
@@ -38,6 +41,6 @@ public class GridIterator implements Iterator<Vec3d> {
             currentZ += GAP;
         }
 
-        return post.getPos();
+        return post.get().getPos();
     }
 }

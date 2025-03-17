@@ -11,6 +11,8 @@
     <br><br>
 </h1>
 
+POSTGRES DATABASE REQUIRED
+
 **Mod description**
 
 Telepost doesn't require any other mod to function. However, it has softdepend functions for:

@@ -1,12 +1,12 @@
 package com.kryeit.telepost.commands;
 
 import com.kryeit.telepost.MinecraftServerSupplier;
-import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.TelepostMessages;
+import com.kryeit.telepost.beans.HomePost;
+import com.kryeit.telepost.beans.NamedPost;
+import com.kryeit.telepost.beans.Post;
+import com.kryeit.telepost.beans.PostApi;
 import com.kryeit.telepost.commands.completion.SuggestionsProvider;
-import com.kryeit.telepost.post.Post;
-import com.kryeit.telepost.storage.bytes.HomePost;
-import com.kryeit.telepost.storage.bytes.NamedPost;
 import com.kryeit.telepost.utils.Utils;
 import com.mojang.brigadier.Command;
 import com.mojang.brigadier.CommandDispatcher;
@@ -33,13 +33,19 @@ public class Visit {
             return 0;
         }
 
-        Post closestPost = new Post(player.getPos());
+        Optional<Post> post = PostApi.getClosest(player);
+
+        if (post.isEmpty()) {
+            Text text = TelepostMessages.getMessage(player, "telepost.no_post", Formatting.RED);
+            player.sendMessage(text, true);
+            return 0;
+        }
+
         String postNameOrPlayer = StringArgumentType.getString(context, "name");
-        String postID = Utils.nameToId(postNameOrPlayer);
 
         Text text;
 
-        if (!closestPost.isInside(player.getPos())) {
+        if (!post.get().isInside(player)) {
             text = TelepostMessages.getMessage(player, "telepost.standing", Formatting.RED);
             player.sendMessage(text, true);
             return 0;
@@ -50,15 +56,14 @@ public class Visit {
         // /visit Player
         if (visited != null) {
             if (Utils.isInvited(visited, player) || Permissions.check(source, "telepost.visit.others", false)) {
-                Optional<HomePost> home = Telepost.getDB().getHome(visited.getUuid());
+                Optional<HomePost> home = PostApi.HomePostApi.get(visited.getUuid());
                 if (home.isEmpty()) {
                     text = TelepostMessages.getMessage(player, "telepost.no_homepost", Formatting.RED);
                     player.sendMessage(text);
                     return 0;
                 }
-                Post homePost = new Post(home.get());
 
-                if (closestPost.isSame(homePost)) {
+                if (post.get().equals(home.get().asPost())) {
                     text = TelepostMessages.getMessage(player, "telepost.already-there", Formatting.RED);
                     player.sendMessage(text, true);
                     return 0;
@@ -67,7 +72,7 @@ public class Visit {
                 text = TelepostMessages.getMessage(player, "telepost.teleport.homepost.other", Formatting.GREEN, visited.getName().getString());
                 player.sendMessage(text, true);
 
-                homePost.teleport(player);
+                home.get().asPost().teleport(player);
                 return Command.SINGLE_SUCCESS;
             } else {
                 text = TelepostMessages.getMessage(player, "telepost.no_invite", Formatting.RED);
@@ -77,21 +82,20 @@ public class Visit {
         }
 
         // /visit NamedPost
-        Optional<NamedPost> namedPostOptional = Telepost.getDB().getNamedPost(postID);
+        Optional<NamedPost> namedPost = PostApi.NamedPostApi.get(postNameOrPlayer);
 
-        if (namedPostOptional.isPresent()) {
-            Post namedPost = new Post(namedPostOptional.get());
+        if (namedPost.isPresent()) {
 
-            if (closestPost.isSame(namedPost)) {
+            if (post.get().equals(namedPost.get().asPost())) {
                 text = TelepostMessages.getMessage(player, "telepost.already-there", Formatting.RED);
                 player.sendMessage(text, true);
                 return 0;
             }
 
-            text = TelepostMessages.getMessage(player, "telepost.teleport.named_post", Formatting.GREEN, namedPostOptional.get().name());
+            text = TelepostMessages.getMessage(player, "telepost.teleport.named_post", Formatting.GREEN, namedPost.get().name());
             player.sendMessage(text, true);
 
-            namedPost.teleport(player);
+            namedPost.get().asPost().teleport(player);
             return Command.SINGLE_SUCCESS;
         }
 
