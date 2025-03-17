@@ -18,7 +18,7 @@ public class GriefDefenderImpl {
     public static final int NEEDED_CLAIMBLOCKS = 80_000;
     public static int getClaimBlocks(UUID playerID) {
         User user = GriefDefender.getCore().getUser(playerID);
-        return user == null ? -1 : user.getPlayerData().getInitialClaimBlocks() + user.getPlayerData().getAccruedClaimBlocks() + user.getPlayerData().getBonusClaimBlocks();
+        return user == null ? -1 : user.getPlayerData().getInitialClaimBlocks() + user.getPlayerData().getAccruedClaimBlocks();
     }
 
     public static void createClaim(Post post) {

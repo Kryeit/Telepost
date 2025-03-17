@@ -8,6 +8,7 @@ import com.kryeit.telepost.compat.CompatAddon;
 import com.kryeit.telepost.config.ConfigReader;
 import com.kryeit.telepost.listeners.ServerTick;
 import com.kryeit.telepost.post.StructureHandler;
+import com.kryeit.telepost.storage.CommandDumpDB;
 import com.kryeit.telepost.storage.IDatabase;
 import com.kryeit.telepost.storage.LevelDBImpl;
 import com.kryeit.telepost.storage.NamedPostStorage;
@@ -98,7 +99,7 @@ public class Telepost implements DedicatedServerModInitializer {
                 DeletePostClaim.register(dispatcher);
             }
             
-            //CommandDumpDB.register(dispatcher);
+            CommandDumpDB.register(dispatcher);
         });
     }
 
