@@ -3,11 +3,12 @@
   "post-gap": "2000",
   "worldborder": "5000",
   "auto-naming": true,
+  "claimblocks-for-naming": "80000",
   "next-post-names": [
     "Atacama",
     "Socarrat",
     "Telepost",
-    "Skål",
+    "Skal",
     "Temporary Spawn",
     "The Forgotten"
   ]

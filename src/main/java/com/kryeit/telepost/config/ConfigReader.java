@@ -16,6 +16,7 @@ public class ConfigReader {
     public static int WIDTH;
     public static int WORLDBORDER;
     public static boolean AUTONAMING;
+    public static int CLAIMBLOCKS_FOR_NAMING;
     public static List<String> POST_NAMES = new ArrayList<>();
 
     private ConfigReader() {
@@ -29,6 +30,7 @@ public class ConfigReader {
         GAP = Integer.parseInt(configObject.getString("post-gap"));
         WORLDBORDER = Integer.parseInt(configObject.getString("worldborder"));
         AUTONAMING = configObject.getBoolean("auto-naming");
+        CLAIMBLOCKS_FOR_NAMING = Integer.parseInt(configObject.getString("claimblocks-for-naming"));
 
         if(configObject.has("next-post-names")) {
             var postNamesArray = configObject.getArray("next-post-names");

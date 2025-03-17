@@ -6,6 +6,7 @@ import com.kryeit.telepost.Telepost;
 import com.kryeit.telepost.TelepostMessages;
 import com.kryeit.telepost.compat.CompatAddon;
 import com.kryeit.telepost.compat.GriefDefenderImpl;
+import com.kryeit.telepost.config.ConfigReader;
 import com.kryeit.telepost.post.Post;
 import com.kryeit.telepost.storage.bytes.NamedPost;
 import com.kryeit.telepost.utils.Utils;
@@ -23,7 +24,6 @@ import net.minecraft.util.Formatting;
 import java.util.Optional;
 import java.util.function.Supplier;
 
-import static com.kryeit.telepost.compat.GriefDefenderImpl.NEEDED_CLAIMBLOCKS;
 
 public class NamePost {
     public static int execute(CommandContext<ServerCommandSource> context) {
@@ -65,8 +65,8 @@ public class NamePost {
         }
 
         if (CompatAddon.GRIEF_DEFENDER.isLoaded()) {
-            if (GriefDefenderImpl.getClaimBlocks(player.getUuid()) < NEEDED_CLAIMBLOCKS) {
-                text = TelepostMessages.getMessage(player, "telepost.name.claimblocks", Formatting.RED, NEEDED_CLAIMBLOCKS);
+            if (GriefDefenderImpl.getClaimBlocks(player.getUuid()) < ConfigReader.CLAIMBLOCKS_FOR_NAMING) {
+                text = TelepostMessages.getMessage(player, "telepost.name.claimblocks", Formatting.RED, ConfigReader.CLAIMBLOCKS_FOR_NAMING);
                 player.sendMessage(text);
                 return 0;
             }

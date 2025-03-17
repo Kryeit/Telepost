@@ -15,7 +15,6 @@ import static com.kryeit.telepost.post.Post.WORLD;
 
 public class GriefDefenderImpl {
 
-    public static final int NEEDED_CLAIMBLOCKS = 80_000;
     public static int getClaimBlocks(UUID playerID) {
         User user = GriefDefender.getCore().getUser(playerID);
         return user == null ? -1 : user.getPlayerData().getInitialClaimBlocks() + user.getPlayerData().getAccruedClaimBlocks();
