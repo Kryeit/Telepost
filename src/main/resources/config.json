@@ -1,5 +1,5 @@
 {
-  "_c1": "DB credentials",
+  "_c1": "DB credentials, only support POSTGRESQL",
   "db-url": "jdbc:postgresql://example.com:5432/tablename",
   "db-user": "postgres",
   "db-password": "lel",

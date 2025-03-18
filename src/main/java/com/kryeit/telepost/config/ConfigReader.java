@@ -1,6 +1,7 @@
 package com.kryeit.telepost.config;
 
-import com.kryeit.telepost.utils.JSONObject;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
 import java.io.File;
 import java.io.IOException;
@@ -35,30 +36,30 @@ public class ConfigReader {
 
     public static void readFile(Path path) throws IOException {
         String config = readOrCopyFile(path.resolve("config.json"), "/config.json");
-        JSONObject configObject = new JSONObject(config);
+        JsonObject configObject = JsonParser.parseString(config).getAsJsonObject();
 
-        // Database credentials
-        DB_URL = configObject.getString("db-url");
-        DB_USER = configObject.getString("db-user");
-        DB_PASSWORD = configObject.getString("db-password");
+        DB_URL = configObject.get("db-url").getAsString();
+        DB_USER = configObject.get("db-user").getAsString();
+        DB_PASSWORD = configObject.get("db-password").getAsString();
 
         // Post system settings
-        JSONObject postSystem = configObject.getObject("post-system");
-        PostSystem.INNER_WORLDBORDER = Integer.parseInt(postSystem.getString("inner-worldborder"));
-        PostSystem.OUTER_WORLDBORDER = Integer.parseInt(postSystem.getString("outer-worldborder"));
-        PostSystem.INNER_POST_CLEARANCE = Integer.parseInt(postSystem.getString("inner-post-clearance"));
-        PostSystem.OUTER_POST_CLEARANCE = Integer.parseInt(postSystem.getString("outer-post-clearance"));
-        PostSystem.POST_WIDTH = Integer.parseInt(postSystem.getString("post-width"));
+        JsonObject postSystem = configObject.getAsJsonObject("post-system");
+        PostSystem.INNER_WORLDBORDER = Integer.parseInt(postSystem.get("inner-worldborder").getAsString());
+        PostSystem.OUTER_WORLDBORDER = Integer.parseInt(postSystem.get("outer-worldborder").getAsString());
+        PostSystem.INNER_POST_CLEARANCE = Integer.parseInt(postSystem.get("inner-post-clearance").getAsString());
+        PostSystem.OUTER_POST_CLEARANCE = Integer.parseInt(postSystem.get("outer-post-clearance").getAsString());
+        PostSystem.POST_WIDTH = Integer.parseInt(postSystem.get("post-width").getAsString());
 
         // Other settings
-        AUTO_NAMING = configObject.getBoolean("auto-naming");
-        CLAIMBLOCKS_FOR_NAMING = Integer.parseInt(configObject.getString("claimblocks-for-naming"));
+        AUTO_NAMING = configObject.get("auto-naming").getAsBoolean();
+        CLAIMBLOCKS_FOR_NAMING = Integer.parseInt(configObject.get("claimblocks-for-naming").getAsString());
 
         // Post names
         if (configObject.has("next-post-names")) {
-            var postNamesArray = configObject.getArray("next-post-names");
-            for (int i = 0; i < postNamesArray.size(); i++) {
-                POST_NAMES.add(postNamesArray.getString(i));
+
+            POST_NAMES = new ArrayList<>(configObject.getAsJsonArray("next-post-names").size());
+            for (var element : configObject.getAsJsonArray("next-post-names")) {
+                POST_NAMES.add(element.getAsString());
             }
         }
     }

@@ -45,7 +45,7 @@ public class Telepost implements DedicatedServerModInitializer {
     public void onInitializeServer() {
         try {
             LOGGER.info("Reading config file...");
-            ConfigReader.readFile(Path.of("config/" + ID));
+            ConfigReader.readFile(Path.of("config/" + ID + "/"));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
