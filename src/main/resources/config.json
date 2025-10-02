@@ -1,14 +1,4 @@
 {
-  "post-width": "31",
-  "post-gap": "2000",
-  "worldborder": "5000",
-  "auto-naming": true,
-  "next-post-names": [
-    "Atacama",
-    "Socarrat",
-    "Telepost",
-    "Skål",
-    "Temporary Spawn",
-    "The Forgotten"
-  ]
+  "post-gap": 2000,
+  "post-radius": 25
 }
