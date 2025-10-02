@@ -1,0 +1,58 @@
+package com.kryeit.telepost.commands;
+
+import com.kryeit.telepost.TelepostMessages;
+import com.kryeit.telepost.beans.Post;
+import com.kryeit.telepost.beans.PostApi;
+import com.kryeit.telepost.utils.Utils;
+import com.mojang.brigadier.Command;
+import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.context.CommandContext;
+import me.lucko.fabric.api.permissions.v0.Permissions;
+import net.minecraft.server.command.CommandManager;
+import net.minecraft.server.command.ServerCommandSource;
+import net.minecraft.server.network.ServerPlayerEntity;
+import net.minecraft.text.Text;
+import net.minecraft.util.Formatting;
+
+import java.util.Optional;
+import java.util.function.Supplier;
+
+public class SetHome {
+    public static int execute(CommandContext<ServerCommandSource> context) {
+        ServerCommandSource source = context.getSource();
+        ServerPlayerEntity player = source.getPlayer();
+
+        if (player == null || !Utils.isInOverworld(player)) {
+            Supplier<Text> message = () -> Text.translatable("telepost.no_permission");
+            source.sendFeedback(message, false);
+            return 0;
+        }
+
+        Optional<Post> post = PostApi.getClosest(player);
+
+        if (post.isEmpty()) {
+            Supplier<Text> message = () -> Text.translatable("telepost.no_post");
+            source.sendFeedback(message, false);
+            return 0;
+        }
+
+        Text text = TelepostMessages.getMessage(player, "telepost.homepost", Formatting.GREEN, post.get().getCoordinates());
+
+        PostApi.HomePostApi.create(player);
+        player.sendMessage(text);
+
+        return Command.SINGLE_SUCCESS;
+    }
+
+    public static void register(CommandDispatcher<ServerCommandSource> dispatcher) {
+        dispatcher.register(CommandManager.literal("sethome")
+                .requires(source -> Permissions.check(source, "telepost.setpost", true))
+                .executes(SetHome::execute)
+        );
+
+        dispatcher.register(CommandManager.literal("setpost")
+                .requires(source -> Permissions.check(source, "telepost.setpost", true))
+                .executes(SetHome::execute)
+        );
+    }
+}

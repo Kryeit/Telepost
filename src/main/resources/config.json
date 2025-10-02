@@ -1,4 +1,31 @@
 {
-  "post-gap": 2000,
-  "post-radius": 25
+  "_c1": "DB credentials, only support POSTGRESQL",
+  "db-url": "jdbc:postgresql://example.com:5432/tablename",
+  "db-user": "postgres",
+  "db-password": "lel",
+  "_c2": "Autonaming, a monthly task that will name the next post in the list",
+  "auto-naming": false,
+  "next-post-names": [
+    "Atacama",
+    "Socarrat",
+    "Telepost",
+    "Skal",
+    "Temporary Spawn",
+    "The Forgotten"
+  ],
+  "_c3": "Post system settings",
+  "post-system": {
+    "_c4": "Inside the inner worldborder, the posts are arranged in a grid, and can be named with /namepost",
+    "inner-worldborder": "51000",
+    "_c5": "Outside the outer worldborder, the posts are manually placed, and can be created with /createpost",
+    "outer-worldborder": "16000",
+    "_c6": "Distance between posts in the inner worldborder",
+    "inner-post-clearance": "2000",
+    "_c7": "Distance between posts in the outer worldborder",
+    "outer-post-clearance": "10000",
+    "_c8": "Width of the post, used for allowing TP commands, and used by /buildposts to center the structures",
+    "post-width": "31",
+    "_c9": "Earned claimblocks needed for naming/creating a post. Griefdefender is required for this to work",
+    "claimblocks-for-naming": "80000"
+  }
 }
