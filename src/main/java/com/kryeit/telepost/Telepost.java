@@ -45,16 +45,17 @@ import java.nio.file.Path;
 public class Telepost {
     public static final String MODID = "telepost";
 
-    public static LuckPerms luckPerms = LuckPermsProvider.get();
-
     public Telepost() {
-        DatabaseUtils.createTables();
 
         try {
             ConfigReader.readFile(Path.of("config/" + MODID));
         } catch (IOException e) {
             throw new RuntimeException(e);
         }
+
+        DatabaseUtils.createTables();
+
+
 
         NeoForge.EVENT_BUS.register(this);
     }

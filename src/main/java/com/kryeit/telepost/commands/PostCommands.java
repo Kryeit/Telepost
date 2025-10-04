@@ -1,11 +1,14 @@
 package com.kryeit.telepost.commands;
 
+import com.kryeit.telepost.storage.Database;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
 import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.posts.Home;
 import com.kryeit.telepost.posts.Post;
+import com.kryeit.telepost.posts.Relation;
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
@@ -36,27 +39,67 @@ public class PostCommands {
 
         dispatcher.register(Commands.literal("post")
                 .requires(source -> Utils.check(source, "command.post", true))
-                .executes(PostCommands::showClosestPost));
-
-        dispatcher.register(Commands.literal("postlist")
-                .requires(source -> Utils.check(source, "command.postlist", true))
-                .executes(PostCommands::postList));
-
-        dispatcher.register(Commands.literal("postprivacy")
-                .requires(source -> Utils.check(source, "command.postprivacy", true))
-                .then(Commands.argument("postName", StringArgumentType.string())
-                        .executes(ctx -> togglePrivacy(ctx, StringArgumentType.getString(ctx, "postName")))));
-
-        dispatcher.register(Commands.literal("posttrust")
-                .requires(source -> Utils.check(source, "command.posttrust", true))
-                .then(Commands.argument("postName", StringArgumentType.string())
+                .executes(PostCommands::showClosestPost)
+                .then(Commands.literal("list")
+                        .requires(source -> Utils.check(source, "command.list", true))
+                        .executes(PostCommands::postList))
+                .then(Commands.literal("create")
+                        .requires(source -> Utils.check(source, "command.create", true))
+                        .then(Commands.argument("postName", StringArgumentType.string())
+                                .then(Commands.argument("x", IntegerArgumentType.integer())
+                                        .then(Commands.argument("z", IntegerArgumentType.integer())
+                                                .executes(ctx -> createPost(ctx,
+                                                        StringArgumentType.getString(ctx, "postName"),
+                                                        IntegerArgumentType.getInteger(ctx, "x"),
+                                                        IntegerArgumentType.getInteger(ctx, "z")))))))
+                .then(Commands.literal("delete")
+                        .requires(source -> Utils.check(source, "command.delete", false))
+                        .then(Commands.argument("postName", StringArgumentType.string())
+                                .executes(ctx -> deletePost(ctx, StringArgumentType.getString(ctx, "postName")))))
+                .then(Commands.literal("rename")
+                        .requires(source -> Utils.check(source, "command.rename", true))
+                        .then(Commands.argument("oldName", StringArgumentType.string())
+                                .then(Commands.argument("newName", StringArgumentType.string())
+                                        .executes(ctx -> renamePost(ctx,
+                                                StringArgumentType.getString(ctx, "oldName"),
+                                                StringArgumentType.getString(ctx, "newName"))))))
+                .then(Commands.literal("transfer")
+                        .requires(source -> Utils.check(source, "command.transfer", true))
+                        .then(Commands.argument("postName", StringArgumentType.string())
+                                .then(Commands.argument("player", EntityArgument.player())
+                                        .executes(ctx -> transferPost(ctx,
+                                                StringArgumentType.getString(ctx, "postName"),
+                                                EntityArgument.getPlayer(ctx, "player"))))))
+                .then(Commands.literal("privacy")
+                        .requires(source -> Utils.check(source, "command.privacy", true))
+                        .then(Commands.argument("postName", StringArgumentType.string())
+                                .executes(ctx -> togglePrivacy(ctx, StringArgumentType.getString(ctx, "postName")))))
+                .then(Commands.literal("ally")
+                        .requires(source -> Utils.check(source, "command.ally", true))
                         .then(Commands.argument("player", EntityArgument.player())
-                                .executes(ctx -> trustPlayer(ctx, StringArgumentType.getString(ctx, "postName"), EntityArgument.getPlayer(ctx, "player"))))));
+                                .executes(ctx -> makeAlly(ctx, EntityArgument.getPlayer(ctx, "player")))))
+                .then(Commands.literal("enemy")
+                        .requires(source -> Utils.check(source, "command.enemy", true))
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .executes(ctx -> makeEnemy(ctx, EntityArgument.getPlayer(ctx, "player")))))
+                .then(Commands.literal("forgive")
+                        .requires(source -> Utils.check(source, "command.forgive", true))
+                        .then(Commands.argument("player", EntityArgument.player())
+                                .executes(ctx -> forgivePlayer(ctx, EntityArgument.getPlayer(ctx, "player"))))));
+    }
 
-        dispatcher.register(Commands.literal("deletepost")
-                .requires(source -> Utils.check(source, "command.deletepost", false))
-                .then(Commands.argument("postName", StringArgumentType.string())
-                        .executes(ctx -> deletePost(ctx, StringArgumentType.getString(ctx, "postName")))));
+    private static int transferPost(CommandContext<CommandSourceStack> ctx, String postName, ServerPlayer target) throws CommandSyntaxException {
+        ServerPlayer player = ctx.getSource().getPlayerOrException();
+
+        Post post = Post.getByName(postName);
+        if (post == null || !post.owner().equals(player.getUUID())) {
+            player.sendSystemMessage(Component.literal("You don't own this post"));
+            return 0;
+        }
+
+        Post.transfer(postName, player.getUUID(), target.getUUID());
+        player.sendSystemMessage(Component.literal("Post transferred to " + target.getName().getString()));
+        return 1;
     }
 
     private static int visit(CommandContext<CommandSourceStack> ctx, String postName) throws CommandSyntaxException {
@@ -143,6 +186,77 @@ public class PostCommands {
         return 1;
     }
 
+    private static int createPost(CommandContext<CommandSourceStack> ctx, String postName, int x, int z) throws CommandSyntaxException {
+        ServerPlayer player = ctx.getSource().getPlayerOrException();
+
+        if (player.hasPermissions(2)) {
+            Database.getJdbi().useHandle(handle ->
+                    handle.createUpdate("INSERT INTO posts (name, x, z) VALUES (:name, :x, :z)")
+                            .bind("name", postName)
+                            .bind("x", x)
+                            .bind("z", z)
+                            .execute()
+            );
+
+            player.sendSystemMessage(Component.literal("Post created at " + x + ", " + z));
+            return 1;
+        }
+
+        boolean created = Post.create(player.getUUID(), postName, x, z);
+        if (!created) {
+            player.sendSystemMessage(Component.literal("Post too close to another post"));
+            return 0;
+        }
+
+        player.sendSystemMessage(Component.literal("Post created at " + x + ", " + z));
+        return 1;
+    }
+
+    private static int deletePost(CommandContext<CommandSourceStack> ctx, String postName) throws CommandSyntaxException {
+        ServerPlayer player = ctx.getSource().getPlayerOrException();
+        Post.delete(postName);
+        player.sendSystemMessage(Component.literal("Post deleted"));
+        return 1;
+    }
+
+    private static int renamePost(CommandContext<CommandSourceStack> ctx, String oldName, String newName) throws CommandSyntaxException {
+        ServerPlayer player = ctx.getSource().getPlayerOrException();
+
+        Post post = Post.getByName(oldName);
+        if (post == null || !post.owner().equals(player.getUUID())) {
+            player.sendSystemMessage(Component.literal("You don't own this post"));
+            return 0;
+        }
+
+        Post.rename(oldName, newName);
+        player.sendSystemMessage(Component.literal("Post renamed to " + newName));
+        return 1;
+    }
+
+    private static int makeAlly(CommandContext<CommandSourceStack> ctx, ServerPlayer target) throws CommandSyntaxException {
+        ServerPlayer player = ctx.getSource().getPlayerOrException();
+
+        Relation.makeAlly(player.getUUID(), target.getUUID());
+        player.sendSystemMessage(Component.literal(target.getName().getString() + " is now an ally"));
+        return 1;
+    }
+
+    private static int makeEnemy(CommandContext<CommandSourceStack> ctx, ServerPlayer target) throws CommandSyntaxException {
+        ServerPlayer player = ctx.getSource().getPlayerOrException();
+
+        Relation.makeEnemy(player.getUUID(), target.getUUID());
+        player.sendSystemMessage(Component.literal(target.getName().getString() + " is now an enemy"));
+        return 1;
+    }
+
+    private static int forgivePlayer(CommandContext<CommandSourceStack> ctx, ServerPlayer target) throws CommandSyntaxException {
+        ServerPlayer player = ctx.getSource().getPlayerOrException();
+
+        Relation.forgive(player.getUUID(), target.getUUID());
+        player.sendSystemMessage(Component.literal(target.getName().getString() + " has been forgiven"));
+        return 1;
+    }
+
     private static int togglePrivacy(CommandContext<CommandSourceStack> ctx, String postName) throws CommandSyntaxException {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
 
@@ -153,33 +267,16 @@ public class PostCommands {
         }
 
         boolean updatedPrivacy = Post.togglePrivacy(postName);
-        Component message = updatedPrivacy ? Component.literal("Post is now private, use /posttrust to allow a player to visit it") : Component.literal("Post is now public");
+        Component message = updatedPrivacy ? Component.literal("Post is now private, only allies are allowed") : Component.literal("Post is now public");
         player.sendSystemMessage(message);
         return 1;
     }
 
-    private static int trustPlayer(CommandContext<CommandSourceStack> ctx, String postName, ServerPlayer target) throws CommandSyntaxException {
-        ServerPlayer player = ctx.getSource().getPlayerOrException();
-
-        Post post = Post.getByName(postName);
-        if (post == null || !post.owner().equals(player.getUUID())) {
-            player.sendSystemMessage(Component.literal("You don't own this post"));
-            return 0;
-        }
-
-        Post.addTrust(postName, target.getUUID());
-        player.sendSystemMessage(Component.literal("Player trusted"));
-        return 1;
-    }
-
-    private static int deletePost(CommandContext<CommandSourceStack> ctx, String postName) {
-        Post.delete(postName);
-        ctx.getSource().sendSystemMessage(Component.literal("Post deleted"));
-        return 1;
-    }
-
     private static boolean canVisit(ServerPlayer player, Post post) {
-        return !post.privated() || post.owner().equals(player.getUUID()) || post.allowed().contains(player.getUUID());
+        Relation.RelationType relation = Relation.getRelation(post.owner(), player.getUUID());
+        return post.privated()
+                ? relation == Relation.RelationType.ALLY
+                : relation != Relation.RelationType.ENEMY;
     }
 
     private static void teleportToPost(ServerPlayer player, Post post) {

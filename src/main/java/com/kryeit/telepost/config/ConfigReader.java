@@ -21,8 +21,8 @@ public class ConfigReader {
 
         JsonObject configObject = JsonParser.parseString(config).getAsJsonObject();
 
-        POST_GAP = configObject.get("post_gap").getAsInt();
-        POST_RADIUS = configObject.get("post_radius").getAsInt();
+        POST_GAP = configObject.get("post-gap").getAsInt();
+        POST_RADIUS = configObject.get("post-radius").getAsInt();
     }
 
     public static String readOrCopyFile(Path path, String exampleFile) throws IOException {

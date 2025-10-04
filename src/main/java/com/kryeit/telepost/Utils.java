@@ -1,10 +1,21 @@
 package com.kryeit.telepost;
 
 import net.luckperms.api.LuckPerms;
+import net.luckperms.api.LuckPermsProvider;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.neoforged.fml.ModList;
+import net.neoforged.neoforge.common.NeoForge;
+import net.neoforged.neoforge.common.NeoForgeMod;
 
 public class Utils {
+
+    public static void broadcast(String message) {
+        MinecraftServerSupplier.getServer().getPlayerList().broadcastSystemMessage(
+                Component.literal(message), false
+        );
+    }
 
     public static boolean check(CommandSourceStack source, String permission, boolean fallback) {
         if (!(source.getEntity() instanceof ServerPlayer player)) {
@@ -12,29 +23,31 @@ public class Utils {
         }
 
         permission = "telepost." + permission;
-        LuckPerms luckPerms = Telepost.luckPerms;
 
-        if (luckPerms == null) {
+        if (!ModList.get().isLoaded("luckperms")) {
             return fallback;
         }
 
+        LuckPerms luckPerms = LuckPermsProvider.get();
         var user = luckPerms.getUserManager().getUser(player.getUUID());
         if (user == null) {
             return fallback;
         }
 
-        return user.getCachedData()
+        var result = user.getCachedData()
                 .getPermissionData()
-                .checkPermission(permission)
-                .asBoolean();
+                .checkPermission(permission);
+
+        return result.asBoolean() || (result == net.luckperms.api.util.Tristate.UNDEFINED && fallback);
     }
 
     public static int getMaxPosts(ServerPlayer player) {
-        LuckPerms luckPerms = Telepost.luckPerms;
 
-        if (luckPerms == null) {
+        if (!ModList.get().isLoaded("luckperms")) {
             return 1;
         }
+
+        LuckPerms luckPerms = LuckPermsProvider.get();
 
         var user = luckPerms.getUserManager().getUser(player.getUUID());
         if (user == null) {

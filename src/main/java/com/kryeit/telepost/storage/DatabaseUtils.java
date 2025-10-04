@@ -16,8 +16,7 @@ public class DatabaseUtils {
                         name VARCHAR(255) NOT NULL UNIQUE,
                         x INT NOT NULL,
                         z INT NOT NULL,
-                        privated BOOLEAN NOT NULL DEFAULT FALSE,
-                        allowed JSONB NOT NULL DEFAULT '[]'
+                        privated BOOLEAN NOT NULL DEFAULT FALSE
                     );
                     """);
 
@@ -29,9 +28,23 @@ public class DatabaseUtils {
             handle.execute("""
                     CREATE TABLE IF NOT EXISTS homes (
                         id SERIAL PRIMARY KEY,
-                        user UUID NOT NULL UNIQUE,
+                        player UUID NOT NULL UNIQUE,
                         postId INT NOT NULL,
                         FOREIGN KEY (postId) REFERENCES posts(id) ON DELETE CASCADE
+                    );
+                    """);
+            return null;
+        });
+
+        // Create relations table
+        jdbi.withHandle(handle -> {
+            handle.execute("""
+                    CREATE TABLE IF NOT EXISTS relations (
+                        id SERIAL PRIMARY KEY,
+                        from UUID NOT NULL,
+                        to UUID NOT NULL,
+                        type VARCHAR(10) NOT NULL,
+                        UNIQUE(from, to)
                     );
                     """);
             return null;
