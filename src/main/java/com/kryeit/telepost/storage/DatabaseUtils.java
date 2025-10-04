@@ -41,10 +41,10 @@ public class DatabaseUtils {
             handle.execute("""
                     CREATE TABLE IF NOT EXISTS relations (
                         id SERIAL PRIMARY KEY,
-                        from UUID NOT NULL,
-                        to UUID NOT NULL,
+                        from_uuid UUID NOT NULL,
+                        to_uuid UUID NOT NULL,
                         type VARCHAR(10) NOT NULL,
-                        UNIQUE(from, to)
+                        UNIQUE(from_uuid, to_uuid)
                     );
                     """);
             return null;

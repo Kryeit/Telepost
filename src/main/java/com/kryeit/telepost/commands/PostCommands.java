@@ -1,5 +1,7 @@
 package com.kryeit.telepost.commands;
 
+import com.kryeit.telepost.MinecraftServerSupplier;
+import com.kryeit.telepost.posts.PostBuilder;
 import com.kryeit.telepost.storage.Database;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -198,13 +200,14 @@ public class PostCommands {
                             .execute()
             );
 
+            PostBuilder.place(MinecraftServerSupplier.getServer().overworld(), "plains", x, z);
             player.sendSystemMessage(Component.literal("Post created at " + x + ", " + z));
             return 1;
         }
 
-        boolean created = Post.create(player.getUUID(), postName, x, z);
-        if (!created) {
-            player.sendSystemMessage(Component.literal("Post too close to another post"));
+        String error = Post.create(player.getUUID(), postName, x, z);
+        if (error != null) {
+            player.sendSystemMessage(Component.literal(error));
             return 0;
         }
 
@@ -280,7 +283,7 @@ public class PostCommands {
     }
 
     private static void teleportToPost(ServerPlayer player, Post post) {
-        player.teleportTo(player.serverLevel(), post.x(), player.getY(), post.z(), player.getYRot(), player.getXRot());
+        player.teleportTo(player.serverLevel(), post.x() + 0.5, PostBuilder.getSolidHeight(player.serverLevel(), post.x(), post.z()), post.z() + 0.5, player.getYRot(), player.getXRot());
     }
 
     private static int getDistance(ServerPlayer player, Post post) {

@@ -2,6 +2,7 @@ package com.kryeit.telepost;
 
 import com.kryeit.telepost.commands.PostCommands;
 import com.kryeit.telepost.config.ConfigReader;
+import com.kryeit.telepost.posts.PostBuilder;
 import com.kryeit.telepost.storage.DatabaseUtils;
 import com.mojang.logging.LogUtils;
 import net.luckperms.api.LuckPerms;
@@ -19,6 +20,7 @@ import net.minecraft.world.level.block.Block;
 import net.minecraft.world.level.block.Blocks;
 import net.minecraft.world.level.block.state.BlockBehaviour;
 import net.minecraft.world.level.material.MapColor;
+import net.minecraft.world.level.storage.LevelResource;
 import net.neoforged.api.distmarker.Dist;
 import net.neoforged.bus.api.IEventBus;
 import net.neoforged.bus.api.SubscribeEvent;
@@ -62,7 +64,7 @@ public class Telepost {
 
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
-
+        PostBuilder.copyStructures(event.getServer().getWorldPath(LevelResource.ROOT));
     }
 
     @SubscribeEvent

@@ -2,6 +2,7 @@ package com.kryeit.telepost.posts;
 
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kryeit.telepost.Config;
+import com.kryeit.telepost.MinecraftServerSupplier;
 import com.kryeit.telepost.config.ConfigReader;
 import com.kryeit.telepost.storage.Database;
 import net.luckperms.api.LuckPerms;
@@ -22,6 +23,7 @@ public record Post(
 ){
 
     public static final int GAP = ConfigReader.POST_GAP;
+    public static final int DIAMETER = ConfigReader.POST_DIAMETER;
 
     public static Post getClosest(int worldX, int worldZ){
         return Database.getJdbi().withHandle(handle ->
@@ -53,7 +55,7 @@ public record Post(
         );
     }
 
-    public static boolean create(UUID owner, String name, int x, int z) {
+    public static String create(UUID owner, String name, int x, int z) {
         int leverage = Leverage.get(owner);
 
         return Database.getJdbi().withHandle(handle -> {
@@ -85,10 +87,10 @@ public record Post(
 
                 int dx = x - post.x();
                 int dz = z - post.z();
-                int distanceSquared = dx * dx + dz * dz;
+                int distance = (int) Math.sqrt(dx * dx + dz * dz);
 
-                if (distanceSquared < requiredGap * requiredGap) {
-                    return false;
+                if (distance < requiredGap) {
+                    return "Post " + post.name() + " is " + distance + " blocks away, you need to be at least " + requiredGap + " blocks from it";
                 }
             }
 
@@ -99,7 +101,9 @@ public record Post(
                     .bind("z", z)
                     .execute();
 
-            return true;
+            PostBuilder.place(MinecraftServerSupplier.getServer().overworld(), "plains", x, z);
+
+            return null;
         });
     }
 

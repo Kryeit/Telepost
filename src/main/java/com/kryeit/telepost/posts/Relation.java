@@ -5,19 +5,19 @@ import com.kryeit.telepost.storage.Database;
 import java.util.UUID;
 
 public record Relation(
-        long id, UUID from, UUID to,
+        long id, UUID fromUUID, UUID toUUID,
         RelationType type
 ) {
 
     public static RelationType getRelation(UUID from, UUID to) {
-        if (from.equals(to)) {
+        if (from == null || from.equals(to)) {
             return RelationType.ALLY;
         }
 
         return Database.getJdbi().withHandle(handle ->
-                handle.createQuery("SELECT type FROM relations WHERE from = :from AND to = :to")
-                        .bind("from", from)
-                        .bind("to", to)
+                handle.createQuery("SELECT type FROM relations WHERE from_uuid = :fromUUID AND to_uuid = :toUUID")
+                        .bind("fromUUID", from)
+                        .bind("toUUID", to)
                         .map((rs, ctx) -> {
                             String type = rs.getString("type");
                             return type != null ? RelationType.valueOf(type) : null;
@@ -29,27 +29,27 @@ public record Relation(
 
     public static void makeEnemy(UUID from, UUID to) {
         Database.getJdbi().useHandle(handle ->
-                handle.createUpdate("INSERT INTO relations (from, to, type) VALUES (:from, :to, 'ENEMY') ON CONFLICT (from, to) DO UPDATE SET type = 'ENEMY'")
-                        .bind("from", from)
-                        .bind("to", to)
+                handle.createUpdate("INSERT INTO relations (from_uuid, to_uuid, type) VALUES (:fromUUID, :toUUID, 'ENEMY') ON CONFLICT (from_uuid, to_uuid) DO UPDATE SET type = 'ENEMY'")
+                        .bind("fromUUID", from)
+                        .bind("toUUID", to)
                         .execute()
         );
     }
 
     public static void makeAlly(UUID from, UUID to) {
         Database.getJdbi().useHandle(handle ->
-                handle.createUpdate("INSERT INTO relations (from, to, type) VALUES (:from, :to, 'ALLY') ON CONFLICT (from, to) DO UPDATE SET type = 'ALLY'")
-                        .bind("from", from)
-                        .bind("to", to)
+                handle.createUpdate("INSERT INTO relations (from_uuid, to_uuid, type) VALUES (:fromUUID, :toUUID, 'ALLY') ON CONFLICT (from_uuid, to_uuid) DO UPDATE SET type = 'ALLY'")
+                        .bind("fromUUID", from)
+                        .bind("toUUID", to)
                         .execute()
         );
     }
 
     public static void forgive(UUID from, UUID to) {
         Database.getJdbi().useHandle(handle ->
-                handle.createUpdate("DELETE FROM relations WHERE from = :from AND to = :to")
-                        .bind("from", from)
-                        .bind("to", to)
+                handle.createUpdate("DELETE FROM relations WHERE from_uuid = :fromUUID AND to_uuid = :toUUID")
+                        .bind("fromUUID", from)
+                        .bind("toUUID", to)
                         .execute()
         );
     }

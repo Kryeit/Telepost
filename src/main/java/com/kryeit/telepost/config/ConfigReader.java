@@ -12,7 +12,7 @@ import java.nio.file.Path;
 public class ConfigReader {
 
     public static int POST_GAP;
-    public static int POST_RADIUS;
+    public static int POST_DIAMETER;
 
     private ConfigReader() {}
 
@@ -22,7 +22,7 @@ public class ConfigReader {
         JsonObject configObject = JsonParser.parseString(config).getAsJsonObject();
 
         POST_GAP = configObject.get("post-gap").getAsInt();
-        POST_RADIUS = configObject.get("post-radius").getAsInt();
+        POST_DIAMETER = configObject.get("post-diameter").getAsInt();
     }
 
     public static String readOrCopyFile(Path path, String exampleFile) throws IOException {
