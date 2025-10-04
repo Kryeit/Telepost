@@ -101,7 +101,7 @@ public record Post(
                     .bind("z", z)
                     .execute();
 
-            PostBuilder.place(MinecraftServerSupplier.getServer().overworld(), "plains", x, z);
+            PostBuilder.place(MinecraftServerSupplier.getServer().overworld(), "default", x, z);
 
             return null;
         });

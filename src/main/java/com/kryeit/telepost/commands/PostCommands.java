@@ -104,24 +104,6 @@ public class PostCommands {
         return 1;
     }
 
-    private static int visit(CommandContext<CommandSourceStack> ctx, String postName) throws CommandSyntaxException {
-        ServerPlayer player = ctx.getSource().getPlayerOrException();
-
-        Post post = Post.getByName(postName);
-        if (post == null) {
-            player.sendSystemMessage(Component.literal("Post not found"));
-            return 0;
-        }
-
-        if (!canVisit(player, post)) {
-            player.sendSystemMessage(Component.literal("You cannot visit this private post"));
-            return 0;
-        }
-
-        teleportToPost(player, post);
-        return 1;
-    }
-
     private static int forceVisit(CommandContext<CommandSourceStack> ctx, String postName) throws CommandSyntaxException {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
 
@@ -135,22 +117,25 @@ public class PostCommands {
         return 1;
     }
 
+    private static int visit(CommandContext<CommandSourceStack> ctx, String postName) throws CommandSyntaxException {
+        ServerPlayer player = ctx.getSource().getPlayerOrException();
+
+        if (!TeleportHandler.visit(player, postName)) {
+            player.sendSystemMessage(Component.literal("Cannot visit this post"));
+            return 0;
+        }
+
+        return 1;
+    }
+
     private static int home(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
 
-        Home home = Home.getByUser(player.getUUID());
-        if (home == null) {
-            player.sendSystemMessage(Component.literal("You don't have a home set"));
+        if (!TeleportHandler.home(player)) {
+            player.sendSystemMessage(Component.literal("No home set"));
             return 0;
         }
 
-        Post post = Post.getById(home.postId());
-        if (post == null) {
-            player.sendSystemMessage(Component.literal("Home post not found"));
-            return 0;
-        }
-
-        teleportToPost(player, post);
         return 1;
     }
 
@@ -200,7 +185,7 @@ public class PostCommands {
                             .execute()
             );
 
-            PostBuilder.place(MinecraftServerSupplier.getServer().overworld(), "plains", x, z);
+            PostBuilder.place(MinecraftServerSupplier.getServer().overworld(), "default", x, z);
             player.sendSystemMessage(Component.literal("Post created at " + x + ", " + z));
             return 1;
         }
