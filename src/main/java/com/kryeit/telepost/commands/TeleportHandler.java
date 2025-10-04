@@ -4,6 +4,7 @@ import com.kryeit.telepost.posts.Home;
 import com.kryeit.telepost.posts.Post;
 import com.kryeit.telepost.posts.PostBuilder;
 import com.kryeit.telepost.posts.Relation;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
@@ -40,6 +41,11 @@ public class TeleportHandler {
             return false;
         }
 
+        if (!isNearPost(player)) {
+            player.sendSystemMessage(Component.literal("You need to be closer to a post"));
+            return false;
+        }
+
         Post post = Post.getByName(postName);
         if (post == null) {
             return false;
@@ -55,6 +61,11 @@ public class TeleportHandler {
 
     public static boolean home(ServerPlayer player) {
         if (isInTeleport(player) || hasElytraEquipped(player)) {
+            return false;
+        }
+
+        if (!isNearPost(player)) {
+            player.sendSystemMessage(Component.literal("You need to be closer to a post"));
             return false;
         }
 
@@ -157,5 +168,18 @@ public class TeleportHandler {
             player.serverLevel().playSound(null, player.blockPosition(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.PLAYERS, 1.0F, 1.0F);
             preventFalls.remove(player.getUUID());
         }
+    }
+
+    private static boolean isNearPost(ServerPlayer player) {
+        Post closest = Post.getClosest((int) player.getX(), (int) player.getZ());
+        if (closest == null) {
+            return false;
+        }
+
+        int dx = (int) player.getX() - closest.x();
+        int dz = (int) player.getZ() - closest.z();
+        int distance = (int) Math.sqrt(dx * dx + dz * dz);
+
+        return distance <= Post.DIAMETER / 2;
     }
 }
