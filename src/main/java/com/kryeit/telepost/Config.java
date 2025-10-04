@@ -1,18 +1,20 @@
 package com.kryeit.telepost;
 
+import com.kryeit.telepost.config.ConfigReader;
+
 public class Config {
     public static final boolean production = false;
 
     public static final String DB_URL = production
-            ? "jdbc:postgresql://kryeit.com:5432/servus"
+            ? ConfigReader.DB_URL
             : "jdbc:postgresql://localhost:5432/servus";
 
     public static final String DB_USER = production
-            ? System.getenv("DB_USER")
+            ? ConfigReader.DB_USER
             : "postgres";
 
     public static final String DB_PASSWORD = production
-            ? System.getenv("DB_PASSWORD")
+            ? ConfigReader.DB_PASSWORD
             : "lel";
 
 }

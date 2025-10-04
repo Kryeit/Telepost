@@ -11,6 +11,10 @@ import java.nio.file.Path;
 
 public class ConfigReader {
 
+    public static String DB_URL;
+    public static String DB_USER;
+    public static String DB_PASSWORD;
+
     public static int POST_GAP;
     public static int POST_DIAMETER;
 
@@ -20,6 +24,10 @@ public class ConfigReader {
         String config = readOrCopyFile(path.resolve("config.json"), "/config.json");
 
         JsonObject configObject = JsonParser.parseString(config).getAsJsonObject();
+
+        DB_URL = configObject.get("db-url").getAsString();
+        DB_USER = configObject.get("db-user").getAsString();
+        DB_PASSWORD = configObject.get("db-password").getAsString();
 
         POST_GAP = configObject.get("post-gap").getAsInt();
         POST_DIAMETER = configObject.get("post-diameter").getAsInt();

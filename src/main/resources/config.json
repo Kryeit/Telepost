@@ -1,4 +1,7 @@
 {
+  "db-url": "jdbc:postgresql://kryeit.com:5432/servus",
+  "db-user": "postgres",
+  "db-password": "lel",
   "post-gap": 2000,
   "post-diameter": 31
 }
