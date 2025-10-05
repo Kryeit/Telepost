@@ -1,5 +1,6 @@
 package com.kryeit.telepost.commands;
 
+import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.posts.Home;
 import com.kryeit.telepost.posts.Post;
 import com.kryeit.telepost.posts.PostBuilder;
@@ -46,6 +47,11 @@ public class TeleportHandler {
             return false;
         }
 
+        if (Utils.hasBlockAbove(player)) {
+            player.sendSystemMessage(Component.literal("You can't teleport with a block above your head"));
+            return false;
+        }
+
         Post post = Post.getByName(postName);
         if (post == null) {
             return false;
@@ -66,6 +72,11 @@ public class TeleportHandler {
 
         if (!isNearPost(player)) {
             player.sendSystemMessage(Component.literal("You need to be closer to a post"));
+            return false;
+        }
+
+        if (Utils.hasBlockAbove(player)) {
+            player.sendSystemMessage(Component.literal("You can't teleport with a block above your head"));
             return false;
         }
 

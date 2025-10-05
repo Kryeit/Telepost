@@ -3,8 +3,12 @@ package com.kryeit.telepost;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
 import net.minecraft.commands.CommandSourceStack;
+import net.minecraft.core.BlockPos;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+import net.minecraft.util.Mth;
+import net.minecraft.world.level.Level;
+import net.minecraft.world.level.block.state.BlockState;
 import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.NeoForgeMod;
@@ -69,5 +73,26 @@ public class Utils {
                 })
                 .max()
                 .orElse(1);
+    }
+
+    public static boolean hasBlockAbove(ServerPlayer player) {
+        Level level = player.level();
+        BlockPos pos = player.blockPosition();
+        int checkY = pos.getY() + 2;
+
+        double minX = player.getX() - 0.3;
+        double maxX = player.getX() + 0.3;
+        double minZ = player.getZ() - 0.3;
+        double maxZ = player.getZ() + 0.3;
+
+        for (int x = Mth.floor(minX); x <= Mth.floor(maxX); x++) {
+            for (int z = Mth.floor(minZ); z <= Mth.floor(maxZ); z++) {
+                BlockState state = level.getBlockState(new BlockPos(x, checkY, z));
+                if (!state.isAir() && state.isSolidRender(level, new BlockPos(x, checkY, z))) {
+                    return true;
+                }
+            }
+        }
+        return false;
     }
 }
