@@ -26,10 +26,10 @@ public class PostBuilder {
         try {
             Files.createDirectories(structuresDir);
 
-            Path targetFile = structuresDir.resolve("plains.nbt");
+            Path targetFile = structuresDir.resolve("default.nbt");
 
             if (!Files.exists(targetFile)) {
-                InputStream stream = PostBuilder.class.getResourceAsStream("/structures/plains.nbt");
+                InputStream stream = PostBuilder.class.getResourceAsStream("/structures/default.nbt");
                 if (stream != null) {
                     Files.copy(stream, targetFile);
                     stream.close();
