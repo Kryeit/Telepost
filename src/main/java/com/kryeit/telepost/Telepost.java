@@ -4,6 +4,7 @@ import com.kryeit.telepost.commands.PostCommands;
 import com.kryeit.telepost.commands.TeleportHandler;
 import com.kryeit.telepost.config.ConfigReader;
 import com.kryeit.telepost.posts.PostBuilder;
+import com.kryeit.telepost.storage.Database;
 import com.kryeit.telepost.storage.DatabaseUtils;
 import com.mojang.logging.LogUtils;
 import net.luckperms.api.LuckPerms;
@@ -35,6 +36,7 @@ import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.event.BuildCreativeModeTabContentsEvent;
 import net.neoforged.neoforge.event.RegisterCommandsEvent;
 import net.neoforged.neoforge.event.server.ServerStartingEvent;
+import net.neoforged.neoforge.event.server.ServerStoppedEvent;
 import net.neoforged.neoforge.registries.DeferredBlock;
 import net.neoforged.neoforge.registries.DeferredHolder;
 import net.neoforged.neoforge.registries.DeferredItem;
@@ -66,6 +68,11 @@ public class Telepost {
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
         PostBuilder.copyStructures(event.getServer().getWorldPath(LevelResource.ROOT));
+    }
+
+    @SubscribeEvent
+    public void onServerStopped(ServerStoppedEvent event) {
+        Database.close();
     }
 
     @SubscribeEvent
