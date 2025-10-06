@@ -192,12 +192,31 @@ public record Post(
     }
 
     public static List<Post> getVisible(UUID viewer) {
-        return Database.getJdbi().withHandle(handle ->
-                handle.createQuery("SELECT * FROM posts WHERE (owner IS NULL OR owner = :viewer OR EXISTS (SELECT 1 FROM relations WHERE user1 = owner AND user2 = :viewer AND type = 'ALLY') OR (NOT EXISTS (SELECT 1 FROM relations WHERE user1 = owner AND user2 = :viewer) AND privated = FALSE)) AND NOT EXISTS (SELECT 1 FROM relations WHERE user1 = owner AND user2 = :viewer AND type = 'ENEMY') ORDER BY name")
-                        .bind("viewer", viewer)
+        List<Post> allPosts = Database.getJdbi().withHandle(handle ->
+                handle.createQuery("SELECT * FROM posts ORDER BY name")
                         .mapTo(Post.class)
                         .list()
         );
+
+        return allPosts.stream()
+                .filter(post -> {
+                    if (post.owner() == null || post.owner().equals(viewer)) {
+                        return true;
+                    }
+
+                    Relation.RelationType relation = Relation.getRelation(post.owner(), viewer);
+
+                    if (relation == Relation.RelationType.ENEMY) {
+                        return false;
+                    }
+
+                    if (relation == Relation.RelationType.ALLY) {
+                        return true;
+                    }
+
+                    return !post.privated();
+                })
+                .toList();
     }
 
     public static class Leverage {

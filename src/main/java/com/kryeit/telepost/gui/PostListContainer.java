@@ -1,7 +1,9 @@
 package com.kryeit.telepost.gui;
 
+import com.kryeit.telepost.MinecraftServerSupplier;
 import com.kryeit.telepost.posts.Post;
 import com.kryeit.telepost.posts.Relation;
+import com.mojang.authlib.GameProfile;
 import net.minecraft.ChatFormatting;
 import net.minecraft.core.component.DataComponents;
 import net.minecraft.network.chat.Component;
@@ -14,6 +16,7 @@ import net.minecraft.world.item.component.ItemLore;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class PostListContainer extends SimpleContainer {
     private final ServerPlayer player;
@@ -65,21 +68,35 @@ public class PostListContainer extends SimpleContainer {
     }
 
     private ItemStack createPostItem(Post post) {
-        boolean isAlly = Relation.getRelation(player.getUUID(), post.owner()).equals(Relation.RelationType.ALLY);
-        ItemStack stack = isAlly ? Items.GREEN_WOOL.getDefaultInstance() : Items.WHITE_WOOL.getDefaultInstance();
+        Relation.RelationType relation = Relation.getRelation(post.owner(), player.getUUID());
+
+        ItemStack stack;
+        if (post.owner() == null) {
+            stack = Items.GREEN_TERRACOTTA.getDefaultInstance();
+        } else if (post.owner().equals(player.getUUID())) {
+            stack = Items.ORANGE_TERRACOTTA.getDefaultInstance();
+        } else if (relation == Relation.RelationType.ALLY) {
+            stack = Items.LIGHT_BLUE_TERRACOTTA.getDefaultInstance();
+        } else {
+            stack = Items.WHITE_TERRACOTTA.getDefaultInstance();
+        }
 
         stack.set(DataComponents.ITEM_NAME, Component.literal(post.name() + " - (" + post.x() + ", " + post.z() + ")")
                 .withStyle(Style.EMPTY.withColor(ChatFormatting.YELLOW).withItalic(false)));
 
         List<Component> lore = new ArrayList<>();
-        
-        String ownerName = player.getServer().getProfileCache()
+
+        String ownerName = post.owner() != null
+                ? Objects.requireNonNull(MinecraftServerSupplier.getServer().getProfileCache())
                 .get(post.owner())
-                .map(profile -> profile.getName())
-                .orElse("Unknown");
-        
-        lore.add(Component.literal(ownerName + "'s post")
-                .withStyle(Style.EMPTY.withColor(ChatFormatting.GRAY).withItalic(false)));
+                .map(GameProfile::getName)
+                .orElse("Unknown")
+                : null;
+
+        if (ownerName != null) {
+            lore.add(Component.literal(ownerName + "'s post")
+                    .withStyle(Style.EMPTY.withColor(ChatFormatting.GRAY).withItalic(false)));
+        }
 
         if (post.privated()) {
             lore.add(Component.literal("Private")

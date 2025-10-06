@@ -20,7 +20,7 @@ public class Database {
         hikariConfig.setUsername(Config.DB_USER);
         hikariConfig.setPassword(Config.DB_PASSWORD);
         hikariConfig.setJdbcUrl(Config.DB_URL);
-        
+
         try {
             dataSource = new HikariDataSource(hikariConfig);
             JDBI = Jdbi.create(new HikariDataSource(hikariConfig));
