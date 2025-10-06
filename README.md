@@ -88,7 +88,7 @@ You can also have your own post to call a /home.
 
 When creating a post, you must select a location. You can't create a post closer to 1000 blocks from another post.
 
-If you are an ally of a player, their posts will have leverage for you. Once you have leverage, you can create posts closer to your allies, if you had 200 of leverage you could create a post 800 blocks, away from your ally's post.
-If you are an enemy of a player, their posts will have negative leverage for you. You must create posts further away from your enemies, if you had 200 of leverage you could only create a post 1200 blocks away from your enemy's post.
+If you are an ally of a player, their posts will have leverage for you. Once you have leverage, you can create posts closer to your allies. If you had 200 of leverage you could create a post 800 blocks away from your ally's post.
+If you are an enemy of a player, their posts will have negative leverage for you. You must create posts further away from your enemies. If you had 200 of leverage you could only create a post 1200 blocks away from your enemy's post.
 
 Our Discord: [https://discord.gg/vq5vwuyDGU](https://discord.gg/vq5vwuyDGU)
