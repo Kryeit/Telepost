@@ -21,8 +21,8 @@ public record Relation(
 
         return Database.getJdbi().withHandle(handle ->
                 handle.createQuery("SELECT type FROM relations WHERE from_uuid = :fromUUID AND to_uuid = :toUUID")
-                        .bind("fromUUID", from)
-                        .bind("toUUID", to)
+                        .bind("fromUUID", Database.isMySQL() ? from.toString() : from)
+                        .bind("toUUID", Database.isMySQL() ? to.toString() : to)
                         .map((rs, ctx) -> {
                             String type = rs.getString("type");
                             return type != null ? RelationType.valueOf(type) : null;
@@ -33,28 +33,46 @@ public record Relation(
     }
 
     public static void makeEnemy(UUID from, UUID to) {
-        Database.getJdbi().useHandle(handle ->
-                handle.createUpdate("INSERT INTO relations (from_uuid, to_uuid, type) VALUES (:fromUUID, :toUUID, 'ENEMY') ON CONFLICT (from_uuid, to_uuid) DO UPDATE SET type = 'ENEMY'")
-                        .bind("fromUUID", from)
-                        .bind("toUUID", to)
-                        .execute()
-        );
+        if (Database.isMySQL()) {
+            Database.getJdbi().useHandle(handle ->
+                    handle.createUpdate("INSERT INTO relations (from_uuid, to_uuid, type) VALUES (:fromUUID, :toUUID, 'ENEMY') ON DUPLICATE KEY UPDATE type = 'ENEMY'")
+                            .bind("fromUUID", from.toString())
+                            .bind("toUUID", to.toString())
+                            .execute()
+            );
+        } else {
+            Database.getJdbi().useHandle(handle ->
+                    handle.createUpdate("INSERT INTO relations (from_uuid, to_uuid, type) VALUES (:fromUUID, :toUUID, 'ENEMY') ON CONFLICT (from_uuid, to_uuid) DO UPDATE SET type = 'ENEMY'")
+                            .bind("fromUUID", from)
+                            .bind("toUUID", to)
+                            .execute()
+            );
+        }
     }
 
     public static void makeAlly(UUID from, UUID to) {
-        Database.getJdbi().useHandle(handle ->
-                handle.createUpdate("INSERT INTO relations (from_uuid, to_uuid, type) VALUES (:fromUUID, :toUUID, 'ALLY') ON CONFLICT (from_uuid, to_uuid) DO UPDATE SET type = 'ALLY'")
-                        .bind("fromUUID", from)
-                        .bind("toUUID", to)
-                        .execute()
-        );
+        if (Database.isMySQL()) {
+            Database.getJdbi().useHandle(handle ->
+                    handle.createUpdate("INSERT INTO relations (from_uuid, to_uuid, type) VALUES (:fromUUID, :toUUID, 'ALLY') ON DUPLICATE KEY UPDATE type = 'ALLY'")
+                            .bind("fromUUID", from.toString())
+                            .bind("toUUID", to.toString())
+                            .execute()
+            );
+        } else {
+            Database.getJdbi().useHandle(handle ->
+                    handle.createUpdate("INSERT INTO relations (from_uuid, to_uuid, type) VALUES (:fromUUID, :toUUID, 'ALLY') ON CONFLICT (from_uuid, to_uuid) DO UPDATE SET type = 'ALLY'")
+                            .bind("fromUUID", from)
+                            .bind("toUUID", to)
+                            .execute()
+            );
+        }
     }
 
     public static void forgive(UUID from, UUID to) {
         Database.getJdbi().useHandle(handle ->
                 handle.createUpdate("DELETE FROM relations WHERE from_uuid = :fromUUID AND to_uuid = :toUUID")
-                        .bind("fromUUID", from)
-                        .bind("toUUID", to)
+                        .bind("fromUUID", Database.isMySQL() ? from.toString() : from)
+                        .bind("toUUID", Database.isMySQL() ? to.toString() : to)
                         .execute()
         );
     }
