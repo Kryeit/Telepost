@@ -1,6 +1,7 @@
 package com.kryeit.telepost.commands;
 
 import com.kryeit.telepost.MinecraftServerSupplier;
+import com.kryeit.telepost.gui.PostListMenuProvider;
 import com.kryeit.telepost.posts.PostBuilder;
 import com.kryeit.telepost.storage.Database;
 import com.mojang.brigadier.CommandDispatcher;
@@ -226,7 +227,7 @@ public class PostCommands {
 
     private static int postList(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
-        player.sendSystemMessage(Component.literal("Post list GUI coming soon"));
+        PostListMenuProvider.open(player);
         return 1;
     }
 
