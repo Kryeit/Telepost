@@ -188,6 +188,11 @@ public class PostCommands {
     private static int visit(CommandContext<CommandSourceStack> ctx, String postName) throws CommandSyntaxException {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
 
+        if (!isInOverworld(player)) {
+            player.sendSystemMessage(Component.literal("This command can only be used in the overworld"));
+            return 0;
+        }
+
         if (!TeleportHandler.visit(player, postName)) {
             player.sendSystemMessage(Component.literal("Cannot visit this post"));
             return 0;
@@ -199,6 +204,11 @@ public class PostCommands {
     private static int home(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
 
+        if (!isInOverworld(player)) {
+            player.sendSystemMessage(Component.literal("This command can only be used in the overworld"));
+            return 0;
+        }
+
         if (!TeleportHandler.home(player)) {
             player.sendSystemMessage(Component.literal("No home set"));
             return 0;
@@ -209,6 +219,11 @@ public class PostCommands {
 
     private static int setHome(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
+
+        if (!isInOverworld(player)) {
+            player.sendSystemMessage(Component.literal("This command can only be used in the overworld"));
+            return 0;
+        }
 
         Post closest = Post.getClosest((int) player.getX(), (int) player.getZ());
         if (closest == null || getDistance(player, closest) > Post.GAP) {
@@ -223,6 +238,11 @@ public class PostCommands {
 
     private static int showClosestPost(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
+
+        if (!isInOverworld(player)) {
+            player.sendSystemMessage(Component.literal("This command can only be used in the overworld"));
+            return 0;
+        }
 
         Post closest = Post.getClosest((int) player.getX(), (int) player.getZ());
         if (closest == null) {
@@ -239,12 +259,23 @@ public class PostCommands {
 
     private static int postList(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
+
+        if (!isInOverworld(player)) {
+            player.sendSystemMessage(Component.literal("This command can only be used in the overworld"));
+            return 0;
+        }
+
         PostListMenuProvider.open(player);
         return 1;
     }
 
     private static int createPost(CommandContext<CommandSourceStack> ctx, String postName, int x, int z) throws CommandSyntaxException {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
+
+        if (!isInOverworld(player)) {
+            player.sendSystemMessage(Component.literal("This command can only be used in the overworld"));
+            return 0;
+        }
 
         if (player.hasPermissions(2)) {
             Database.getJdbi().useHandle(handle ->
@@ -382,5 +413,9 @@ public class PostCommands {
         }
 
         return 1;
+    }
+
+    private static boolean isInOverworld(ServerPlayer player) {
+        return player.level().dimension() == net.minecraft.world.level.Level.OVERWORLD;
     }
 }
