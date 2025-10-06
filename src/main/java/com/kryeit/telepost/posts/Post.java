@@ -182,6 +182,24 @@ public record Post(
         });
     }
 
+    public static List<Post> getOwned(UUID owner) {
+        return Database.getJdbi().withHandle(handle ->
+                handle.createQuery("SELECT * FROM posts WHERE owner = :owner ORDER BY name")
+                        .bind("owner", owner)
+                        .mapTo(Post.class)
+                        .list()
+        );
+    }
+
+    public static List<Post> getVisible(UUID viewer) {
+        return Database.getJdbi().withHandle(handle ->
+                handle.createQuery("SELECT * FROM posts WHERE (privated = FALSE OR owner = :viewer OR owner IS NULL) AND NOT EXISTS (SELECT 1 FROM relations WHERE ((user1 = owner AND user2 = :viewer) OR (user1 = :viewer AND user2 = owner)) AND type = 'ENEMY') ORDER BY name")
+                        .bind("viewer", viewer)
+                        .mapTo(Post.class)
+                        .list()
+        );
+    }
+
     public static class Leverage {
 
         private static int get(UUID player) {

@@ -3,7 +3,7 @@ package com.kryeit.telepost;
 import com.kryeit.telepost.config.ConfigReader;
 
 public class Config {
-    public static final boolean production = true;
+    public static final boolean production = false;
 
     public static final String DB_URL = production
             ? ConfigReader.DB_URL

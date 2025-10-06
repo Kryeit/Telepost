@@ -7,6 +7,8 @@ import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.suggestion.Suggestions;
+import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.posts.Home;
 import com.kryeit.telepost.posts.Post;
@@ -17,6 +19,8 @@ import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
+
+import java.util.concurrent.CompletableFuture;
 
 public class PostCommands {
 
@@ -33,6 +37,7 @@ public class PostCommands {
         dispatcher.register(Commands.literal("v")
                 .requires(source -> Utils.check(source, "command.visit", true))
                 .then(Commands.argument("postName", StringArgumentType.string())
+                        .suggests(PostCommands::suggestVisiblePosts)
                         .executes(ctx -> visit(ctx, StringArgumentType.getString(ctx, "postName")))));
 
         dispatcher.register(Commands.literal("homepost")
@@ -50,6 +55,7 @@ public class PostCommands {
         dispatcher.register(Commands.literal("visit")
                 .requires(source -> Utils.check(source, "command.visit", true))
                 .then(Commands.argument("postName", StringArgumentType.string())
+                        .suggests(PostCommands::suggestVisiblePosts)
                         .executes(ctx -> visit(ctx, StringArgumentType.getString(ctx, "postName")))));
 
         dispatcher.register(Commands.literal("forcevisit")
@@ -89,6 +95,7 @@ public class PostCommands {
                 .then(Commands.literal("rename")
                         .requires(source -> Utils.check(source, "command.rename", true))
                         .then(Commands.argument("oldName", StringArgumentType.string())
+                                .suggests(PostCommands::suggestOwnedPosts)
                                 .then(Commands.argument("newName", StringArgumentType.string())
                                         .executes(ctx -> renamePost(ctx,
                                                 StringArgumentType.getString(ctx, "oldName"),
@@ -96,6 +103,7 @@ public class PostCommands {
                 .then(Commands.literal("transfer")
                         .requires(source -> Utils.check(source, "command.transfer", true))
                         .then(Commands.argument("postName", StringArgumentType.string())
+                                .suggests(PostCommands::suggestOwnedPosts)
                                 .then(Commands.argument("player", EntityArgument.player())
                                         .executes(ctx -> transferPost(ctx,
                                                 StringArgumentType.getString(ctx, "postName"),
@@ -103,6 +111,7 @@ public class PostCommands {
                 .then(Commands.literal("privacy")
                         .requires(source -> Utils.check(source, "command.privacy", true))
                         .then(Commands.argument("postName", StringArgumentType.string())
+                                .suggests(PostCommands::suggestOwnedPosts)
                                 .executes(ctx -> togglePrivacy(ctx, StringArgumentType.getString(ctx, "postName")))))
                 .then(Commands.literal("ally")
                         .requires(source -> Utils.check(source, "command.ally", true))
@@ -118,6 +127,23 @@ public class PostCommands {
                                 .executes(ctx -> forgivePlayer(ctx, EntityArgument.getPlayer(ctx, "player"))))));
     }
 
+    private static CompletableFuture<Suggestions> suggestOwnedPosts(CommandContext<CommandSourceStack> ctx, SuggestionsBuilder builder) {
+        try {
+            ServerPlayer player = ctx.getSource().getPlayerOrException();
+            Post.getOwned(player.getUUID()).forEach(post -> builder.suggest(post.name()));
+        } catch (CommandSyntaxException e) {
+        }
+        return builder.buildFuture();
+    }
+
+    private static CompletableFuture<Suggestions> suggestVisiblePosts(CommandContext<CommandSourceStack> ctx, SuggestionsBuilder builder) {
+        try {
+            ServerPlayer player = ctx.getSource().getPlayerOrException();
+            Post.getVisible(player.getUUID()).forEach(post -> builder.suggest(post.name()));
+        } catch (CommandSyntaxException e) {
+        }
+        return builder.buildFuture();
+    }
 
     private static int transferPost(CommandContext<CommandSourceStack> ctx, String postName, ServerPlayer target) throws CommandSyntaxException {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
