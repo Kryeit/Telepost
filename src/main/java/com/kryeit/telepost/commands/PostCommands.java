@@ -61,8 +61,11 @@ public class PostCommands {
 
         dispatcher.register(Commands.literal("forcevisit")
                 .requires(source -> Utils.check(source, "command.forcevisit", false))
-                .then(Commands.argument("postName", StringArgumentType.string())
-                        .executes(ctx -> forceVisit(ctx, StringArgumentType.getString(ctx, "postName")))));
+                .then(Commands.argument("player", EntityArgument.player())
+                        .then(Commands.argument("postName", StringArgumentType.string())
+                                .executes(ctx -> forceVisit(ctx,
+                                        EntityArgument.getPlayer(ctx, "player"),
+                                        StringArgumentType.getString(ctx, "postName"))))));
 
         dispatcher.register(Commands.literal("home")
                 .requires(source -> Utils.check(source, "command.home", true))
@@ -160,16 +163,17 @@ public class PostCommands {
         return 1;
     }
 
-    private static int forceVisit(CommandContext<CommandSourceStack> ctx, String postName) throws CommandSyntaxException {
-        ServerPlayer player = ctx.getSource().getPlayerOrException();
+    private static int forceVisit(CommandContext<CommandSourceStack> ctx, ServerPlayer target, String postName) throws CommandSyntaxException {
+        ServerPlayer admin = ctx.getSource().getPlayerOrException();
 
         Post post = Post.getByName(postName);
         if (post == null) {
-            player.sendSystemMessage(Component.literal("Post not found"));
+            admin.sendSystemMessage(Component.literal("Post not found"));
             return 0;
         }
 
-        player.teleportTo(player.serverLevel(), post.x() + 0.5, PostBuilder.getSolidHeight(player.serverLevel(), post.x(), post.z()), post.z() + 0.5, player.getYRot(), player.getXRot());
+        target.teleportTo(target.serverLevel(), post.x() + 0.5, PostBuilder.getSolidHeight(target.serverLevel(), post.x(), post.z()), post.z() + 0.5, target.getYRot(), target.getXRot());
+        admin.sendSystemMessage(Component.literal("Teleported " + target.getName().getString() + " to " + postName));
         return 1;
     }
 
