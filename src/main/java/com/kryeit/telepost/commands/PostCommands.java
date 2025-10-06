@@ -21,6 +21,32 @@ import net.minecraft.server.level.ServerPlayer;
 public class PostCommands {
 
     public static void register(CommandDispatcher<CommandSourceStack> dispatcher) {
+
+        dispatcher.register(Commands.literal("closestpost")
+                .requires(source -> Utils.check(source, "command.post", true))
+                .executes(PostCommands::showClosestPost));
+
+        dispatcher.register(Commands.literal("nearestpost")
+                .requires(source -> Utils.check(source, "command.post", true))
+                .executes(PostCommands::showClosestPost));
+
+        dispatcher.register(Commands.literal("v")
+                .requires(source -> Utils.check(source, "command.visit", true))
+                .then(Commands.argument("postName", StringArgumentType.string())
+                        .executes(ctx -> visit(ctx, StringArgumentType.getString(ctx, "postName")))));
+
+        dispatcher.register(Commands.literal("homepost")
+                .requires(source -> Utils.check(source, "command.home", true))
+                .executes(PostCommands::home));
+
+        dispatcher.register(Commands.literal("h")
+                .requires(source -> Utils.check(source, "command.home", true))
+                .executes(PostCommands::home));
+
+        dispatcher.register(Commands.literal("sethomepost")
+                .requires(source -> Utils.check(source, "command.sethome", true))
+                .executes(PostCommands::setHome));
+
         dispatcher.register(Commands.literal("visit")
                 .requires(source -> Utils.check(source, "command.visit", true))
                 .then(Commands.argument("postName", StringArgumentType.string())
@@ -42,6 +68,8 @@ public class PostCommands {
         dispatcher.register(Commands.literal("post")
                 .requires(source -> Utils.check(source, "command.post", true))
                 .executes(PostCommands::showClosestPost)
+                .then(Commands.literal("help")
+                        .executes(PostCommands::showHelp))
                 .then(Commands.literal("list")
                         .requires(source -> Utils.check(source, "command.list", true))
                         .executes(PostCommands::postList))
@@ -90,6 +118,7 @@ public class PostCommands {
                                 .executes(ctx -> forgivePlayer(ctx, EntityArgument.getPlayer(ctx, "player"))))));
     }
 
+
     private static int transferPost(CommandContext<CommandSourceStack> ctx, String postName, ServerPlayer target) throws CommandSyntaxException {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
 
@@ -113,7 +142,7 @@ public class PostCommands {
             return 0;
         }
 
-        teleportToPost(player, post);
+        player.teleportTo(player.serverLevel(), post.x() + 0.5, PostBuilder.getSolidHeight(player.serverLevel(), post.x(), post.z()), post.z() + 0.5, player.getYRot(), player.getXRot());
         return 1;
     }
 
@@ -163,7 +192,9 @@ public class PostCommands {
         }
 
         int distance = getDistance(player, closest);
-        player.sendSystemMessage(Component.literal("Closest post: " + closest.name() + " (" + distance + " blocks away)"));
+        player.sendSystemMessage(Component.literal("The nearest post is ")
+                .append(Component.literal(closest.name()).withStyle(style -> style.withColor(0xFFAA00)))
+                .append(Component.literal(" at " + distance + " blocks away.")));
         return 1;
     }
 
@@ -260,20 +291,57 @@ public class PostCommands {
         return 1;
     }
 
-    private static boolean canVisit(ServerPlayer player, Post post) {
-        Relation.RelationType relation = Relation.getRelation(post.owner(), player.getUUID());
-        return post.privated()
-                ? relation == Relation.RelationType.ALLY
-                : relation != Relation.RelationType.ENEMY;
-    }
-
-    private static void teleportToPost(ServerPlayer player, Post post) {
-        player.teleportTo(player.serverLevel(), post.x() + 0.5, PostBuilder.getSolidHeight(player.serverLevel(), post.x(), post.z()), post.z() + 0.5, player.getYRot(), player.getXRot());
-    }
-
     private static int getDistance(ServerPlayer player, Post post) {
         int dx = (int) player.getX() - post.x();
         int dz = (int) player.getZ() - post.z();
         return (int) Math.sqrt(dx * dx + dz * dz);
+    }
+
+    private static int showHelp(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        ServerPlayer player = ctx.getSource().getPlayerOrException();
+
+        player.sendSystemMessage(Component.literal("Available commands:").withStyle(style -> style.withColor(0xFFAA00)));
+
+        if (Utils.check(ctx.getSource(), "command.post", true)) {
+            player.sendSystemMessage(Component.literal("/post - Shows nearest post"));
+        }
+        if (Utils.check(ctx.getSource(), "command.sethome", true)) {
+            player.sendSystemMessage(Component.literal("/sethome - Sets home on nearest post"));
+        }
+        if (Utils.check(ctx.getSource(), "command.home", true)) {
+            player.sendSystemMessage(Component.literal("/home - Teleports to your home"));
+        }
+        if (Utils.check(ctx.getSource(), "command.visit", true)) {
+            player.sendSystemMessage(Component.literal("/visit <Post> - Teleports to a post"));
+        }
+        if (Utils.check(ctx.getSource(), "command.forcevisit", false)) {
+            player.sendSystemMessage(Component.literal("/forcevisit <Post> - Teleports without post requirement"));
+        }
+        if (Utils.check(ctx.getSource(), "command.list", true)) {
+            player.sendSystemMessage(Component.literal("/post list [page] - Shows post list"));
+        }
+        if (Utils.check(ctx.getSource(), "command.create", true)) {
+            player.sendSystemMessage(Component.literal("/post create <Post> <x> <z> - Creates a post"));
+        }
+        if (Utils.check(ctx.getSource(), "command.rename", true)) {
+            player.sendSystemMessage(Component.literal("/post rename <OldName> <NewName> - Renames a post"));
+        }
+        if (Utils.check(ctx.getSource(), "command.transfer", false)) {
+            player.sendSystemMessage(Component.literal("/post transfer <PostName> <Player> - Transfers a post"));
+        }
+        if (Utils.check(ctx.getSource(), "command.delete", false)) {
+            player.sendSystemMessage(Component.literal("/post delete <PostName> - Deletes a post"));
+        }
+        if (Utils.check(ctx.getSource(), "command.ally", true)) {
+            player.sendSystemMessage(Component.literal("/post ally <Player> - Mark player as ally"));
+        }
+        if (Utils.check(ctx.getSource(), "command.enemy", true)) {
+            player.sendSystemMessage(Component.literal("/post enemy <Player> - Mark player as enemy"));
+        }
+        if (Utils.check(ctx.getSource(), "command.forgive", true)) {
+            player.sendSystemMessage(Component.literal("/post forgive <Player> - Forgive a player"));
+        }
+
+        return 1;
     }
 }

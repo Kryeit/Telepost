@@ -3,10 +3,12 @@ package com.kryeit.telepost.posts;
 import com.fasterxml.jackson.annotation.JsonProperty;
 import com.kryeit.telepost.Config;
 import com.kryeit.telepost.MinecraftServerSupplier;
+import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.config.ConfigReader;
 import com.kryeit.telepost.storage.Database;
 import net.luckperms.api.LuckPerms;
 import net.luckperms.api.LuckPermsProvider;
+import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.fml.ModList;
 import org.jdbi.v3.core.mapper.reflect.ColumnName;
@@ -37,6 +39,25 @@ public record Post(
     }
 
     public static void transfer(String name, UUID previousOwner, UUID newOwner) {
+        int maxPosts = Utils.getMaxPosts(newOwner);
+
+        int currentPosts = Database.getJdbi().withHandle(handle ->
+                handle.createQuery("SELECT COUNT(*) FROM posts WHERE owner = :owner")
+                        .bind("owner", newOwner)
+                        .mapTo(Integer.class)
+                        .one()
+        );
+
+        if (currentPosts >= maxPosts) {
+            if (MinecraftServerSupplier.getServer() != null) {
+                ServerPlayer player = MinecraftServerSupplier.getServer().getPlayerList().getPlayer(previousOwner);
+                if (player != null) {
+                    player.sendSystemMessage(Component.literal("The new owner of this post can only have " + maxPosts + " posts"));
+                }
+            }
+            return;
+        }
+
         Database.getJdbi().useHandle(handle ->
                 handle.createUpdate("UPDATE posts SET owner = :newOwner WHERE name = :name AND owner = :previousOwner")
                         .bind("newOwner", newOwner)
@@ -56,6 +77,19 @@ public record Post(
     }
 
     public static String create(UUID owner, String name, int x, int z) {
+        int maxPosts = Utils.getMaxPosts(owner);
+
+        int currentPosts = Database.getJdbi().withHandle(handle ->
+                handle.createQuery("SELECT COUNT(*) FROM posts WHERE owner = :owner")
+                        .bind("owner", owner)
+                        .mapTo(Integer.class)
+                        .one()
+        );
+
+        if (currentPosts >= maxPosts) {
+            return "You can only have " + maxPosts + " posts";
+        }
+
         int leverage = Leverage.get(owner);
 
         return Database.getJdbi().withHandle(handle -> {

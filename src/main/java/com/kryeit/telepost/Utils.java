@@ -13,6 +13,8 @@ import net.neoforged.fml.ModList;
 import net.neoforged.neoforge.common.NeoForge;
 import net.neoforged.neoforge.common.NeoForgeMod;
 
+import java.util.UUID;
+
 public class Utils {
 
     public static void broadcast(String message) {
@@ -45,7 +47,7 @@ public class Utils {
         return result.asBoolean() || (result == net.luckperms.api.util.Tristate.UNDEFINED && fallback);
     }
 
-    public static int getMaxPosts(ServerPlayer player) {
+    public static int getMaxPosts(UUID uuid) {
 
         if (!ModList.get().isLoaded("luckperms")) {
             return 1;
@@ -53,7 +55,7 @@ public class Utils {
 
         LuckPerms luckPerms = LuckPermsProvider.get();
 
-        var user = luckPerms.getUserManager().getUser(player.getUUID());
+        var user = luckPerms.getUserManager().getUser(uuid);
         if (user == null) {
             return 1;
         }

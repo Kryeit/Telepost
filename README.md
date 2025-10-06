@@ -1,5 +1,5 @@
 <p align="center">
-  <img width="200" src="https://kryeit.com/images/telepost_logo.png">
+  <img width="200" src="https://github.com/Kryeit/Telepost/blob/1.21-neoforge/src/main/resources/assets/telepost/icon.png">
 </p>
 
 <h1 align="center">Telepost<br>
@@ -11,72 +11,84 @@
     <br><br>
 </h1>
 
-POSTGRES DATABASE REQUIRED
-
 **Mod description**
 
-Telepost doesn't require any other mod to function. However, it has softdepend functions for:
-- [GriefDefender](https://www.spigotmc.org/resources/1-12-2-1-20-4-griefdefender-claim-plugin-grief-prevention-protection.68900/): to claim the posts when using /buildposts and also let players name a post if they have enough claim blocks.
-- [WorldEdit](https://modrinth.com/plugin/worldedit): when using /buildposts, the terrain will be accommodated in order for the post to look good.
-- [Bluemap](https://modrinth.com/plugin/bluemap): when using /namepost, a marker with its name will appear
 
-They will be explained further in the bottom of the page.
+
+<a href="https://github.com/Kryeit/Telepost/blob/old-1.20.4-fabric/README.md">
+If you have Telepost with version lower to 4.0 (<4.0) go here
+
+</a>
+
+#
+
+Telepost doesn't require any other mod to function. However, it has softdepend functions for:
+- [Luckperms](https://www.spigotmc.org/resources/1-12-2-1-20-4-griefdefender-claim-plugin-grief-prevention-protection.68900/): For permission management. (max posts per player, leverage per player, command permissions)
 
 <img src="https://cdn.modrinth.com/data/w8avchdW/images/392f24bba4c1cec4557709388a9691ea6637be9b.png" width="430" />
 
-Telepost can build (if needed) posts throughout the whole map, one each 2000 blocks. These posts serve as a nerfed teleportation system. Players can only execute teleport commands in those specific locations of the world, making it fun to explore and meet up with other players!
+Nerfed teleportation! Easier than ever. Players can create posts if not near enough others. This creates a teleport hall for all players.
+You may teleport there if you are standing inside another post.
+You can also have your own post to call a /home.
 
 <img src="https://cdn.modrinth.com/data/w8avchdW/images/1c2f0f10937a1d51eeee8614beba5aa0c46cd851.png" width="430" />
 
-- /nearestpost: tells you where the nearest post is.
-- /setpost: sets a home on the nearest post.
-- /homepost: teleports you to your home.
-- /postlist [page]: shows a pagination of the named posts.
-- /invite <Player>: invite a player to your home post.
-- /visit <Player/NamedPost>: teleports you to an invited post or to a Named Post
-- /namepost <PostName> : gives a name to the nearest post. Only for admins.
-- /unnamepost <PostName> : unnames a post. Only for admins.
-- /buildposts: builds all posts. Only for admins
-
-How to use /buildpost: place in `world/generated/structures/minecraft` a `default.nbt`, then place any other .nbt with a biome name, such as `plains.nbt`. Posts will be built with that structure depending on the biome, if none found, the default will be used.
+- `/post` or `/nearestpost` or `/closestpost`: shows you where the nearest post is.
+- `/sethomepost` or `/sethome`: sets a home on the nearest post.
+- `/homepost` or `/home` or `/h`: teleports you to your home.
+- `/visit <Post>` or `/v <Post>`: teleports you to a Post.
+- `/forcevisit <Post>`: teleports you to a Post without requiring to be standing on a post. OPs only.
+- `/post list [page]`: shows a paginated GUI of the posts.
+- `/post create <Post> <x> <z>`: creates a post with a given name.
+- `/post rename <OldName> <NewName>`: renames a post.
+- `/post transfer <PostName> <Player>`: transfers a post to another player. OPs only.
+- `/post delete <PostName>`: deletes a post. OPs only.
+- `/post ally <Player>`: Mark a player as your ally.
+- `/post enemy <Player>`: Mark a player as your enemy.
+- `/post forgive <Player>`: Forgive a player. (Delete ally/enemy status)
 
 <img src="https://cdn.modrinth.com/data/w8avchdW/images/9b2886e9c145a733c26c5c6a3982683474d295d5.png" width="430" />
 
-- telepost.admin : Helper + you can use tp-related commands everywhere in the Overworld.
-- telepost.helper : lets you visit other's home posts without needing an invitation.
+## Important permissions:
+- `telepost.posts.NUMBER` - Maximum number of posts a player can own. Default is 1.
+- `telepost.leverage.NUMBER` - Leverage distance to create posts. See the Leverage section for more information.
 
-<img src="https://cdn.modrinth.com/data/w8avchdW/images/b984923c23ca57afce0cf535606a99081d4c9045.png" width="430" />
+## Command permissions:
+* `telepost.command.post` - Use /post, /nearestpost, /closestpost
+* `telepost.command.sethome` - Use /sethomepost, /sethome
+* `telepost.command.home` - Use /homepost, /home, /h
+* `telepost.command.visit` - Use /visit, /v
+* `telepost.command.forcevisit` - Use /forcevisit (OPs only)
+* `telepost.command.list` - Use /post list
+* `telepost.command.create` - Use /post create
+* `telepost.command.rename` - Use /post rename
+* `telepost.command.transfer` - Use /post transfer (OPs only)
+* `telepost.command.delete` - Use /post delete (OPs only)
+* `telepost.command.ally` - Use /post ally
+* `telepost.command.enemy` - Use /post enemy
+* `telepost.command.forgive` - Use /post forgive
 
-- /buildposts: It also creates a claim in each post, 3d claim and also adds it to a "Posts" claimgroup
-- Users are also able to use /namepost once if they have more than 80.000 earned claimblocks, doesn't consume them. NO PERMISSION NEEDED
+# Config
+```json5
+{
+  "db-url": "jdbc:postgresql://kryeit.com:5432/servus",
+  "db-user": "postgres",
+  "db-password": "lel",
+  "post-gap": 2000,
+  "post-diameter": 31
+}
+```
+- You need to input the credentials for a PostgreSQL database. **Required to have one in order to use the mod.**
+- `post-gap`: The minimum distance in blocks that must be between two posts. Default is 2000 blocks.
+- `post-diameter`: The diameter of the post area. Default is 31 blocks. This is also used to offset structures when placing them with `/post create`.
 
-# Posts NBT's:
+# Leverage
 
-There is a nbt per biome, that includes Vanilla biomes and Terralith biomes.
-In total there is 133 different post nbt's, plus a `default.nbt` that is a copy of `plains.nbt`.
-Special thanks to the players involved on building them:
-- __Tesseract
-- OlimilO
-- Antonovich
-- Enzo
-- Slayz
+*Imagine `"post-gap": 1000,` inside the `config.json`.*
 
-*Note: the post also include blocks from Create mod, Farmers Delight, so if you use those, it will look best, if not, feel free to modify the .nbt's*
+When creating a post, you must select a location. You can't create a post closer to 1000 blocks from another post.
 
-# Translations:
+If you are an ally of a player, their posts will have leverage for you. Once you have leverage, you can create posts closer to your allies, if you had 200 of leverage you could create a post 800 blocks, away from your ally's post.
+If you are an enemy of a player, their posts will have negative leverage for you. You must create posts further away from your enemies, if you had 200 of leverage you could only create a post 1200 blocks away from your enemy's post.
 
-Feel free to translate the mod [here](https://github.com/Kryeit/Telepost-Refabricated/tree/main/src/main/resources/data/telepost/lang)
-
-Translations are per client, therefore different players receive messages in different languages!
-
-# Current translations:
-
-- Spanish: by muriplz
-- English: by muriplz
-- German: by MrRedRhino
-- French: by __Tesseract
-- Chinese: by LK
-- Brazilean portuguese: by Zeque
-- Latvian: by bbqribs
-
-Thanks for translating!
+Our Discord: [https://discord.gg/vq5vwuyDGU](https://discord.gg/vq5vwuyDGU)
