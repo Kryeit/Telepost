@@ -2,6 +2,7 @@ package com.kryeit.telepost.posts;
 
 import com.kryeit.telepost.storage.Database;
 
+import java.util.Objects;
 import java.util.UUID;
 
 public record Relation(
@@ -10,7 +11,11 @@ public record Relation(
 ) {
 
     public static RelationType getRelation(UUID from, UUID to) {
-        if (from == null || from.equals(to)) {
+        if (from == null || to == null) {
+            return RelationType.NONE;
+        }
+
+        if (Objects.equals(from, to)) {
             return RelationType.ALLY;
         }
 
