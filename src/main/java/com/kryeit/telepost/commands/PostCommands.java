@@ -90,7 +90,9 @@ public class PostCommands {
                         .executes(PostCommands::showHelp))
                 .then(Commands.literal("list")
                         .requires(source -> Utils.check(source, "command.list", true))
-                        .executes(PostCommands::postList))
+                        .executes(PostCommands::postList)
+                        .then(Commands.argument("page", IntegerArgumentType.integer(1))
+                                .executes(ctx -> postList(ctx, IntegerArgumentType.getInteger(ctx, "page")))))
                 .then(Commands.literal("create")
                         .requires(source -> Utils.check(source, "command.create", true))
                         .then(Commands.argument("postName", StringArgumentType.string())
@@ -258,6 +260,10 @@ public class PostCommands {
     }
 
     private static int postList(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        return postList(ctx, 1);
+    }
+
+    private static int postList(CommandContext<CommandSourceStack> ctx, int page) throws CommandSyntaxException {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
 
         if (!isInOverworld(player)) {
@@ -265,7 +271,7 @@ public class PostCommands {
             return 0;
         }
 
-        PostListMenuProvider.open(player);
+        PostListMenuProvider.open(player, page - 1);
         return 1;
     }
 

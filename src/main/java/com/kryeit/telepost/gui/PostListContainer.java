@@ -24,13 +24,14 @@ public class PostListContainer extends SimpleContainer {
     private int currentPage = 0;
     private static final int POSTS_PER_PAGE = 45;
 
-    public PostListContainer(ServerPlayer player) {
+    public PostListContainer(ServerPlayer player, int initialPage) {
         super(54);
         this.player = player;
         this.posts = Post.getVisible(player.getUUID());
+        this.currentPage = Math.min(initialPage, (posts.size() - 1) / POSTS_PER_PAGE);
         populate();
     }
-
+    
     public void populate() {
         for (int i = 0; i < getContainerSize(); i++) {
             setItem(i, ItemStack.EMPTY);

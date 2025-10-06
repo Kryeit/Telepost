@@ -8,7 +8,13 @@ import net.minecraft.world.entity.player.Player;
 import net.minecraft.world.inventory.AbstractContainerMenu;
 
 public class PostListMenuProvider implements MenuProvider {
-    
+
+    private final int initialPage;
+
+    public PostListMenuProvider(int initialPage) {
+        this.initialPage = initialPage;
+    }
+
     @Override
     public Component getDisplayName() {
         return Component.literal("Post List");
@@ -16,11 +22,11 @@ public class PostListMenuProvider implements MenuProvider {
 
     @Override
     public AbstractContainerMenu createMenu(int containerId, Inventory playerInventory, Player player) {
-        return PostListMenu.sixRows(containerId, playerInventory, 
-                new PostListContainer((ServerPlayer) player));
+        return PostListMenu.sixRows(containerId, playerInventory,
+                new PostListContainer((ServerPlayer) player, initialPage));
     }
 
-    public static void open(ServerPlayer player) {
-        player.openMenu(new PostListMenuProvider());
+    public static void open(ServerPlayer player, int page) {
+        player.openMenu(new PostListMenuProvider(page));
     }
 }
