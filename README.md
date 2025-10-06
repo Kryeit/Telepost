@@ -36,8 +36,8 @@ You can also have your own post to call a /home.
 - `/post` or `/nearestpost` or `/closestpost`: shows you where the nearest post is.
 - `/sethomepost` or `/sethome`: sets a home on the nearest post.
 - `/homepost` or `/home` or `/h`: teleports you to your home.
-- `/visit <Post>` or `/v <Post>`: teleports you to a Post.
-- `/forcevisit <Post>`: teleports you to a Post without requiring to be standing on a post. OPs only.
+- `/visit <Post>` or `/v`: teleports you to a Post.
+- `/forcevisit <Player> <Post>` or `/fv`: teleports you to a Post without requiring to be standing on a post. OPs only.
 - `/post list [page]`: shows a paginated GUI of the posts.
 - `/post create <Post> <x> <z>`: creates a post with a given name.
 - `/post rename <OldName> <NewName>`: renames a post.

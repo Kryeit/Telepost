@@ -59,6 +59,14 @@ public class PostCommands {
                         .suggests(PostCommands::suggestVisiblePosts)
                         .executes(ctx -> visit(ctx, StringArgumentType.getString(ctx, "postName")))));
 
+        dispatcher.register(Commands.literal("fv")
+                .requires(source -> Utils.check(source, "command.forcevisit", false))
+                .then(Commands.argument("player", EntityArgument.player())
+                        .then(Commands.argument("postName", StringArgumentType.string())
+                                .executes(ctx -> forceVisit(ctx,
+                                        EntityArgument.getPlayer(ctx, "player"),
+                                        StringArgumentType.getString(ctx, "postName"))))));
+
         dispatcher.register(Commands.literal("forcevisit")
                 .requires(source -> Utils.check(source, "command.forcevisit", false))
                 .then(Commands.argument("player", EntityArgument.player())
