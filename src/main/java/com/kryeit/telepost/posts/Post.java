@@ -1,7 +1,5 @@
 package com.kryeit.telepost.posts;
 
-import com.fasterxml.jackson.annotation.JsonProperty;
-import com.kryeit.telepost.Config;
 import com.kryeit.telepost.MinecraftServerSupplier;
 import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.config.ConfigReader;
@@ -11,8 +9,6 @@ import net.luckperms.api.LuckPermsProvider;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
 import net.neoforged.fml.ModList;
-import org.jdbi.v3.core.mapper.reflect.ColumnName;
-import org.jdbi.v3.json.Json;
 
 import java.util.List;
 import java.util.UUID;

@@ -1,20 +1,20 @@
 package com.kryeit.telepost.commands;
 
 import com.kryeit.telepost.MinecraftServerSupplier;
+import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.gui.PostListMenuProvider;
+import com.kryeit.telepost.posts.Home;
+import com.kryeit.telepost.posts.Post;
 import com.kryeit.telepost.posts.PostBuilder;
+import com.kryeit.telepost.posts.Relation;
 import com.kryeit.telepost.storage.Database;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
+import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
-import com.kryeit.telepost.Utils;
-import com.kryeit.telepost.posts.Home;
-import com.kryeit.telepost.posts.Post;
-import com.kryeit.telepost.posts.Relation;
-import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.arguments.EntityArgument;
