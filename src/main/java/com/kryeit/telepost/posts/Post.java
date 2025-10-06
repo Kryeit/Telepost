@@ -193,7 +193,7 @@ public record Post(
 
     public static List<Post> getVisible(UUID viewer) {
         return Database.getJdbi().withHandle(handle ->
-                handle.createQuery("SELECT * FROM posts WHERE (privated = FALSE OR owner = :viewer OR owner IS NULL) AND NOT EXISTS (SELECT 1 FROM relations WHERE ((user1 = owner AND user2 = :viewer) OR (user1 = :viewer AND user2 = owner)) AND type = 'ENEMY') ORDER BY name")
+                handle.createQuery("SELECT * FROM posts WHERE (owner IS NULL OR owner = :viewer OR EXISTS (SELECT 1 FROM relations WHERE user1 = owner AND user2 = :viewer AND type = 'ALLY') OR (NOT EXISTS (SELECT 1 FROM relations WHERE user1 = owner AND user2 = :viewer) AND privated = FALSE)) AND NOT EXISTS (SELECT 1 FROM relations WHERE user1 = owner AND user2 = :viewer AND type = 'ENEMY') ORDER BY name")
                         .bind("viewer", viewer)
                         .mapTo(Post.class)
                         .list()
