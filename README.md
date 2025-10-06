@@ -51,7 +51,7 @@ You can also have your own post to call a /home.
 
 ## Important permissions:
 - `telepost.posts.NUMBER` - Maximum number of posts a player can own. Default is 1.
-- `telepost.leverage.NUMBER` - Leverage distance to create posts. See the Leverage section for more information.
+- `telepost.leverage.NUMBER` - Leverage distance to create posts. See the Leverage section for more information. Default is POST-GAP / 2.
 
 ## Command permissions:
 * `telepost.command.post` - Use /post, /nearestpost, /closestpost
