@@ -39,7 +39,7 @@ public record Post(
 
         int currentPosts = Database.getJdbi().withHandle(handle ->
                 handle.createQuery("SELECT COUNT(*) FROM posts WHERE owner = :owner")
-                        .bind("owner", Database.isMySQL() ? newOwner.toString() : newOwner)
+                        .bind("owner", newOwner)
                         .mapTo(Integer.class)
                         .one()
         );
@@ -56,8 +56,8 @@ public record Post(
 
         Database.getJdbi().useHandle(handle ->
                 handle.createUpdate("UPDATE posts SET owner = :newOwner WHERE name = :name AND owner = :previousOwner")
-                        .bind("newOwner", Database.isMySQL() ? newOwner.toString() : newOwner)
-                        .bind("previousOwner", Database.isMySQL() ? previousOwner.toString() : previousOwner)
+                        .bind("newOwner", newOwner)
+                        .bind("previousOwner", previousOwner)
                         .bind("name", name)
                         .execute()
         );
@@ -77,7 +77,7 @@ public record Post(
 
         int currentPosts = Database.getJdbi().withHandle(handle ->
                 handle.createQuery("SELECT COUNT(*) FROM posts WHERE owner = :owner")
-                        .bind("owner", Database.isMySQL() ? owner.toString() : owner)
+                        .bind("owner", owner)
                         .mapTo(Integer.class)
                         .one()
         );
@@ -125,7 +125,7 @@ public record Post(
             }
 
             handle.createUpdate("INSERT INTO posts (owner, name, x, z) VALUES (:owner, :name, :x, :z)")
-                    .bind("owner", Database.isMySQL() ? owner.toString() : owner)
+                    .bind("owner", owner)
                     .bind("name", name)
                     .bind("x", x)
                     .bind("z", z)
@@ -181,7 +181,7 @@ public record Post(
     public static List<Post> getOwned(UUID owner) {
         return Database.getJdbi().withHandle(handle ->
                 handle.createQuery("SELECT * FROM posts WHERE owner = :owner ORDER BY name")
-                        .bind("owner", Database.isMySQL() ? owner.toString() : owner)
+                        .bind("owner", owner)
                         .mapTo(Post.class)
                         .list()
         );
@@ -245,4 +245,5 @@ public record Post(
                     .orElse(0);
         }
     }
+
 }
