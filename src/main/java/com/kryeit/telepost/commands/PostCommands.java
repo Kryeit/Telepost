@@ -9,6 +9,7 @@ import com.kryeit.telepost.posts.PostBuilder;
 import com.kryeit.telepost.posts.Relation;
 import com.kryeit.telepost.storage.Database;
 import com.mojang.brigadier.CommandDispatcher;
+import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
 import com.mojang.brigadier.arguments.StringArgumentType;
 import com.mojang.brigadier.context.CommandContext;
@@ -17,6 +18,7 @@ import com.mojang.brigadier.suggestion.Suggestions;
 import com.mojang.brigadier.suggestion.SuggestionsBuilder;
 import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
+import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.EntityArgument;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerPlayer;
@@ -37,7 +39,7 @@ public class PostCommands {
 
         dispatcher.register(Commands.literal("v")
                 .requires(source -> Utils.check(source, "command.visit", true))
-                .then(Commands.argument("postName", StringArgumentType.string())
+                .then(Commands.argument("postName", StringArgumentType.greedyString())
                         .suggests(PostCommands::suggestVisiblePosts)
                         .executes(ctx -> visit(ctx, StringArgumentType.getString(ctx, "postName")))));
 
@@ -55,14 +57,14 @@ public class PostCommands {
 
         dispatcher.register(Commands.literal("visit")
                 .requires(source -> Utils.check(source, "command.visit", true))
-                .then(Commands.argument("postName", StringArgumentType.string())
+                .then(Commands.argument("postName", StringArgumentType.greedyString())
                         .suggests(PostCommands::suggestVisiblePosts)
                         .executes(ctx -> visit(ctx, StringArgumentType.getString(ctx, "postName")))));
 
         dispatcher.register(Commands.literal("fv")
                 .requires(source -> Utils.check(source, "command.forcevisit", false))
                 .then(Commands.argument("player", EntityArgument.player())
-                        .then(Commands.argument("postName", StringArgumentType.string())
+                        .then(Commands.argument("postName", StringArgumentType.greedyString())
                                 .executes(ctx -> forceVisit(ctx,
                                         EntityArgument.getPlayer(ctx, "player"),
                                         StringArgumentType.getString(ctx, "postName"))))));
@@ -70,7 +72,7 @@ public class PostCommands {
         dispatcher.register(Commands.literal("forcevisit")
                 .requires(source -> Utils.check(source, "command.forcevisit", false))
                 .then(Commands.argument("player", EntityArgument.player())
-                        .then(Commands.argument("postName", StringArgumentType.string())
+                        .then(Commands.argument("postName", StringArgumentType.greedyString())
                                 .executes(ctx -> forceVisit(ctx,
                                         EntityArgument.getPlayer(ctx, "player"),
                                         StringArgumentType.getString(ctx, "postName"))))));
@@ -144,19 +146,42 @@ public class PostCommands {
     private static CompletableFuture<Suggestions> suggestOwnedPosts(CommandContext<CommandSourceStack> ctx, SuggestionsBuilder builder) {
         try {
             ServerPlayer player = ctx.getSource().getPlayerOrException();
-            Post.getOwned(player.getUUID()).forEach(post -> builder.suggest(post.name()));
+            Post.getOwned(player.getUUID()).forEach(post -> suggestName(builder, post.name()));
         } catch (CommandSyntaxException e) {
         }
         return builder.buildFuture();
     }
 
+    // Offers a post name for a quotable string argument: keeps only the names matching
+    // what the player has typed (ignoring a leading quote and case) and wraps the
+    // inserted value in quotes when it contains spaces or other special characters.
+    private static void suggestName(SuggestionsBuilder builder, String name) {
+        String typed = builder.getRemaining();
+        if (typed.startsWith("\"")) {
+            typed = typed.substring(1);
+        }
+        if (name.regionMatches(true, 0, typed, 0, typed.length())) {
+            builder.suggest(escapeIfRequired(name));
+        }
+    }
+
+    private static String escapeIfRequired(String name) {
+        for (int i = 0; i < name.length(); i++) {
+            if (!StringReader.isAllowedInUnquotedString(name.charAt(i))) {
+                return "\"" + name.replace("\\", "\\\\").replace("\"", "\\\"") + "\"";
+            }
+        }
+        return name;
+    }
+
     private static CompletableFuture<Suggestions> suggestVisiblePosts(CommandContext<CommandSourceStack> ctx, SuggestionsBuilder builder) {
         try {
             ServerPlayer player = ctx.getSource().getPlayerOrException();
-            Post.getVisible(player.getUUID()).forEach(post -> builder.suggest(post.name()));
+            return SharedSuggestionProvider.suggest(
+                    Post.getVisible(player.getUUID()).stream().map(Post::name), builder);
         } catch (CommandSyntaxException e) {
+            return builder.buildFuture();
         }
-        return builder.buildFuture();
     }
 
     private static int transferPost(CommandContext<CommandSourceStack> ctx, String postName, ServerPlayer target) throws CommandSyntaxException {
@@ -368,8 +393,8 @@ public class PostCommands {
     }
 
     private static int getDistance(ServerPlayer player, Post post) {
-        int dx = (int) player.getX() - post.x();
-        int dz = (int) player.getZ() - post.z();
+        long dx = (long) player.getX() - post.x();
+        long dz = (long) player.getZ() - post.z();
         return (int) Math.sqrt(dx * dx + dz * dz);
     }
 

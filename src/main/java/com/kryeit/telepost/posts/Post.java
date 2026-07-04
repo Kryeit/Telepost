@@ -25,7 +25,7 @@ public record Post(
 
     public static Post getClosest(int worldX, int worldZ){
         return Database.getJdbi().withHandle(handle ->
-                handle.createQuery("SELECT * FROM posts ORDER BY ((:worldX - x) * (:worldX - x) + (:worldZ - z) * (:worldZ - z)) ASC LIMIT 1")
+                handle.createQuery("SELECT * FROM posts ORDER BY ((CAST(:worldX AS BIGINT) - x) * (CAST(:worldX AS BIGINT) - x) + (CAST(:worldZ AS BIGINT) - z) * (CAST(:worldZ AS BIGINT) - z)) ASC LIMIT 1")
                         .bind("worldX", worldX)
                         .bind("worldZ", worldZ)
                         .mapTo(Post.class)
@@ -90,7 +90,7 @@ public record Post(
 
         return Database.getJdbi().withHandle(handle -> {
             List<Post> nearbyPosts = handle.createQuery(
-                            "SELECT * FROM posts WHERE ((:x - x) * (:x - x) + (:z - z) * (:z - z)) < :maxGap * :maxGap"
+                            "SELECT * FROM posts WHERE ((CAST(:x AS BIGINT) - x) * (CAST(:x AS BIGINT) - x) + (CAST(:z AS BIGINT) - z) * (CAST(:z AS BIGINT) - z)) < CAST(:maxGap AS BIGINT) * :maxGap"
                     )
                     .bind("x", x)
                     .bind("z", z)
@@ -115,8 +115,8 @@ public record Post(
                     }
                 }
 
-                int dx = x - post.x();
-                int dz = z - post.z();
+                long dx = x - post.x();
+                long dz = z - post.z();
                 int distance = (int) Math.sqrt(dx * dx + dz * dz);
 
                 if (distance < requiredGap) {
@@ -148,7 +148,7 @@ public record Post(
     public static Post getByName(String name) {
         return Database.getJdbi().withHandle(handle ->
                 handle.createQuery("SELECT * FROM posts WHERE name = :name")
-                        .bind("name", name)
+                        .bind("name", name.trim())
                         .mapTo(Post.class)
                         .findOne()
                         .orElse(null)

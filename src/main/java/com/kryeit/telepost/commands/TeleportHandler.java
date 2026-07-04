@@ -34,7 +34,8 @@ public class TeleportHandler {
     }
 
     public static boolean visit(ServerPlayer player, String postName) {
-        if (isInTeleport(player) || hasElytraEquipped(player)) {
+        if (!player.onGround()) {
+            player.sendSystemMessage(Component.literal("You need to be on the ground to teleport"));
             return false;
         }
 
@@ -57,12 +58,18 @@ public class TeleportHandler {
             return false;
         }
 
+        if (hasElytraEquipped(player) && !isOwnOrAlly(player, post)) {
+            player.sendSystemMessage(Component.literal("You can only teleport with an elytra to your own or an ally's post"));
+            return false;
+        }
+
         teleportToPost(player, post);
         return true;
     }
 
     public static boolean home(ServerPlayer player) {
-        if (isInTeleport(player) || hasElytraEquipped(player)) {
+        if (!player.onGround()) {
+            player.sendSystemMessage(Component.literal("You need to be on the ground to teleport"));
             return false;
         }
 
@@ -86,12 +93,13 @@ public class TeleportHandler {
             return false;
         }
 
+        if (hasElytraEquipped(player) && !isOwnOrAlly(player, post)) {
+            player.sendSystemMessage(Component.literal("You can only teleport with an elytra to your own or an ally's post"));
+            return false;
+        }
+
         teleportToPost(player, post);
         return true;
-    }
-
-    private static boolean isInTeleport(ServerPlayer player) {
-        return pendingTeleports.containsKey(player.getUUID()) || preventFalls.contains(player.getUUID());
     }
 
     private static void teleportToPost(ServerPlayer player, Post post) {
@@ -117,6 +125,11 @@ public class TeleportHandler {
                 : relation != Relation.RelationType.ENEMY;
     }
 
+    private static boolean isOwnOrAlly(ServerPlayer player, Post post) {
+        return post.owner() != null
+                && Relation.getRelation(post.owner(), player.getUUID()) == Relation.RelationType.ALLY;
+    }
+
     private static boolean hasElytraEquipped(ServerPlayer player) {
         return player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.CHEST).getItem()
                 instanceof net.minecraft.world.item.ElytraItem;
@@ -131,9 +144,10 @@ public class TeleportHandler {
         if (event.getSlot() == net.minecraft.world.entity.EquipmentSlot.CHEST &&
                 event.getTo().getItem() instanceof net.minecraft.world.item.ElytraItem) {
 
-            if (isInTeleport(player)) {
+            TeleportData data = pendingTeleports.get(player.getUUID());
+            if (data != null && !isOwnOrAlly(player, data.destination)) {
                 player.setItemSlot(net.minecraft.world.entity.EquipmentSlot.CHEST, event.getFrom());
-                player.sendSystemMessage(net.minecraft.network.chat.Component.literal("Cannot equip elytra while teleporting"));
+                player.sendSystemMessage(net.minecraft.network.chat.Component.literal("You can only teleport with an elytra to your own or an ally's post"));
             }
         }
     }
@@ -183,8 +197,8 @@ public class TeleportHandler {
             return false;
         }
 
-        int dx = (int) player.getX() - closest.x();
-        int dz = (int) player.getZ() - closest.z();
+        long dx = (long) player.getX() - closest.x();
+        long dz = (long) player.getZ() - closest.z();
         int distance = (int) Math.sqrt(dx * dx + dz * dz);
 
         return distance <= Post.DIAMETER / 2;
