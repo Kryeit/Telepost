@@ -38,7 +38,7 @@ public class Database {
             JDBI.registerRowMapper(Home.class, (rs, ctx) -> new Home(
                     rs.getLong("id"),
                     rs.getObject("player", UUID.class),
-                    rs.getLong("post_id")
+                    rs.getLong("postId")
             ));
 
             JDBI.registerRowMapper(Relation.class, (rs, ctx) -> new Relation(
