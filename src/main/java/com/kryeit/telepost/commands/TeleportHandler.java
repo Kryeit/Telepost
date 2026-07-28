@@ -1,6 +1,5 @@
 package com.kryeit.telepost.commands;
 
-import com.kryeit.telepost.Utils;
 import com.kryeit.telepost.posts.Home;
 import com.kryeit.telepost.posts.Post;
 import com.kryeit.telepost.posts.PostBuilder;
@@ -10,42 +9,12 @@ import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
 import net.minecraft.sounds.SoundEvents;
 import net.minecraft.sounds.SoundSource;
-import net.minecraft.world.phys.Vec3;
-import net.neoforged.bus.api.SubscribeEvent;
-import net.neoforged.neoforge.event.entity.living.LivingEquipmentChangeEvent;
-import net.neoforged.neoforge.event.entity.living.LivingFallEvent;
-import net.neoforged.neoforge.event.tick.PlayerTickEvent;
-
-import java.util.*;
 
 public class TeleportHandler {
 
-    private static final Set<UUID> preventFalls = new HashSet<>();
-    private static final Map<UUID, TeleportData> pendingTeleports = new HashMap<>();
-
-    private static class TeleportData {
-        Post destination;
-        double startHeight;
-
-        TeleportData(Post destination, double startHeight) {
-            this.destination = destination;
-            this.startHeight = startHeight;
-        }
-    }
-
     public static boolean visit(ServerPlayer player, String postName) {
-        if (!player.onGround()) {
-            player.sendSystemMessage(Component.literal("You need to be on the ground to teleport"));
-            return false;
-        }
-
         if (!isNearPost(player)) {
             player.sendSystemMessage(Component.literal("You need to be closer to a post"));
-            return false;
-        }
-
-        if (Utils.hasBlockAbove(player)) {
-            player.sendSystemMessage(Component.literal("You can't teleport with a block above your head"));
             return false;
         }
 
@@ -58,28 +27,13 @@ public class TeleportHandler {
             return false;
         }
 
-        if (hasElytraEquipped(player) && !isOwnOrAlly(player, post)) {
-            player.sendSystemMessage(Component.literal("You can only teleport with an elytra to your own or an ally's post"));
-            return false;
-        }
-
         teleportToPost(player, post);
         return true;
     }
 
     public static boolean home(ServerPlayer player) {
-        if (!player.onGround()) {
-            player.sendSystemMessage(Component.literal("You need to be on the ground to teleport"));
-            return false;
-        }
-
         if (!isNearPost(player)) {
             player.sendSystemMessage(Component.literal("You need to be closer to a post"));
-            return false;
-        }
-
-        if (Utils.hasBlockAbove(player)) {
-            player.sendSystemMessage(Component.literal("You can't teleport with a block above your head"));
             return false;
         }
 
@@ -93,24 +47,15 @@ public class TeleportHandler {
             return false;
         }
 
-        if (hasElytraEquipped(player) && !isOwnOrAlly(player, post)) {
-            player.sendSystemMessage(Component.literal("You can only teleport with an elytra to your own or an ally's post"));
-            return false;
-        }
-
         teleportToPost(player, post);
         return true;
     }
 
     private static void teleportToPost(ServerPlayer player, Post post) {
         ServerLevel level = player.serverLevel();
+        double y = PostBuilder.getSolidHeight(level, post.x(), post.z());
 
-        preventFalls.add(player.getUUID());
-        pendingTeleports.put(player.getUUID(), new TeleportData(post, player.getY()));
-
-        player.setDeltaMovement(new Vec3(0, 7, 0));
-        player.hurtMarked = true;
-
+        player.teleportTo(level, post.x() + 0.5, y, post.z() + 0.5, player.getYRot(), player.getXRot());
         level.playSound(null, player.blockPosition(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
     }
 
@@ -123,72 +68,6 @@ public class TeleportHandler {
         return post.privated()
                 ? relation == Relation.RelationType.ALLY
                 : relation != Relation.RelationType.ENEMY;
-    }
-
-    private static boolean isOwnOrAlly(ServerPlayer player, Post post) {
-        return post.owner() != null
-                && Relation.getRelation(post.owner(), player.getUUID()) == Relation.RelationType.ALLY;
-    }
-
-    private static boolean hasElytraEquipped(ServerPlayer player) {
-        return player.getItemBySlot(net.minecraft.world.entity.EquipmentSlot.CHEST).getItem()
-                instanceof net.minecraft.world.item.ElytraItem;
-    }
-
-    @SubscribeEvent
-    public static void onEquipItem(LivingEquipmentChangeEvent event) {
-        if (!(event.getEntity() instanceof ServerPlayer player)) {
-            return;
-        }
-
-        if (event.getSlot() == net.minecraft.world.entity.EquipmentSlot.CHEST &&
-                event.getTo().getItem() instanceof net.minecraft.world.item.ElytraItem) {
-
-            TeleportData data = pendingTeleports.get(player.getUUID());
-            if (data != null && !isOwnOrAlly(player, data.destination)) {
-                player.setItemSlot(net.minecraft.world.entity.EquipmentSlot.CHEST, event.getFrom());
-                player.sendSystemMessage(net.minecraft.network.chat.Component.literal("You can only teleport with an elytra to your own or an ally's post"));
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public static void onPlayerTick(PlayerTickEvent.Post event) {
-        if (!(event.getEntity() instanceof ServerPlayer player)) {
-            return;
-        }
-
-        TeleportData data = pendingTeleports.get(player.getUUID());
-        if (data != null) {
-            double velocityY = player.getDeltaMovement().y;
-
-            if (velocityY <= 0.1) {
-                double heightDiff = player.getY() - data.startHeight;
-                int destinationGroundY = PostBuilder.getSolidHeight(player.serverLevel(), data.destination.x(), data.destination.z());
-                double destinationY = destinationGroundY + heightDiff;
-
-                Vec3 velocity = player.getDeltaMovement();
-                player.teleportTo(player.serverLevel(), data.destination.x() + 0.5, destinationY, data.destination.z() + 0.5, player.getYRot(), player.getXRot());
-                player.setDeltaMovement(velocity);
-                player.hurtMarked = true;
-
-
-                pendingTeleports.remove(player.getUUID());
-            }
-        }
-    }
-
-    @SubscribeEvent
-    public static void onFall(LivingFallEvent event) {
-        if (!(event.getEntity() instanceof ServerPlayer player)) {
-            return;
-        }
-
-        if (preventFalls.contains(player.getUUID())) {
-            event.setCanceled(true);
-            player.serverLevel().playSound(null, player.blockPosition(), SoundEvents.GENERIC_EXPLODE.value(), SoundSource.PLAYERS, 1.0F, 1.0F);
-            preventFalls.remove(player.getUUID());
-        }
     }
 
     private static boolean isNearPost(ServerPlayer player) {

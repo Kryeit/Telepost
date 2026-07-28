@@ -10,6 +10,9 @@ public record Relation(
         RelationType type
 ) {
 
+    // Sentinel target for a player's default relation, set via `/post <ally|enemy> *`.
+    public static final UUID EVERYONE = new UUID(0L, 0L);
+
     public static RelationType getRelation(UUID from, UUID to) {
         if (from == null || to == null) {
             return RelationType.NONE;
@@ -19,6 +22,23 @@ public record Relation(
             return RelationType.ALLY;
         }
 
+        RelationType specific = lookup(from, to);
+        if (specific != null) {
+            return specific;
+        }
+
+        // No explicit relation: fall back to the default `from` set for everyone.
+        if (!Objects.equals(to, EVERYONE)) {
+            RelationType fallback = lookup(from, EVERYONE);
+            if (fallback != null) {
+                return fallback;
+            }
+        }
+
+        return RelationType.NONE;
+    }
+
+    private static RelationType lookup(UUID from, UUID to) {
         return Database.getJdbi().withHandle(handle ->
                 handle.createQuery("SELECT type FROM relations WHERE from_uuid = :fromUUID AND to_uuid = :toUUID")
                         .bind("fromUUID", from)

@@ -104,12 +104,13 @@ public record Post(
                 if (post.owner() == null) {
                     requiredGap = GAP;
                 } else {
-                    Relation.RelationType relation = Relation.getRelation(owner, post.owner());
+                    Relation.RelationType mine = Relation.getRelation(owner, post.owner());
+                    Relation.RelationType theirs = Relation.getRelation(post.owner(), owner);
 
-                    if (relation == Relation.RelationType.ALLY) {
-                        requiredGap = GAP - leverage;
-                    } else if (relation == Relation.RelationType.ENEMY) {
+                    if (mine == Relation.RelationType.ENEMY || theirs == Relation.RelationType.ENEMY) {
                         requiredGap = GAP + leverage;
+                    } else if (mine == Relation.RelationType.ALLY) {
+                        requiredGap = GAP - leverage;
                     } else {
                         requiredGap = GAP;
                     }

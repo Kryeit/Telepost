@@ -131,14 +131,20 @@ public class PostCommands {
                                 .executes(ctx -> togglePrivacy(ctx, StringArgumentType.getString(ctx, "postName")))))
                 .then(Commands.literal("ally")
                         .requires(source -> Utils.check(source, "command.ally", true))
+                        .then(Commands.literal("*")
+                                .executes(PostCommands::makeAllyEveryone))
                         .then(Commands.argument("player", EntityArgument.player())
                                 .executes(ctx -> makeAlly(ctx, EntityArgument.getPlayer(ctx, "player")))))
                 .then(Commands.literal("enemy")
                         .requires(source -> Utils.check(source, "command.enemy", true))
+                        .then(Commands.literal("*")
+                                .executes(PostCommands::makeEnemyEveryone))
                         .then(Commands.argument("player", EntityArgument.player())
                                 .executes(ctx -> makeEnemy(ctx, EntityArgument.getPlayer(ctx, "player")))))
                 .then(Commands.literal("forgive")
                         .requires(source -> Utils.check(source, "command.forgive", true))
+                        .then(Commands.literal("*")
+                                .executes(PostCommands::forgiveEveryone))
                         .then(Commands.argument("player", EntityArgument.player())
                                 .executes(ctx -> forgivePlayer(ctx, EntityArgument.getPlayer(ctx, "player"))))));
     }
@@ -374,6 +380,30 @@ public class PostCommands {
 
         Relation.forgive(player.getUUID(), target.getUUID());
         player.sendSystemMessage(Component.literal(target.getName().getString() + " has been forgiven"));
+        return 1;
+    }
+
+    private static int makeAllyEveryone(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        ServerPlayer player = ctx.getSource().getPlayerOrException();
+
+        Relation.makeAlly(player.getUUID(), Relation.EVERYONE);
+        player.sendSystemMessage(Component.literal("Everyone is now an ally by default (except players you set otherwise)"));
+        return 1;
+    }
+
+    private static int makeEnemyEveryone(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        ServerPlayer player = ctx.getSource().getPlayerOrException();
+
+        Relation.makeEnemy(player.getUUID(), Relation.EVERYONE);
+        player.sendSystemMessage(Component.literal("Everyone is now an enemy by default (except players you set otherwise)"));
+        return 1;
+    }
+
+    private static int forgiveEveryone(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        ServerPlayer player = ctx.getSource().getPlayerOrException();
+
+        Relation.forgive(player.getUUID(), Relation.EVERYONE);
+        player.sendSystemMessage(Component.literal("Default relation cleared"));
         return 1;
     }
 

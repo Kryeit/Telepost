@@ -1,7 +1,6 @@
 package com.kryeit.telepost;
 
 import com.kryeit.telepost.commands.PostCommands;
-import com.kryeit.telepost.commands.TeleportHandler;
 import com.kryeit.telepost.config.ConfigReader;
 import com.kryeit.telepost.posts.PostBuilder;
 import com.kryeit.telepost.storage.Database;
@@ -32,7 +31,6 @@ public class Telepost {
         DatabaseUtils.createTables();
 
 
-        NeoForge.EVENT_BUS.register(TeleportHandler.class);
         NeoForge.EVENT_BUS.register(this);
     }
 
