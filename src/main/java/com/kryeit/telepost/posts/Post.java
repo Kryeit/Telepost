@@ -148,7 +148,7 @@ public record Post(
 
     public static Post getByName(String name) {
         return Database.getJdbi().withHandle(handle ->
-                handle.createQuery("SELECT * FROM posts WHERE name = :name")
+                handle.createQuery("SELECT * FROM posts WHERE LOWER(name) = LOWER(:name) LIMIT 1")
                         .bind("name", name.trim())
                         .mapTo(Post.class)
                         .findOne()

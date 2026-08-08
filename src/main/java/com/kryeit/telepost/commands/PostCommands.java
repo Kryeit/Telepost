@@ -194,12 +194,19 @@ public class PostCommands {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
 
         Post post = Post.getByName(postName);
-        if (post == null || !post.owner().equals(player.getUUID())) {
+        if (post == null) {
+            player.sendSystemMessage(Component.literal("Post not found"));
+            return 0;
+        }
+
+        boolean isOwner = post.owner() != null && post.owner().equals(player.getUUID());
+        boolean isAdmin = player.hasPermissions(2) || Utils.check(ctx.getSource(), "command.transfer.other", false);
+        if (!isOwner && !isAdmin) {
             player.sendSystemMessage(Component.literal("You don't own this post"));
             return 0;
         }
 
-        Post.transfer(postName, player.getUUID(), target.getUUID());
+        Post.transfer(post.name(), post.owner(), target.getUUID());
         player.sendSystemMessage(Component.literal("Post transferred to " + target.getName().getString()));
         return 1;
     }
@@ -340,7 +347,14 @@ public class PostCommands {
 
     private static int deletePost(CommandContext<CommandSourceStack> ctx, String postName) throws CommandSyntaxException {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
-        Post.delete(postName);
+
+        Post post = Post.getByName(postName);
+        if (post == null) {
+            player.sendSystemMessage(Component.literal("Post not found"));
+            return 0;
+        }
+
+        Post.delete(post.name());
         player.sendSystemMessage(Component.literal("Post deleted"));
         return 1;
     }
@@ -349,12 +363,12 @@ public class PostCommands {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
 
         Post post = Post.getByName(oldName);
-        if (post == null || !post.owner().equals(player.getUUID())) {
+        if (post == null || post.owner() == null || !post.owner().equals(player.getUUID())) {
             player.sendSystemMessage(Component.literal("You don't own this post"));
             return 0;
         }
 
-        Post.rename(oldName, newName);
+        Post.rename(post.name(), newName);
         player.sendSystemMessage(Component.literal("Post renamed to " + newName));
         return 1;
     }
@@ -411,12 +425,12 @@ public class PostCommands {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
 
         Post post = Post.getByName(postName);
-        if (post == null || !post.owner().equals(player.getUUID())) {
+        if (post == null || post.owner() == null || !post.owner().equals(player.getUUID())) {
             player.sendSystemMessage(Component.literal("You don't own this post"));
             return 0;
         }
 
-        boolean updatedPrivacy = Post.togglePrivacy(postName);
+        boolean updatedPrivacy = Post.togglePrivacy(post.name());
         Component message = updatedPrivacy ? Component.literal("Post is now private, only allies are allowed") : Component.literal("Post is now public");
         player.sendSystemMessage(message);
         return 1;

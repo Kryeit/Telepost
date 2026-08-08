@@ -3,7 +3,6 @@ package com.kryeit.telepost.commands;
 import com.kryeit.telepost.posts.Home;
 import com.kryeit.telepost.posts.Post;
 import com.kryeit.telepost.posts.PostBuilder;
-import com.kryeit.telepost.posts.Relation;
 import net.minecraft.network.chat.Component;
 import net.minecraft.server.level.ServerLevel;
 import net.minecraft.server.level.ServerPlayer;
@@ -20,10 +19,6 @@ public class TeleportHandler {
 
         Post post = Post.getByName(postName);
         if (post == null) {
-            return false;
-        }
-
-        if (!canVisit(player, post)) {
             return false;
         }
 
@@ -57,17 +52,6 @@ public class TeleportHandler {
 
         player.teleportTo(level, post.x() + 0.5, y, post.z() + 0.5, player.getYRot(), player.getXRot());
         level.playSound(null, player.blockPosition(), SoundEvents.ENDERMAN_TELEPORT, SoundSource.PLAYERS, 1.0F, 1.0F);
-    }
-
-    private static boolean canVisit(ServerPlayer player, Post post) {
-        if (post.owner() == null) {
-            return true;
-        }
-
-        Relation.RelationType relation = Relation.getRelation(post.owner(), player.getUUID());
-        return post.privated()
-                ? relation == Relation.RelationType.ALLY
-                : relation != Relation.RelationType.ENEMY;
     }
 
     private static boolean isNearPost(ServerPlayer player) {
