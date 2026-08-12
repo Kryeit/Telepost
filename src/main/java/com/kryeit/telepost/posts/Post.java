@@ -109,7 +109,7 @@ public record Post(
 
                     if (mine == Relation.RelationType.ENEMY || theirs == Relation.RelationType.ENEMY) {
                         requiredGap = GAP + leverage;
-                    } else if (mine == Relation.RelationType.ALLY) {
+                    } else if (mine == Relation.RelationType.ALLY || theirs == Relation.RelationType.ALLY) {
                         requiredGap = GAP - leverage;
                     } else {
                         requiredGap = GAP;
@@ -226,7 +226,7 @@ public record Post(
             LuckPerms luckPerms = LuckPermsProvider.get();
             var user = luckPerms.getUserManager().getUser(player);
             if (user == null) {
-                return 0;
+                return ConfigReader.POST_GAP / 2;
             }
 
             return user.getCachedData()
@@ -243,7 +243,7 @@ public record Post(
                         }
                     })
                     .max()
-                    .orElse(0);
+                    .orElse(ConfigReader.POST_GAP / 2);
         }
     }
 

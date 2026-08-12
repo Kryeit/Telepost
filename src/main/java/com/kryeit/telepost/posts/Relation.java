@@ -2,6 +2,7 @@ package com.kryeit.telepost.posts;
 
 import com.kryeit.telepost.storage.Database;
 
+import java.util.List;
 import java.util.Objects;
 import java.util.UUID;
 
@@ -76,6 +77,18 @@ public record Relation(
                         .bind("fromUUID", from)
                         .bind("toUUID", to)
                         .execute()
+        );
+    }
+
+    // Explicit relations of the given type set by `from` (excludes the `*` default).
+    public static List<UUID> getByType(UUID from, RelationType type) {
+        return Database.getJdbi().withHandle(handle ->
+                handle.createQuery("SELECT to_uuid FROM relations WHERE from_uuid = :from AND type = :type AND to_uuid <> :everyone")
+                        .bind("from", from)
+                        .bind("type", type.name())
+                        .bind("everyone", EVERYONE)
+                        .mapTo(UUID.class)
+                        .list()
         );
     }
 

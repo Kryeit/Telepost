@@ -8,6 +8,7 @@ import com.kryeit.telepost.posts.Post;
 import com.kryeit.telepost.posts.PostBuilder;
 import com.kryeit.telepost.posts.Relation;
 import com.kryeit.telepost.storage.Database;
+import com.mojang.authlib.GameProfile;
 import com.mojang.brigadier.CommandDispatcher;
 import com.mojang.brigadier.StringReader;
 import com.mojang.brigadier.arguments.IntegerArgumentType;
@@ -20,9 +21,15 @@ import net.minecraft.commands.CommandSourceStack;
 import net.minecraft.commands.Commands;
 import net.minecraft.commands.SharedSuggestionProvider;
 import net.minecraft.commands.arguments.EntityArgument;
+import net.minecraft.commands.arguments.GameProfileArgument;
+import net.minecraft.network.chat.ClickEvent;
 import net.minecraft.network.chat.Component;
+import net.minecraft.network.chat.HoverEvent;
 import net.minecraft.server.level.ServerPlayer;
 
+import java.util.Collection;
+import java.util.List;
+import java.util.UUID;
 import java.util.concurrent.CompletableFuture;
 
 public class PostCommands {
@@ -131,22 +138,26 @@ public class PostCommands {
                                 .executes(ctx -> togglePrivacy(ctx, StringArgumentType.getString(ctx, "postName")))))
                 .then(Commands.literal("ally")
                         .requires(source -> Utils.check(source, "command.ally", true))
+                        .then(Commands.literal("list")
+                                .executes(PostCommands::listAllies))
                         .then(Commands.literal("*")
                                 .executes(PostCommands::makeAllyEveryone))
-                        .then(Commands.argument("player", EntityArgument.player())
-                                .executes(ctx -> makeAlly(ctx, EntityArgument.getPlayer(ctx, "player")))))
+                        .then(Commands.argument("player", GameProfileArgument.gameProfile())
+                                .executes(ctx -> makeAlly(ctx, GameProfileArgument.getGameProfiles(ctx, "player")))))
                 .then(Commands.literal("enemy")
                         .requires(source -> Utils.check(source, "command.enemy", true))
+                        .then(Commands.literal("list")
+                                .executes(PostCommands::listEnemies))
                         .then(Commands.literal("*")
                                 .executes(PostCommands::makeEnemyEveryone))
-                        .then(Commands.argument("player", EntityArgument.player())
-                                .executes(ctx -> makeEnemy(ctx, EntityArgument.getPlayer(ctx, "player")))))
+                        .then(Commands.argument("player", GameProfileArgument.gameProfile())
+                                .executes(ctx -> makeEnemy(ctx, GameProfileArgument.getGameProfiles(ctx, "player")))))
                 .then(Commands.literal("forgive")
                         .requires(source -> Utils.check(source, "command.forgive", true))
                         .then(Commands.literal("*")
                                 .executes(PostCommands::forgiveEveryone))
-                        .then(Commands.argument("player", EntityArgument.player())
-                                .executes(ctx -> forgivePlayer(ctx, EntityArgument.getPlayer(ctx, "player"))))));
+                        .then(Commands.argument("player", GameProfileArgument.gameProfile())
+                                .executes(ctx -> forgivePlayer(ctx, GameProfileArgument.getGameProfiles(ctx, "player"))))));
     }
 
     private static CompletableFuture<Suggestions> suggestOwnedPosts(CommandContext<CommandSourceStack> ctx, SuggestionsBuilder builder) {
@@ -373,27 +384,33 @@ public class PostCommands {
         return 1;
     }
 
-    private static int makeAlly(CommandContext<CommandSourceStack> ctx, ServerPlayer target) throws CommandSyntaxException {
+    private static int makeAlly(CommandContext<CommandSourceStack> ctx, Collection<GameProfile> targets) throws CommandSyntaxException {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
 
-        Relation.makeAlly(player.getUUID(), target.getUUID());
-        player.sendSystemMessage(Component.literal(target.getName().getString() + " is now an ally"));
+        for (GameProfile target : targets) {
+            Relation.makeAlly(player.getUUID(), target.getId());
+            player.sendSystemMessage(Component.literal(target.getName() + " is now an ally"));
+        }
         return 1;
     }
 
-    private static int makeEnemy(CommandContext<CommandSourceStack> ctx, ServerPlayer target) throws CommandSyntaxException {
+    private static int makeEnemy(CommandContext<CommandSourceStack> ctx, Collection<GameProfile> targets) throws CommandSyntaxException {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
 
-        Relation.makeEnemy(player.getUUID(), target.getUUID());
-        player.sendSystemMessage(Component.literal(target.getName().getString() + " is now an enemy"));
+        for (GameProfile target : targets) {
+            Relation.makeEnemy(player.getUUID(), target.getId());
+            player.sendSystemMessage(Component.literal(target.getName() + " is now an enemy"));
+        }
         return 1;
     }
 
-    private static int forgivePlayer(CommandContext<CommandSourceStack> ctx, ServerPlayer target) throws CommandSyntaxException {
+    private static int forgivePlayer(CommandContext<CommandSourceStack> ctx, Collection<GameProfile> targets) throws CommandSyntaxException {
         ServerPlayer player = ctx.getSource().getPlayerOrException();
 
-        Relation.forgive(player.getUUID(), target.getUUID());
-        player.sendSystemMessage(Component.literal(target.getName().getString() + " has been forgiven"));
+        for (GameProfile target : targets) {
+            Relation.forgive(player.getUUID(), target.getId());
+            player.sendSystemMessage(Component.literal(target.getName() + " has been forgiven"));
+        }
         return 1;
     }
 
@@ -418,6 +435,38 @@ public class PostCommands {
 
         Relation.forgive(player.getUUID(), Relation.EVERYONE);
         player.sendSystemMessage(Component.literal("Default relation cleared"));
+        return 1;
+    }
+
+    private static int listAllies(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        return listRelations(ctx.getSource().getPlayerOrException(), Relation.RelationType.ALLY);
+    }
+
+    private static int listEnemies(CommandContext<CommandSourceStack> ctx) throws CommandSyntaxException {
+        return listRelations(ctx.getSource().getPlayerOrException(), Relation.RelationType.ENEMY);
+    }
+
+    private static int listRelations(ServerPlayer player, Relation.RelationType type) {
+        boolean ally = type == Relation.RelationType.ALLY;
+        int color = ally ? 0x55FF55 : 0xFF5555;
+        String label = ally ? "Allies" : "Enemies";
+
+        List<UUID> uuids = Relation.getByType(player.getUUID(), type);
+        if (uuids.isEmpty()) {
+            player.sendSystemMessage(Component.literal("No " + label.toLowerCase()).withStyle(s -> s.withColor(0xAAAAAA)));
+            return 1;
+        }
+
+        player.sendSystemMessage(Component.literal(label + ":").withStyle(s -> s.withColor(color)));
+        var cache = MinecraftServerSupplier.getServer().getProfileCache();
+        for (UUID uuid : uuids) {
+            String name = cache.get(uuid).map(GameProfile::getName).orElse(uuid.toString());
+            player.sendSystemMessage(Component.literal("  " + name + " ").withStyle(s -> s.withColor(color))
+                    .append(Component.literal("[x]").withStyle(s -> s
+                            .withColor(0xFF5555)
+                            .withClickEvent(new ClickEvent(ClickEvent.Action.RUN_COMMAND, "/post forgive " + name))
+                            .withHoverEvent(new HoverEvent(HoverEvent.Action.SHOW_TEXT, Component.literal("Remove"))))));
+        }
         return 1;
     }
 
