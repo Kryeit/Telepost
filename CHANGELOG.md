@@ -1,3 +1,6 @@
+# 4.2.4
+- Fix leverance being defaulted to 0
+
 # 4.2.3
 - Added /post ally/enemy list
 - Fixed /post ally 
