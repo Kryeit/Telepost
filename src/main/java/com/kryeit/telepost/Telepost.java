@@ -1,6 +1,7 @@
 package com.kryeit.telepost;
 
 import com.kryeit.telepost.commands.PostCommands;
+import com.kryeit.telepost.compat.BlueMapCompat;
 import com.kryeit.telepost.config.ConfigReader;
 import com.kryeit.telepost.posts.PostBuilder;
 import com.kryeit.telepost.storage.Database;
@@ -37,6 +38,10 @@ public class Telepost {
     @SubscribeEvent
     public void onServerStarting(ServerStartingEvent event) {
         PostBuilder.copyStructures(event.getServer().getWorldPath(LevelResource.ROOT));
+
+        if (Utils.isCompatAddonAvailable("bluemap")) {
+            BlueMapCompat.loadMarkerSet();
+        }
     }
 
     @SubscribeEvent

@@ -2,6 +2,7 @@ package com.kryeit.telepost.posts;
 
 import com.kryeit.telepost.MinecraftServerSupplier;
 import com.kryeit.telepost.Utils;
+import com.kryeit.telepost.compat.BlueMapCompat;
 import com.kryeit.telepost.config.ConfigReader;
 import com.kryeit.telepost.storage.Database;
 import net.luckperms.api.LuckPerms;
@@ -25,7 +26,7 @@ public record Post(
 
     public static Post getClosest(int worldX, int worldZ){
         return Database.getJdbi().withHandle(handle ->
-                handle.createQuery("SELECT * FROM posts ORDER BY ((CAST(:worldX AS BIGINT) - x) * (CAST(:worldX AS BIGINT) - x) + (CAST(:worldZ AS BIGINT) - z) * (CAST(:worldZ AS BIGINT) - z)) ASC LIMIT 1")
+                handle.createQuery("SELECT * FROM posts ORDER BY ((CAST(:worldX AS BIGINT) - x) * (CAST(:worldX AS BIGINT) - x) + (CAST(:worldZ AS BIGINT) - z) * (CAST(:worldZ AS BIGINT) - z)) LIMIT 1")
                         .bind("worldX", worldX)
                         .bind("worldZ", worldZ)
                         .mapTo(Post.class)
@@ -125,25 +126,36 @@ public record Post(
                 }
             }
 
-            handle.createUpdate("INSERT INTO posts (owner, name, x, z) VALUES (:owner, :name, :x, :z)")
+            Post post = handle.createQuery("""
+                            INSERT INTO posts (owner, name, x, z)
+                            VALUES (:owner, :name, :x, :z)
+                            RETURNING *
+                            """)
                     .bind("owner", owner)
                     .bind("name", name)
                     .bind("x", x)
                     .bind("z", z)
-                    .execute();
+                    .mapTo(Post.class)
+                    .one();
 
             PostBuilder.place(MinecraftServerSupplier.getServer().overworld(), "default", x, z);
+
+            if (Utils.isCompatAddonAvailable("bluemap")) {
+                BlueMapCompat.createMarker(post);
+            }
 
             return null;
         });
     }
 
     public static void delete(String name) {
-        Database.getJdbi().useHandle(handle ->
-                handle.createUpdate("DELETE FROM posts WHERE name = :name")
-                        .bind("name", name)
-                        .execute()
-        );
+        int rowsChanged = Database.getJdbi().withHandle(h -> h.createUpdate("DELETE FROM posts WHERE name = :name")
+                .bind("name", name)
+                .execute());
+
+        if (rowsChanged > 0 && Utils.isCompatAddonAvailable("bluemap")) {
+            BlueMapCompat.removeMarker(name);
+        }
     }
 
     public static Post getByName(String name) {
@@ -188,32 +200,34 @@ public record Post(
         );
     }
 
+    public static List<Post> getAll() {
+        return Database.getJdbi().withHandle(h -> h.createQuery("""
+                        SELECT *
+                        FROM posts
+                        """)
+                .mapTo(Post.class)
+                .list());
+    }
+
+    // Same rules as Relation.getRelation(owner, viewer), resolved in a single query:
+    // the owner's specific relation to the viewer wins, otherwise their `*` default.
     public static List<Post> getVisible(UUID viewer) {
-        List<Post> allPosts = Database.getJdbi().withHandle(handle ->
-                handle.createQuery("SELECT * FROM posts ORDER BY name")
+        return Database.getJdbi().withHandle(handle ->
+                handle.createQuery("""
+                                SELECT p.* FROM posts p
+                                LEFT JOIN relations r ON r.from_uuid = p.owner AND r.to_uuid = :viewer
+                                LEFT JOIN relations d ON d.from_uuid = p.owner AND d.to_uuid = :everyone
+                                WHERE p.owner IS NULL
+                                   OR p.owner = :viewer
+                                   OR COALESCE(r.type, d.type) = 'ALLY'
+                                   OR (COALESCE(r.type, d.type) IS DISTINCT FROM 'ENEMY' AND NOT p.privated)
+                                ORDER BY p.name
+                                """)
+                        .bind("viewer", viewer)
+                        .bind("everyone", Relation.EVERYONE)
                         .mapTo(Post.class)
                         .list()
         );
-
-        return allPosts.stream()
-                .filter(post -> {
-                    if (post.owner() == null || post.owner().equals(viewer)) {
-                        return true;
-                    }
-
-                    Relation.RelationType relation = Relation.getRelation(post.owner(), viewer);
-
-                    if (relation == Relation.RelationType.ENEMY) {
-                        return false;
-                    }
-
-                    if (relation == Relation.RelationType.ALLY) {
-                        return true;
-                    }
-
-                    return !post.privated();
-                })
-                .toList();
     }
 
     public static class Leverage {

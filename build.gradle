@@ -13,6 +13,10 @@ repositories {
     mavenLocal()
     mavenCentral()
     maven { url "https://repo.lucko.me" }
+
+    repositories {
+        maven { url 'https://repo.bluecolored.de/releases' }
+    }
 }
 
 base {
@@ -76,6 +80,8 @@ dependencies {
     }
 
     implementation "net.luckperms:api:5.4"
+
+    implementation "de.bluecolored:bluemap-api:${bluemap_version}"
 }
 
 tasks.withType(ProcessResources).configureEach {
